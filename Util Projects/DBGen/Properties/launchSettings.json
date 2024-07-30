@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "DBGen": {
+      "commandName": "Project",
+      "commandLineArgs": "en y6",
+      "workingDirectory": "E:\\SteamLibrary\\steamapps\\common\\Yakuza 6 - The Song of Life\\mods\\HAct"
+    }
+  }
+}

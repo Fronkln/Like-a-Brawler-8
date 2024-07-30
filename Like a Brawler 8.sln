@@ -1,0 +1,71 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Like a Brawler 8", "Like a Brawler 8.csproj", "{7B845ACC-9F32-4FD4-8FB6-173BFCC67708}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DELibrary.NET", "..\Y7Internal.NET\DELibrary.NET\DELibrary.NET.csproj", "{9900112C-25D6-427D-846A-A90E31CF8FE3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBGen", "Util Projects\DBGen\DBGen.csproj", "{C5809E7A-AFC5-479E-AE1A-580E566EB514}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElvisCommand", "Util Projects\ElvisCommand\ElvisCommand.csproj", "{DB20A2CA-CFFE-4298-9872-269B91B0DF9D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elvis Commander", "Util Projects\Elvis Commander\Elvis Commander.csproj", "{A0DEDB71-B2F4-4793-B1B3-D2C7A11891AC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Demo Debug|x64 = Demo Debug|x64
+		Demo Release|x64 = Demo Release|x64
+		Infinite Wealth Debug|x64 = Infinite Wealth Debug|x64
+		Infinite Wealth Release|x64 = Infinite Wealth Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7B845ACC-9F32-4FD4-8FB6-173BFCC67708}.Demo Debug|x64.ActiveCfg = Demo Debug|x64
+		{7B845ACC-9F32-4FD4-8FB6-173BFCC67708}.Demo Debug|x64.Build.0 = Demo Debug|x64
+		{7B845ACC-9F32-4FD4-8FB6-173BFCC67708}.Demo Release|x64.ActiveCfg = Demo Release|x64
+		{7B845ACC-9F32-4FD4-8FB6-173BFCC67708}.Demo Release|x64.Build.0 = Demo Release|x64
+		{7B845ACC-9F32-4FD4-8FB6-173BFCC67708}.Infinite Wealth Debug|x64.ActiveCfg = Infinite Wealth Debug|x64
+		{7B845ACC-9F32-4FD4-8FB6-173BFCC67708}.Infinite Wealth Debug|x64.Build.0 = Infinite Wealth Debug|x64
+		{7B845ACC-9F32-4FD4-8FB6-173BFCC67708}.Infinite Wealth Release|x64.ActiveCfg = Infinite Wealth Release|x64
+		{7B845ACC-9F32-4FD4-8FB6-173BFCC67708}.Infinite Wealth Release|x64.Build.0 = Infinite Wealth Release|x64
+		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Demo Debug|x64.ActiveCfg = Infinite Wealth Release|x64
+		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Demo Debug|x64.Build.0 = Infinite Wealth Release|x64
+		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Demo Release|x64.ActiveCfg = Infinite Wealth Release|x64
+		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Demo Release|x64.Build.0 = Infinite Wealth Release|x64
+		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Infinite Wealth Debug|x64.ActiveCfg = Infinite Wealth Debug|x64
+		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Infinite Wealth Debug|x64.Build.0 = Infinite Wealth Debug|x64
+		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Infinite Wealth Release|x64.ActiveCfg = Infinite Wealth Release|x64
+		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Infinite Wealth Release|x64.Build.0 = Infinite Wealth Release|x64
+		{C5809E7A-AFC5-479E-AE1A-580E566EB514}.Demo Debug|x64.ActiveCfg = Release|x64
+		{C5809E7A-AFC5-479E-AE1A-580E566EB514}.Demo Debug|x64.Build.0 = Release|x64
+		{C5809E7A-AFC5-479E-AE1A-580E566EB514}.Demo Release|x64.ActiveCfg = Release|x64
+		{C5809E7A-AFC5-479E-AE1A-580E566EB514}.Demo Release|x64.Build.0 = Release|x64
+		{C5809E7A-AFC5-479E-AE1A-580E566EB514}.Infinite Wealth Debug|x64.ActiveCfg = Debug|x64
+		{C5809E7A-AFC5-479E-AE1A-580E566EB514}.Infinite Wealth Debug|x64.Build.0 = Debug|x64
+		{C5809E7A-AFC5-479E-AE1A-580E566EB514}.Infinite Wealth Release|x64.ActiveCfg = Release|x64
+		{C5809E7A-AFC5-479E-AE1A-580E566EB514}.Infinite Wealth Release|x64.Build.0 = Release|x64
+		{DB20A2CA-CFFE-4298-9872-269B91B0DF9D}.Demo Debug|x64.ActiveCfg = YLAD Debug|x64
+		{DB20A2CA-CFFE-4298-9872-269B91B0DF9D}.Demo Debug|x64.Build.0 = YLAD Debug|x64
+		{DB20A2CA-CFFE-4298-9872-269B91B0DF9D}.Demo Release|x64.ActiveCfg = YLAD Debug|x64
+		{DB20A2CA-CFFE-4298-9872-269B91B0DF9D}.Demo Release|x64.Build.0 = YLAD Debug|x64
+		{DB20A2CA-CFFE-4298-9872-269B91B0DF9D}.Infinite Wealth Debug|x64.ActiveCfg = YLAD Debug|x64
+		{DB20A2CA-CFFE-4298-9872-269B91B0DF9D}.Infinite Wealth Debug|x64.Build.0 = YLAD Debug|x64
+		{DB20A2CA-CFFE-4298-9872-269B91B0DF9D}.Infinite Wealth Release|x64.ActiveCfg = YLAD Debug|x64
+		{DB20A2CA-CFFE-4298-9872-269B91B0DF9D}.Infinite Wealth Release|x64.Build.0 = YLAD Debug|x64
+		{A0DEDB71-B2F4-4793-B1B3-D2C7A11891AC}.Demo Debug|x64.ActiveCfg = Release|x64
+		{A0DEDB71-B2F4-4793-B1B3-D2C7A11891AC}.Demo Debug|x64.Build.0 = Release|x64
+		{A0DEDB71-B2F4-4793-B1B3-D2C7A11891AC}.Demo Release|x64.ActiveCfg = Release|x64
+		{A0DEDB71-B2F4-4793-B1B3-D2C7A11891AC}.Demo Release|x64.Build.0 = Release|x64
+		{A0DEDB71-B2F4-4793-B1B3-D2C7A11891AC}.Infinite Wealth Debug|x64.ActiveCfg = Debug|x64
+		{A0DEDB71-B2F4-4793-B1B3-D2C7A11891AC}.Infinite Wealth Debug|x64.Build.0 = Debug|x64
+		{A0DEDB71-B2F4-4793-B1B3-D2C7A11891AC}.Infinite Wealth Release|x64.ActiveCfg = Release|x64
+		{A0DEDB71-B2F4-4793-B1B3-D2C7A11891AC}.Infinite Wealth Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1CF81A91-8334-4BC4-B8DA-61E2C611359C}
+	EndGlobalSection
+EndGlobal

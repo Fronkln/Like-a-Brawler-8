@@ -1,0 +1,332 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\Costura.Fody.5.7.0\build\Costura.Fody.props" Condition="Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7B845ACC-9F32-4FD4-8FB6-173BFCC67708}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LikeABrawler2</RootNamespace>
+    <AssemblyName>Like a Brawler 8</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Infinite Wealth Release|x64'">
+    <OutputPath>bin\x64\Infinite Wealth Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Infinite Wealth Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Infinite Wealth Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Demo Release|x64'">
+    <OutputPath>bin\x64\Demo Release\</OutputPath>
+    <DefineConstants>TRACE;DEMO</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Demo Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Demo Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DEMO</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Costura, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Costura.Fody.5.7.0\lib\netstandard1.0\Costura.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=1.3.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.IO.RecyclableMemoryStream.1.3.6\lib\net46\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MinHook.NET, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\MinHook.NET.1.1.1\lib\net45\MinHook.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.AppContext.4.3.0\lib\net46\System.AppContext.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Composition.AttributedModel, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Composition.AttributedModel.5.0.0\lib\net461\System.Composition.AttributedModel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Convention, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Composition.Convention.5.0.0\lib\net461\System.Composition.Convention.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Hosting, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Composition.Hosting.5.0.0\lib\net461\System.Composition.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Runtime, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Composition.Runtime.5.0.0\lib\net461\System.Composition.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.TypedParts, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Composition.TypedParts.5.0.0\lib\net461\System.Composition.TypedParts.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Console, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Diagnostics.DiagnosticSource.4.3.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Compression.ZipFile, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.Compression.ZipFile.4.3.0\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Net.Http.4.3.0\lib\net46\System.Net.Http.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Loader, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.Loader.4.3.0\lib\netstandard1.5\System.Runtime.Loader.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Text.Encoding.CodePages, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Text.Encoding.CodePages.5.0.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Xml.ReaderWriter.4.3.0\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Yarhl, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Yarhl.3.1.0\lib\netstandard2.0\Yarhl.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AI\BaseAI.cs" />
+    <Compile Include="AI\Enemy\BaseEnemyAI.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIAmonLose.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIAsakura1.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossCalorieKnight.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossDwight1.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossHecaton.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossKuwaki.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossLandSurfer.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossWong.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossWPB.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossWPD.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossWPG.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossWPY.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossWPE.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossYamai2.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossYamai1.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossLongPierrot.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAITomizawa.cs" />
+    <Compile Include="AI\Enemy\EnemyAIBoss.cs" />
+    <Compile Include="AI\Enemy\EnemyAILongPierrot.cs" />
+    <Compile Include="AI\Enemy\EnemyAIYamaiHostess.cs" />
+    <Compile Include="AI\Enemy\EnemyEvasionModule.cs" />
+    <Compile Include="AI\Enemy\EnemyModule.cs" />
+    <Compile Include="AI\Supporter\BaseSupporterAI.cs" />
+    <Compile Include="AI\Supporter\SupporterPartyMemberKiryu.cs" />
+    <Compile Include="AI\Supporter\SupporterPartyMemberSoldier.cs" />
+    <Compile Include="AI\Supporter\SupporterPartyMember.cs" />
+    <Compile Include="Auth\AuthConditionManager.cs" />
+    <Compile Include="Auth\AuthCustomNodeManager.cs" />
+    <Compile Include="Auth\AuthNodeHActDamage.cs" />
+    <Compile Include="Auth\AuthNodeLABAssetPickup.cs" />
+    <Compile Include="Auth\AuthNodeLABGamemodeDecision.cs" />
+    <Compile Include="Auth\AuthNodeLABGameMode.cs" />
+    <Compile Include="Auth\AuthNodeLABPlayerAssetUseReduce.cs" />
+    <Compile Include="Auth\AuthNodeTransitRpgSkill.cs" />
+    <Compile Include="Auth\ConditionFolderKiryuStyle.cs" />
+    <Compile Include="Auth\ConditionFolderLABBattleOverByY8BHact.cs" />
+    <Compile Include="Auth\ConditionFolderLABISDemo.cs" />
+    <Compile Include="Auth\ConditionFolderPlayerID.cs" />
+    <Compile Include="Auth\ConditionFolderGamemode.cs" />
+    <Compile Include="Auth\ConditionFolderCommandset.cs" />
+    <Compile Include="Auth\ConditionFolderDragonBoost.cs" />
+    <Compile Include="Auth\ConditionFolderIsNotSupporter.cs" />
+    <Compile Include="Auth\ConditionFolderPlayerJob.cs" />
+    <Compile Include="BrawlerSaveData.cs" />
+    <Compile Include="Debug.cs" />
+    <Compile Include="DebugBattleConsole.cs" />
+    <Compile Include="EnemyRebalanceEntry.cs" />
+    <Compile Include="Enum\JobWeaponType.cs" />
+    <Compile Include="Enum\PlayerStyle.cs" />
+    <Compile Include="Enum\TutorialModifier.cs" />
+    <Compile Include="Manager\AuraManager.cs" />
+    <Compile Include="Manager\TownsfolkManager.cs" />
+    <Compile Include="Manager\RevelationManager.cs" />
+    <Compile Include="Patches\AuthPatches.cs" />
+    <Compile Include="Patches\BattleTurnManagerPatches.cs" />
+    <Compile Include="Patches\CameraPatches.cs" />
+    <Compile Include="Patches\HijackedFunction.cs" />
+    <Compile Include="Patches\NopPatch.cs" />
+    <Compile Include="Patches\ParticlePatches.cs" />
+    <Compile Include="Patches\PausePatches.cs" />
+    <Compile Include="Patches\UIPatches.cs" />
+    <Compile Include="Player\EXHeatModule.cs" />
+    <Compile Include="Manager\BrawlerUIManager.cs" />
+    <Compile Include="Manager\DBManager.cs" />
+    <Compile Include="Manager\EnemyManager.cs" />
+    <Compile Include="Manager\HeatActionManager.cs" />
+    <Compile Include="Manager\HeatActionSimulator.cs" />
+    <Compile Include="Manager\MortalReversalManager.cs" />
+    <Compile Include="Manager\SupporterManager.cs" />
+    <Compile Include="Manager\TutorialManager.cs" />
+    <Compile Include="Manager\YazawaCommandManager.cs" />
+    <Compile Include="Patches\BrawlerPatch.cs" />
+    <Compile Include="Patches\BrawlerPatches.cs" />
+    <Compile Include="Player\BrawlerPlayer.cs" />
+    <Compile Include="InputState.cs" />
+    <Compile Include="Mod.cs" />
+    <Compile Include="Manager\BrawlerBattleManager.cs" />
+    <Compile Include="Patches\CFCPatches.cs" />
+    <Compile Include="Patches\CombatPatches.cs" />
+    <Compile Include="Patches\CombatPlayerPatches.cs" />
+    <Compile Include="Patches\HActPatches.cs" />
+    <Compile Include="Patches\HumanModePatches.cs" />
+    <Compile Include="Patches\InventoryPatches.cs" />
+    <Compile Include="Patches\SupporterPatches.cs" />
+    <Compile Include="Player\HeatModule.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Structs\AuraDefinition.cs" />
+    <Compile Include="Structs\BrawlerFighterInfo.cs" />
+    <Compile Include="Structs\HeatActionInformation.cs" />
+    <Compile Include="Structs\Ini.cs" />
+    <Compile Include="IniSettings.cs" />
+    <Compile Include="Structs\PartyMemberTempStatStore.cs" />
+    <Compile Include="Structs\TutorialGoal.cs" />
+    <Compile Include="Task\DETask.cs" />
+    <Compile Include="Task\DETaskChainHAct.cs" />
+    <Compile Include="Task\DETaskManager.cs" />
+    <Compile Include="Task\DETaskTime.cs" />
+    <Compile Include="Task\RepeatingTask.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="Utils\Extensions.cs" />
+    <Compile Include="Manager\WeaponManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Y7Internal.NET\DELibrary.NET\DELibrary.NET.csproj">
+      <Project>{9900112c-25d6-427d-846a-a90e31cf8fe3}</Project>
+      <Name>DELibrary.NET</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="Util Projects\ElvisCommand\ElvisCommand.csproj">
+      <Project>{db20a2ca-cffe-4298-9872-269b91b0df9d}</Project>
+      <Name>ElvisCommand</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(TargetDir)$(ProjectName).dll"  "C:\Program Files (x86)\Steam\steamapps\common\LikeADragon8\runtime\media\mods\Like A Brawler 8\$(ProjectName).dll"
+copy /Y "C:\Users\orhan\source\repos\Y7Internal.NET\DELibrary.NET\$(OutDir)DELibrary.NET.exe"  "C:\Program Files (x86)\Steam\steamapps\common\LikeADragon8\runtime\media\mods\DE Library\DELibrary.NET.dll"</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="packages\Fody.6.5.5\build\Fody.targets" Condition="Exists('packages\Fody.6.5.5\build\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\Fody.6.5.5\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Fody.6.5.5\build\Fody.targets'))" />
+    <Error Condition="!Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.7.0\build\Costura.Fody.props'))" />
+    <Error Condition="!Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.7.0\build\Costura.Fody.targets'))" />
+  </Target>
+  <Import Project="packages\Costura.Fody.5.7.0\build\Costura.Fody.targets" Condition="Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" />
+</Project>

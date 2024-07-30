@@ -1,0 +1,79 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using DragonEngineLibrary;
+using LikeABrawler2.Auth;
+
+namespace LikeABrawler2
+{
+    internal static class AuthCustomNodeManager
+    {
+        private delegate void PlayDeleg(IntPtr thisObj, uint tick, IntPtr mtx, uint unk);
+        private static List<PlayDeleg> _playDelegates = new List<PlayDeleg>();
+
+        [DllImport("mods/EX Auth/EXAuth.asi", EntryPoint = "InitializeASI", CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static extern bool _Init();
+
+        [DllImport("mods/EX Auth/EXAuth.asi", EntryPoint = "RegisterNewNode", CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static extern bool _RegisterNewNode(uint id);
+
+        [DllImport("mods/EX Auth/EXAuth.asi", EntryPoint = "RegisterPlayFunc", CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static extern bool _RegisterPlayFunc(uint id, IntPtr func);
+
+        [DllImport("mods/EX Auth/EXAuth.asi", EntryPoint = "RegisterPlayFirstFunc", CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static extern bool _RegisterPlayFirstFunc(uint id, IntPtr func);
+
+        [DllImport("mods/EX Auth/EXAuth.asi", EntryPoint = "RegisterPlayLastFunc", CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static extern bool _RegisterPlayLastFunc(uint id, IntPtr func);
+
+        public static bool RegisterNewNode(uint id)
+        {
+            return _RegisterNewNode(id);
+        }
+
+        public static bool RegisterPlayFunc(uint id, Action<IntPtr, uint, IntPtr, uint> func)
+        {
+            PlayDeleg del = new PlayDeleg(func);
+            _playDelegates.Add(del);
+
+            return _RegisterPlayFunc(id, Marshal.GetFunctionPointerForDelegate(del));
+        }
+
+        public static bool RegisterPlayFirstFunc(uint id, Action<IntPtr, uint, IntPtr, uint> func)
+        {
+            PlayDeleg del = new PlayDeleg(func);
+            _playDelegates.Add(del);
+
+            return _RegisterPlayFirstFunc(id, Marshal.GetFunctionPointerForDelegate(del));
+        }
+
+        public static bool RegisterPlayLastFunc(uint id, Action<IntPtr, uint, IntPtr, uint> func)
+        {
+            PlayDeleg del = new PlayDeleg(func);
+            _playDelegates.Add(del);
+
+            return _RegisterPlayFirstFunc(id, Marshal.GetFunctionPointerForDelegate(del));
+        }
+
+        public static void Init()
+        {
+            _Init();
+
+            RegisterNewNode(70010);
+            //RegisterPlayFirstFunc(70010, AuthNodeLABCharacterDecision.Play);
+            RegisterPlayFunc(70010, AuthNodeLABGamemodeDecision.Play);
+            RegisterNewNode(70011);
+            RegisterPlayFunc(70011, AuthNodeTransitRpgSkill.Play);
+            RegisterNewNode(70012);
+            RegisterPlayFunc(70012, AuthNodeLABPlayerAssetUseReduce.Play);
+            RegisterNewNode(70013);
+            RegisterPlayFunc(70013, AuthNodeLABAssetPickup.Play);
+            //RegisterPlayLastFunc(70010, AuthNodeLABCharacterDecision.Play);
+        }
+    }
+}
