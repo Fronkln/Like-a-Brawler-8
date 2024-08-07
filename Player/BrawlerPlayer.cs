@@ -421,14 +421,6 @@ namespace LikeABrawler2
             BrawlerBattleManager.PlayerFighter.GetStatus().SetSuperArmor(false);
         }
 
-        public static bool AllowOGDOD()
-        {
-            if (!IsKiryu())
-                return false;
-
-            return true;
-        }
-
         public static void OnStyleSwitch(PlayerStyle newStyle)
         {
             if (CurrentStyle == newStyle)
@@ -478,6 +470,8 @@ namespace LikeABrawler2
             if (IsExtremeHeat && newStyle != PlayerStyle.Legend)
                 OnExtremeHeatModeOFF();
 
+            short command = FighterCommandManager.GetSet(styleCommandSet).FindCommandInfo("StyleStart");
+
             //CRASH IF SWITCHING TO LEGEND AS NEW STYLE
            // if(newStyle != PlayerStyle.Legend && CurrentStyle != newStyle)
 
@@ -488,8 +482,8 @@ namespace LikeABrawler2
 
             new DETaskTime(0.1f, delegate { BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)styleCommandSet); });
 
-            //SoundManager.PlayBGM(styleSoundCue, styleSoundIdx);
-            BattleTurnManager.ForceCounterCommand(BrawlerBattleManager.PlayerFighter, BrawlerBattleManager.AllEnemies[0], styleAnim);
+            if(command >= 0)
+                BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToAttackMode(new FighterCommandID((ushort)styleCommandSet, command));
 
             BrawlerBattleManager.PlayerFighter.DropWeapon(new DropWeaponOption(AttachmentCombinationID.right_weapon, false));
 

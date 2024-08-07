@@ -416,6 +416,7 @@ namespace LikeABrawler2
                     }
             SupporterManager.Update();
             EnemyManager.Update();
+            WeaponManager.Update();
         }
 
         private static void RealtimeCombatUpdate()

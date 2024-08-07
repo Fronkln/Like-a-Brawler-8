@@ -227,7 +227,9 @@ namespace LikeABrawler2
                 //Force AI to target kasuga instead if they are targeting a fellow party member!
                 //...unless we actually want them to do this! Like in the second Yamai fight who wants to attack Kiryu!
                 //...because if he doesnt, he only taunts kasuga
-                *characterHandle = ai.OverrideMarkTarget(new EntityHandle<Character>(*characterHandle)).UID;
+                //*characterHandle = ai.OverrideMarkTarget(new EntityHandle<Character>(*characterHandle)).UID;
+
+                *characterHandle = BrawlerBattleManager.PlayerCharacter.UID;
             }
 
             m_ecBattleStatusSetMarkFighterTrampoline(statusPtr, characterHandle);

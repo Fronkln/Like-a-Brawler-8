@@ -6,9 +6,9 @@ using LikeABrawler2.Auth;
 
 namespace LikeABrawler2
 {
-    internal static class AuthCustomNodeManager
+    internal unsafe static class AuthCustomNodeManager
     {
-        private delegate void PlayDeleg(IntPtr thisObj, uint tick, IntPtr mtx, uint unk);
+        private delegate void PlayDeleg(IntPtr thisObj, uint tick, IntPtr mtx, IntPtr parent);
         private static List<PlayDeleg> _playDelegates = new List<PlayDeleg>();
 
         [DllImport("mods/EX Auth/EXAuth.asi", EntryPoint = "InitializeASI", CallingConvention = CallingConvention.Cdecl)]
@@ -36,7 +36,7 @@ namespace LikeABrawler2
             return _RegisterNewNode(id);
         }
 
-        public static bool RegisterPlayFunc(uint id, Action<IntPtr, uint, IntPtr, uint> func)
+        public static bool RegisterPlayFunc(uint id, Action<IntPtr, uint, IntPtr, IntPtr> func)
         {
             PlayDeleg del = new PlayDeleg(func);
             _playDelegates.Add(del);
@@ -44,7 +44,7 @@ namespace LikeABrawler2
             return _RegisterPlayFunc(id, Marshal.GetFunctionPointerForDelegate(del));
         }
 
-        public static bool RegisterPlayFirstFunc(uint id, Action<IntPtr, uint, IntPtr, uint> func)
+        public static bool RegisterPlayFirstFunc(uint id, Action<IntPtr, uint, IntPtr, IntPtr> func)
         {
             PlayDeleg del = new PlayDeleg(func);
             _playDelegates.Add(del);
@@ -52,7 +52,7 @@ namespace LikeABrawler2
             return _RegisterPlayFirstFunc(id, Marshal.GetFunctionPointerForDelegate(del));
         }
 
-        public static bool RegisterPlayLastFunc(uint id, Action<IntPtr, uint, IntPtr, uint> func)
+        public static bool RegisterPlayLastFunc(uint id, Action<IntPtr, uint, IntPtr, IntPtr> func)
         {
             PlayDeleg del = new PlayDeleg(func);
             _playDelegates.Add(del);
@@ -73,6 +73,8 @@ namespace LikeABrawler2
             RegisterPlayFunc(70012, AuthNodeLABPlayerAssetUseReduce.Play);
             RegisterNewNode(70013);
             RegisterPlayFunc(70013, AuthNodeLABAssetPickup.Play);
+            RegisterNewNode(70014);
+            RegisterPlayFirstFunc(70014, AuthNodeRobWeapon.Play);
             //RegisterPlayLastFunc(70010, AuthNodeLABCharacterDecision.Play);
         }
     }

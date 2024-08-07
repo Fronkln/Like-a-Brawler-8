@@ -38,6 +38,7 @@ namespace LikeABrawler2
                 [AssetArmsCategoryID.D] = (BattleCommandSetID)DBManager.GetCommandSet("p_com_wpd"),
                 [AssetArmsCategoryID.H] = (BattleCommandSetID)DBManager.GetCommandSet("p_kasuga_wph"),
                 [AssetArmsCategoryID.N] = (BattleCommandSetID)DBManager.GetCommandSet("p_com_wpa"), // temp
+                [AssetArmsCategoryID.Y] = (BattleCommandSetID)DBManager.GetCommandSet("p_com_wpy"), // temp
             };
 
             WeaponEHCs = new  Dictionary<Player.ID, Dictionary<JobWeaponType, Dictionary<AssetArmsCategoryID, EHC>>>
@@ -52,7 +53,7 @@ namespace LikeABrawler2
                         [AssetArmsCategoryID.F] = YazawaCommandManager.LoadYHC("player/player_wpf.ehc"),
                         [AssetArmsCategoryID.D] = YazawaCommandManager.LoadYHC("player/kasuga_wpd.ehc"),
                         [AssetArmsCategoryID.H] = YazawaCommandManager.LoadYHC("player/kasuga_wph.ehc"),
-                        [AssetArmsCategoryID.N] = YazawaCommandManager.LoadYHC("player/player_wpn.ehc")
+                        [AssetArmsCategoryID.N] = YazawaCommandManager.LoadYHC("player/player_wpn.ehc"),
                     }
                 },
                 [Player.ID.kiryu] = new Dictionary<JobWeaponType, Dictionary<AssetArmsCategoryID, EHC>>
@@ -64,7 +65,7 @@ namespace LikeABrawler2
                         [AssetArmsCategoryID.C] = YazawaCommandManager.LoadYHC("player/player_wpc.ehc"),
                         [AssetArmsCategoryID.F] = YazawaCommandManager.LoadYHC("player/player_wpf.ehc"),
                         [AssetArmsCategoryID.D] = YazawaCommandManager.LoadYHC("player/kiryu_wpd.ehc"),
-                        [AssetArmsCategoryID.N] = YazawaCommandManager.LoadYHC("player/player_wpn.ehc")
+                        [AssetArmsCategoryID.N] = YazawaCommandManager.LoadYHC("player/player_wpn.ehc"),
                     }
                 }
             };
@@ -143,6 +144,25 @@ namespace LikeABrawler2
             return WeaponEHCs[playerID][specialType][category];
         }
 
+
+        public static void Update()
+        {
+            RPGJobID job = Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer);
+
+            if(job == RPGJobID.kasuga_freeter || job  == RPGJobID.kiryu_01)
+            {
+                if(BrawlerBattleManager.IsHAct)
+                {
+
+                    //For snatch hacts
+                    AssetUnit unit = BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get();
+                    AssetArmsCategoryID cat = Asset.GetArmsCategory(unit.AssetID);
+
+                    if (WeaponCommandsets.ContainsKey(cat))
+                        BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, WeaponCommandsets[cat]);
+                }
+            }
+        }
         public static void RealtimeCombatUpdate()
         {
             //Weapon broke

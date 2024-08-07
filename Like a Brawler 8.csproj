@@ -230,6 +230,7 @@
     <Compile Include="Auth\AuthNodeLABGamemodeDecision.cs" />
     <Compile Include="Auth\AuthNodeLABGameMode.cs" />
     <Compile Include="Auth\AuthNodeLABPlayerAssetUseReduce.cs" />
+    <Compile Include="Auth\AuthNodeRobWeapon.cs" />
     <Compile Include="Auth\AuthNodeTransitRpgSkill.cs" />
     <Compile Include="Auth\ConditionFolderKiryuStyle.cs" />
     <Compile Include="Auth\ConditionFolderLABBattleOverByY8BHact.cs" />

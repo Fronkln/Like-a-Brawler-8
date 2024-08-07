@@ -10,6 +10,7 @@ namespace LikeABrawler2
     {
         private static bool m_canPerformHactDoOnce = false;
         public static HeatActionInformation PerformableHact = null;
+        public static HeatActionInformation PerformingHAct = null;
 
         private static EHC m_testYhc = null;
 
@@ -190,6 +191,8 @@ namespace LikeABrawler2
 
             Vector3 hactPos = new Vector3(info.Hact.Position[0], info.Hact.Position[1], info.Hact.Position[2]);
             bool usePerformerPosition = !info.Hact.PreferHActPosition;
+
+            PerformingHAct = info;
 
             HActRequestOptions opts = new HActRequestOptions();
 

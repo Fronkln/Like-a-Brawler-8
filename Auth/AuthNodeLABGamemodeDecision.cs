@@ -6,7 +6,7 @@ namespace LikeABrawler2.Auth
 {
     public static class AuthNodeLABGamemodeDecision
     {
-        public static void Play(IntPtr thisObj, uint tick, IntPtr mtx, uint unk)
+        public static void Play(IntPtr thisObj, uint tick, IntPtr mtx, IntPtr parent)
         {
             DragonEngine.Log("Gamemode decision!");
 
