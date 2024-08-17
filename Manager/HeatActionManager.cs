@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using DragonEngineLibrary;
+using DragonEngineLibrary.Service;
 using ElvisCommand;
 
 namespace LikeABrawler2
@@ -89,10 +90,23 @@ namespace LikeABrawler2
                 if (m_hactCd > 0)
                     m_hactCd -= DragonEngine.deltaTime;
 
-                PerformableHact = Iterate(BrawlerPlayer.PlayerHActs);
+                //HAct Priority, Stage -> Shared Player -> Player
 
-                if (PerformableHact == null)
-                    PerformableHact = Iterate(BrawlerPlayer.GetCurrentPlayerHActSet());
+                StageID stageID = SceneService.GetSceneInfo().ScenePlay.Get().StageID;
+
+                HeatActionInformation newPerformableHact = null;
+
+
+                if (BrawlerPlayer.StageEHC.ContainsKey(stageID))
+                    newPerformableHact = Iterate(BrawlerPlayer.StageEHC[stageID]);
+
+                if(newPerformableHact == null)
+                    newPerformableHact = Iterate(BrawlerPlayer.PlayerHActs);
+
+                if (newPerformableHact == null)
+                    newPerformableHact = Iterate(BrawlerPlayer.GetCurrentPlayerHActSet());
+
+                PerformableHact = newPerformableHact;
 
                 bool canHact = CanHAct();
 

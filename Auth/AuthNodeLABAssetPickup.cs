@@ -10,7 +10,7 @@ namespace LikeABrawler2.Auth
     {
         public static void Play(IntPtr thisObj, uint tick, IntPtr mtx, IntPtr parent)
         {
-            WeaponManager.PickupNearestWeapon();
+            WeaponManager.PickupNearestWeapon2();
         }
     }
 }

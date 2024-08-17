@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace DBGen
 {
@@ -18,6 +19,11 @@ namespace DBGen
 
         public static void Procedure()
         {
+
+            //libarmp error
+            if (Debugger.IsAttached)
+                return;
+
             Console.WriteLine("------|MOTION FLAG INFO GEN|-----");
 
             string genDir = "motion/gen/flag/";

@@ -129,7 +129,7 @@ namespace LikeABrawler2
 
             bool bossCtrlType = (!string.IsNullOrEmpty(rpgEnemyName) && rpgEnemyName.Contains("boss")) || soldierName.Contains("boss");
             //elvis_crm_hbs03_c03_01b
-            bool encounterBoss = BrawlerBattleManager.IsEncounter && soldierName.Contains("_crm_") && !soldierName.Contains("_men");
+            bool encounterBoss = BrawlerBattleManager.IsEncounter && ( (soldierName.Contains("_crm_") && !soldierName.Contains("_men")) || soldierName.StartsWith("elvis_job"));
 
             uint ctrlType = (uint)fighter.Character.Attributes.ctrl_type;
 

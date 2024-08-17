@@ -15,7 +15,7 @@ namespace DBGen
         public static void Procedure()
         {
             //false in Y6, only adjusts
-            bool canAdd = false;
+            bool canAdd = true;
             bool isRepackGame = false;
 
             ARMP talkParamBin = Program.GetInputTable("talk_param");
@@ -136,7 +136,7 @@ namespace DBGen
                     metaDataPath = Path.Combine(hactDir, "metadata.txt");
                 }
 
-                string cmnPath = Path.Combine(hactSrcDir, "cmn", "cmn.bin");
+                string cmnPath = Path.Combine(hactDir, "cmn", "cmn.bin");
 
                 if (canAdd)
                 {

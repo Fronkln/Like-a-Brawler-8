@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LibARMP.IO;
+using System.Diagnostics;
 
 namespace DBGen
 {
@@ -81,6 +82,10 @@ namespace DBGen
 
         public static void Procedure()
         {
+            //libarmp error
+            if (Debugger.IsAttached)
+                return;
+
             Console.WriteLine("------|CUESHEET GEN|-----");
 
             DirectoryInfo genDirInf = new DirectoryInfo(genDir);

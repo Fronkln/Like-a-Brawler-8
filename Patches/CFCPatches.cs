@@ -30,13 +30,43 @@ namespace LikeABrawler2
         private static ItemBuffCheck m_leverTrampoline;
         private static bool Check_AnalogDeadzone(IntPtr handler, IntPtr checkFighterResult, IntPtr fighter)
         {
-            byte* paramsPtr = *(byte**)(checkFighterResult.ToInt64() + 0x8);
-            byte level = *paramsPtr;
-            byte op = *(paramsPtr + 1);
+            return ProcessSpecialCond(handler, checkFighterResult, fighter);
+        }
 
+
+        private unsafe static bool ProcessSpecialCond(IntPtr handler, IntPtr checkFighterResult, IntPtr fighter)
+        {
+            byte* paramsPtr = *(byte**)(checkFighterResult.ToInt64() + 0x8);
+            byte condType = *paramsPtr;
+            byte op = *(paramsPtr + 3);
+
+            switch(condType)
+            {
+                case 1:
+                    return CheckPlayerLevelCond(fighter, op, paramsPtr);
+                case 2:
+                    return CheckNearestPickableAssetType(fighter, op, paramsPtr);
+                case 3:
+                    return CheckFacingNearestPickableAsset(fighter, op, paramsPtr);
+                case 4:
+                    return CheckKiryuStyle(fighter, op, paramsPtr);
+                case 5:
+                    return CheckIsIchiban(fighter, op, paramsPtr);
+                case 6:
+                    return CheckExtremeHeat(fighter, op, paramsPtr);
+                case 7:
+                    return CheckPlayerJob(fighter, op, paramsPtr);
+            }
+
+            return false;
+        }
+
+        private unsafe static bool CheckPlayerLevelCond(IntPtr fighter, byte op, byte* paramsPtr)
+        {
+            byte level = *(paramsPtr + 1);
             uint fLevel = Player.GetLevel(BrawlerPlayer.CurrentPlayer);
 
-            switch(op)
+            switch (op)
             {
                 default:
                     return true;
@@ -47,8 +77,108 @@ namespace LikeABrawler2
                 case 2:
                     return fLevel <= level;
             }
+        }
+        private static bool CheckNearestPickableAssetType(IntPtr fighter, byte op, byte* paramsPtr)
+        {
+            byte category = *(paramsPtr + 1);
 
-            return m_leverTrampoline(handler, checkFighterResult, fighter);
+            var unit = AssetManager.FindNearestAssetFromAll(DragonEngine.GetHumanPlayer().GetPosCenter(), 2);
+
+            if (!unit.IsValid())
+                return false;
+
+            switch (op)
+            {
+                default:
+                    return true;
+                case 0:
+                    return Asset.GetArmsCategory(unit.Get().AssetID) == (AssetArmsCategoryID)category;
+                case 3:
+                    return Asset.GetArmsCategory(unit.Get().AssetID) != (AssetArmsCategoryID)category;
+            }
+        }
+
+        private static bool CheckFacingNearestPickableAsset(IntPtr fighter, byte op, byte* paramsPtr)
+        {
+            byte category = *(paramsPtr + 1);
+
+            var unit = AssetManager.FindNearestAssetFromAll(DragonEngine.GetHumanPlayer().GetPosCenter(), 2);
+
+            if (!unit.IsValid())
+                return false;
+
+            Fighter fighterChara = new Fighter(fighter);
+
+            switch (op)
+            {
+                default:
+                    return true;
+                case 0:
+                    return fighterChara.Character.IsFacingEntity(unit.Get());
+                case 3:
+                    return !fighterChara.Character.IsFacingEntity(unit.Get());
+            }
+        }
+
+        private static bool CheckIsIchiban(IntPtr fighter, byte op, byte* paramsPtr)
+        {
+            byte category = *(paramsPtr + 1);
+
+            switch (op)
+            {
+                default:
+                    return true;
+                case 0:
+                    return BrawlerPlayer.IsKasuga();
+                case 3:
+                    return !BrawlerPlayer.IsKasuga();
+            }
+        }
+
+        private static bool CheckKiryuStyle(IntPtr fighter, byte op, byte* paramsPtr)
+        {
+            if (!BrawlerPlayer.IsKiryu())
+                return false;
+
+            byte style = *(paramsPtr + 1);
+
+            switch (op)
+            {
+                default:
+                    return true;
+                case 0:
+                    return (byte)BrawlerPlayer.CurrentStyle == style;
+                case 3:
+                    return (byte)BrawlerPlayer.CurrentStyle != style;
+            }
+        }
+
+        private static bool CheckExtremeHeat(IntPtr fighter, byte op, byte* paramsPtr)
+        {
+            switch (op)
+            {
+                default:
+                    return true;
+                case 0:
+                    return BrawlerPlayer.IsExtremeHeat;
+                case 3:
+                    return !BrawlerPlayer.IsExtremeHeat;
+            }
+        }
+
+        private static bool CheckPlayerJob(IntPtr fighter, byte op, byte* paramsPtr)
+        {
+            byte job = *(paramsPtr + 1);
+
+            switch (op)
+            {
+                default:
+                    return true;
+                case 0:
+                    return job == (byte)Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer);
+                case 3:
+                    return job != (byte)Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer);
+            }
         }
     }
 }

@@ -38,7 +38,6 @@ namespace LikeABrawler2
         public ECAssetArms RightWeapon;
         public ECAssetArms LeftWeapon;
 
-
         //Purpose: Cache fighter variables
         //Reduces PInvoke(probably) and eliminates several crashes
         //Related to accesing those vars in input loop

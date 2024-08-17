@@ -2,8 +2,7 @@
   "profiles": {
     "DBGen": {
       "commandName": "Project",
-      "commandLineArgs": "en y6",
-      "workingDirectory": "E:\\SteamLibrary\\steamapps\\common\\Yakuza 6 - The Song of Life\\mods\\HAct"
+      "workingDirectory": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\LikeADragon8\\runtime\\media\\mods\\Like A Brawler 8"
     }
   }
 }

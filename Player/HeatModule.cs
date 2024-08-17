@@ -39,6 +39,9 @@ namespace LikeABrawler2
 
         private static void OnCanDoHeat()
         {
+            if (BrawlerPlayer.IsExtremeHeat)
+                return;
+
             SoundManager.PlayCue(DBManager.GetSoundCuesheet("battle_common"), 15, 0);
             BrawlerBattleManager.PlayerCharacter.Components.EffectEvent.Get().PlayEventOverride(EffectEventCharaID.OgrefHeatAuraKr02);
         }

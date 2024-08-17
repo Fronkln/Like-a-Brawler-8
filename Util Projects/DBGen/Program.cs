@@ -111,6 +111,14 @@ namespace DBGen
 
             if (Directory.Exists(refInput))
             {
+                MotionFlagInfoModule.Procedure();
+                Console.WriteLine();
+                SoundCuesheetModule.Procedure();
+                Console.WriteLine();
+                ParticleModule.Procedure();
+                Console.WriteLine();
+                TalkParamModule.Procedure();
+
                 TalkSelectModule.Procedure();
                 Console.WriteLine();
                 TalkTalkerModule.Procedure();
@@ -130,13 +138,6 @@ namespace DBGen
                 Console.WriteLine();
                 BattleCommandSetModule.Procedure();
 
-                MotionFlagInfoModule.Procedure();
-                Console.WriteLine();
-                SoundCuesheetModule.Procedure();
-                Console.WriteLine();
-                ParticleModule.Procedure();
-                Console.WriteLine();
-                TalkParamModule.Procedure();
 
                 RPGSkillModule.Procedure();
                 Console.WriteLine();

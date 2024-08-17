@@ -15,9 +15,7 @@ namespace LikeABrawler2
         public static AssetUnit NearestAsset = null;
         private static AssetUnit m_targetNearestAsset = null;
 
-        public static Dictionary<AssetArmsCategoryID, BattleCommandSetID> WeaponCommandsets = new Dictionary<AssetArmsCategoryID, BattleCommandSetID>();
         public static Dictionary<Player.ID, Dictionary<JobWeaponType, Dictionary<AssetArmsCategoryID, EHC>>> WeaponEHCs = new Dictionary<Player.ID, Dictionary<JobWeaponType, Dictionary<AssetArmsCategoryID, EHC>>>();
-
 
         private static Dictionary<AssetArmsCategoryID, int> m_wepUseCounts = new Dictionary<AssetArmsCategoryID, int>();
 
@@ -25,10 +23,12 @@ namespace LikeABrawler2
         public static int PickedUpWeaponUseCount = 0;
 
         private static bool m_initDoOnce = false;
+        private static bool m_hasWeaponDoOnce = false;
 
         public static void Init()
         {
             //TODO: Atleast seperate EHCs based on Kiryu or Kasooga
+            /*
             WeaponCommandsets = new Dictionary<AssetArmsCategoryID, BattleCommandSetID>()
             {
                 [AssetArmsCategoryID.A] = (BattleCommandSetID)DBManager.GetCommandSet("p_com_wpa"),
@@ -40,6 +40,7 @@ namespace LikeABrawler2
                 [AssetArmsCategoryID.N] = (BattleCommandSetID)DBManager.GetCommandSet("p_com_wpa"), // temp
                 [AssetArmsCategoryID.Y] = (BattleCommandSetID)DBManager.GetCommandSet("p_com_wpy"), // temp
             };
+            */
 
             WeaponEHCs = new  Dictionary<Player.ID, Dictionary<JobWeaponType, Dictionary<AssetArmsCategoryID, EHC>>>
             {
@@ -86,6 +87,7 @@ namespace LikeABrawler2
         private static void OnBattleEnd()
         {
             NearestAsset = null;
+            m_hasWeaponDoOnce = false;
         }
 
 
@@ -110,24 +112,6 @@ namespace LikeABrawler2
             return JobWeaponType.Unknown;
         }
 
-        public static BattleCommandSetID GetCommandSetForWeapon(ItemID item)
-        {
-            AssetID asset = Item.GetAssetID(item);
-
-            if (asset == AssetID.invalid)
-                return GetCommandSetForWeapon(AssetArmsCategoryID.B);
-
-            return GetCommandSetForWeapon(Asset.GetArmsCategory(asset));
-        }
-
-        public static BattleCommandSetID GetCommandSetForWeapon(AssetArmsCategoryID category)
-        {
-            if (!WeaponCommandsets.ContainsKey(category))
-                return WeaponCommandsets[AssetArmsCategoryID.B];
-            else
-                return WeaponCommandsets[category];
-        }
-
         public static EHC GetEHCSetForWeapon(AssetArmsCategoryID category, JobWeaponType specialType = JobWeaponType.Unknown)
         {
             Player.ID playerID = BrawlerPlayer.CurrentPlayer;
@@ -147,24 +131,11 @@ namespace LikeABrawler2
 
         public static void Update()
         {
-            RPGJobID job = Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer);
-
-            if(job == RPGJobID.kasuga_freeter || job  == RPGJobID.kiryu_01)
-            {
-                if(BrawlerBattleManager.IsHAct)
-                {
-
-                    //For snatch hacts
-                    AssetUnit unit = BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get();
-                    AssetArmsCategoryID cat = Asset.GetArmsCategory(unit.AssetID);
-
-                    if (WeaponCommandsets.ContainsKey(cat))
-                        BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, WeaponCommandsets[cat]);
-                }
-            }
+            
         }
         public static void RealtimeCombatUpdate()
         {
+            /*
             //Weapon broke
             if (PickedUpWeapon.UID != 0 && (!PickedUpWeapon.IsValid() || !BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.IsValid()))
             {
@@ -174,6 +145,7 @@ namespace LikeABrawler2
                 if(!BrawlerPlayer.IsExtremeHeat)
                     BrawlerPlayer.ToNormalMoveset();
             }
+            */
 
             NearestAsset = AssetManager.FindNearestAssetFromAll(DragonEngine.GetHumanPlayer().GetPosCenter(), 2);
 
@@ -211,6 +183,33 @@ namespace LikeABrawler2
                         }
                 }
             }
+
+            BrawlerFighterInfo inf = BrawlerFighterInfo.Player;
+
+
+            if (inf.Fighter != null && inf.Fighter.IsValid())
+            {
+                if (!m_hasWeaponDoOnce)
+                {
+                    if (BrawlerFighterInfo.Player.RightWeapon.IsValid())
+                    {
+                        if (!PickedUpWeapon.IsValid() || PickedUpWeapon == null)
+                        {
+                            PickedUpWeapon = BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit;
+                            OnWeaponPickedUp(Asset.GetArmsCategory(PickedUpWeapon.Get().AssetID));
+                        }
+
+                        m_hasWeaponDoOnce = true;
+                    }
+
+                }
+                else
+                {
+
+                    if (!BrawlerFighterInfo.Player.RightWeapon.IsValid())
+                        m_hasWeaponDoOnce = false;
+                }
+            }
         }
 
 
@@ -224,13 +223,14 @@ namespace LikeABrawler2
             BrawlerBattleManager.PlayerFighter.Equip(unit.AssetID, AttachmentCombinationID.right_weapon, 0, RPGSkillID.invalid);
             DragonEngine.Log("Picking up " + unit.AssetID + ", Category: " + cat);
 
-            if (WeaponCommandsets.ContainsKey(cat))
-                BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, WeaponCommandsets[cat]);
-
             unit.DestroyEntity();
 
             PickedUpWeapon = BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.UID;
+            OnWeaponPickedUp(cat);
+        }
 
+        private static void OnWeaponPickedUp(AssetArmsCategoryID cat)
+        {
             if (m_wepUseCounts.ContainsKey(cat))
                 PickedUpWeaponUseCount = m_wepUseCounts[cat];
             else
@@ -239,8 +239,19 @@ namespace LikeABrawler2
 
         public static void PickupNearestWeapon()
         {
+            if (BrawlerFighterInfo.Player.RightWeapon.IsValid())
+                return;
+
             PickupWeapon(m_targetNearestAsset);
             m_targetNearestAsset = null;
+        }
+
+        public static void PickupNearestWeapon2()
+        {
+            if (BrawlerFighterInfo.Player.RightWeapon.IsValid())
+                return;
+
+            PickupWeapon(AssetManager.FindNearestAssetFromAll(DragonEngine.GetHumanPlayer().GetPosCenter(), 2));
         }
 
         //AuthNodeLABPlayerAssetUseReduce

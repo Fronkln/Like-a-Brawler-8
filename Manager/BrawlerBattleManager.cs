@@ -388,6 +388,9 @@ namespace LikeABrawler2
             if (BattleConfigID == 35)
                 return true;
 
+            if (BattleConfigID == 100)
+                return true;
+
             return false;
         }
         private static void RealtimeUpdate()
@@ -660,6 +663,11 @@ namespace LikeABrawler2
         {
             m_battleActionStartedDoOnce = true;
             ConvertAllies();
+
+            if(PlayerCharacter.HumanModeManager.CurrentMode.ModeName == "BattleStartAction")
+            {
+                PlayerCharacter.HumanModeManager.ToEndReady();
+            }
         }
 
         private static void ConvertAllies()

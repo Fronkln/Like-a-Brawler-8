@@ -48,10 +48,12 @@ namespace LikeABrawler2
 
                 if (DragonEngine.IsKeyDown(VirtualKey.B))
                 {
-                    DragonEngine.Log("disable some patches test");
+                    DragonEngine.Log("test offsets");
 
-                    BrawlerPatches.CombatPatches.Deactivate();
-                    //BrawlerPatches.CombatPlayerPatches.Deactivate();
+                    SceneBase curScene = DragonEngineLibrary.Service.SceneService.CurrentScene;
+
+                    DragonEngine.Log("Stage ID: " + (int)curScene.StageID);
+                    DragonEngine.Log("Scene addr " + curScene.Pointer.ToString("X"));
                 }
 
                 //  Mod.ReloadContent();

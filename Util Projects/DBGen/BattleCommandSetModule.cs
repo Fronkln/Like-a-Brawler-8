@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,12 @@ namespace DBGen
     {
         public static void Procedure()
         {
+#if DEBUG
+            //libarmp error
+            if (Debugger.IsAttached)
+                return;
+#endif
+
             string rootDir = Path.Combine(Program.refPath, "command_set");
             string listFile = Path.Combine(rootDir, "list.txt");
 

@@ -17,6 +17,7 @@ namespace LikeABrawler2
 
         public static CharacterAttributes OriginalPlayerAttributes;
 
+        public static Dictionary<StageID, EHC> StageEHC = new Dictionary<StageID, EHC>();
         public static EHC PlayerHActs;
         public static EHC[] KiryuHActs;
         private static EHC KasugaHAct;
@@ -113,6 +114,11 @@ namespace LikeABrawler2
             };
 
             KasugaHAct = YazawaCommandManager.LoadYHC("player/kasuga_sud.ehc");
+
+            StageEHC = new Dictionary<StageID, EHC>()
+            {
+                [StageID.st_kamuro] = YazawaCommandManager.LoadYHC("stage/kamuro.ehc")
+            };
         }
 
         public static EHC GetCurrentPlayerHActSet()
@@ -154,6 +160,9 @@ namespace LikeABrawler2
         public static void OnBattleEnd()
         {
             IsExtremeHeat = false;
+            CurrentStyle = PlayerStyle.Default;
+
+            BrawlerPlayer.ToNormalMoveset();
         }
 
         public static void Update()
@@ -174,6 +183,13 @@ namespace LikeABrawler2
 
             if (BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action)
                 CombatUpdate();
+
+            player.GetStatus().RemoveExEffect(1, true, true);
+            player.GetStatus().RemoveExEffect(2, true, true);
+            player.GetStatus().RemoveExEffect(3, true, true);
+            player.GetStatus().RemoveExEffect(4, true, true);
+            player.GetStatus().RemoveExEffect(5, true, true);
+            player.GetStatus().RemoveExEffect(12, true, true);
         }
 
         //OnAttackHit/OnAttackLand
@@ -269,10 +285,7 @@ namespace LikeABrawler2
                         ItemID weapon = Party.GetEquipItemID(Player.ID.kasuga, PartyEquipSlotID.weapon);
 
                         if (weapon != 0)
-                        {
                             PullOutWeapon(weapon);
-                            BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, WeaponManager.GetCommandSetForWeapon(weapon));
-                        }
                     }
                 }
             }
@@ -480,7 +493,7 @@ namespace LikeABrawler2
                 //Maybe do not call the humanmode, but call the battleturnmanager function instead.
               //  BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToStyleChange((int)overrideStyle);
 
-            new DETaskTime(0.1f, delegate { BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)styleCommandSet); });
+            //new DETaskTime(0.1f, delegate { BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)styleCommandSet); });
 
             if(command >= 0)
                 BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToAttackMode(new FighterCommandID((ushort)styleCommandSet, command));
