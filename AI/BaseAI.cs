@@ -11,12 +11,18 @@ namespace LikeABrawler2
 
         public EHC HActList;
 
-        protected float m_hactCd = 0;
+        public BrawlerFighterInfo BrawlerInfo { get { return BrawlerFighterInfo.Get(Character.UID); } }
 
-        public BrawlerFighterInfo BrawlerInfo { get { return BrawlerFighterInfo.Infos[Character.UID]; } }
-
+        public float ComboExtendChance = COMBO_EXTEND_BASE_CHANCE;
         public bool MyTurn { get; private set; }
         public float TimeSinceMyTurn { get; protected set; } = 999;
+
+        private bool m_attacking = false;
+        protected bool m_extendAttack = false;
+        protected float m_hactCd = 0;
+
+        //Constants
+        protected const float COMBO_EXTEND_BASE_CHANCE = 45;
 
         public virtual void Awake()
         {
@@ -92,6 +98,20 @@ namespace LikeABrawler2
                 TimeSinceMyTurn += DragonEngine.deltaTime;
             else
                 TimeSinceMyTurn = 0;
+
+            if(!m_attacking)
+            {
+                if(BrawlerInfo.IsAttack)
+                {
+                    m_attacking = true;
+                    OnStartAttack();
+                }    
+            }
+            else
+            {
+                if(!BrawlerInfo.IsAttack)
+                    m_attacking = false;
+            }
         }
 
         public virtual void HActUpdate()
@@ -137,6 +157,29 @@ namespace LikeABrawler2
                 return true;
 
             return false;
+        }
+
+        private void OnStartAttack()
+        {
+            m_extendAttack = new System.Random().Next(0, 101) <= ComboExtendChance;
+            OnStartAttackEvent();
+        }
+
+        protected virtual void OnStartAttackEvent()
+        {
+
+        }
+
+
+        public bool CheckParam(BaseAIParams param)
+        {
+            switch(param)
+            {
+                default: 
+                    return false;
+                case BaseAIParams.ExtendCombo:
+                    return m_extendAttack;
+            }
         }
     }
 }

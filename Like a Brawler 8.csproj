@@ -196,6 +196,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI\BaseAI.cs" />
+    <Compile Include="AI\BaseAIParams.cs" />
     <Compile Include="AI\Enemy\BaseEnemyAI.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIAmonLose.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIAsakura1.cs" />

@@ -24,5 +24,6 @@ namespace DBGen
         public uint SortID = 31;
         public uint RestTime = 100;
         public bool IsSync = false;
+        public string OverrideName = "";
     }
 }

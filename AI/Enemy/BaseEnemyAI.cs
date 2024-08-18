@@ -13,13 +13,10 @@ namespace LikeABrawler2
 
         public event Action OnGetUp;
 
+        //Constants
         protected const float RECENT_HIT_TIME = 2.5f;
 
-        /// <summary>
-        /// Chance to "cancel" out the turn while attacking which will immediately lead to the next one
-        /// </summary>
-        public static float SpamAttackRatio = 1f;
-
+        //Gameplay variables
         public int RecentDefensiveAttacks = 0;
         //We can determine if RNG has failed us and force things as needed
         //Primarily meant for bosses
@@ -33,25 +30,23 @@ namespace LikeABrawler2
         //Player is spamming same attacks 0 iq
         public int RecentHits = 0;
 
+        public int TurnsInARow = 0;
         public float LastTurnTime = 0;
         public float LastHitTime = 10000;
         public float LastGuardTime = 10000;
+
+        public float HeatActionDamageResist = 0; //0.0-1.0f
 
         protected bool m_hasAntiSpamArmor = false;
         protected float m_antiSpamArmorCooldown = 0;
         protected float m_antiSpamArmorDuration = 0;
 
-        public float HeatActionDamageResist = 0; //0.0-1.0f
-
         private bool m_gettingUp;
         private bool m_getupHyperArmorDoOnce = false;
 
         protected bool m_isMortalAttackDoOnce = false;
-
         protected int m_numMortalAttacks = 0;
         protected RPGSkillID m_mortalSkill = 0;
-
-        public int TurnsInARow = 0;
 
         protected bool m_transitCounterAttack = false;
         private float m_counterAttackTime = 0;
@@ -65,6 +60,8 @@ namespace LikeABrawler2
 
             EvasionModule = new EnemyEvasionModule();
             EvasionModule.AI = this;
+
+            BrawlerPlayer.OnStartAttack += OnPlayerStartAttack;
         }
 
         public virtual bool IsBoss()
@@ -359,6 +356,11 @@ namespace LikeABrawler2
             OnMyTurnStartEvent();
         }
 
+        private void OnPlayerStartAttack()
+        {
+            OnPlayerStartAttackingEvent();
+        }
+
         protected void PerformGenericCounterAttack()
         {
             ExecuteCounterAttack(CounterAttacks[new Random().Next(0, CounterAttacks.Count)], true);
@@ -367,6 +369,11 @@ namespace LikeABrawler2
         }
 
         protected virtual void OnMyTurnStartEvent()
+        {
+
+        }
+
+        protected virtual void OnPlayerStartAttackingEvent()
         {
 
         }

@@ -1,5 +1,6 @@
 ﻿using DragonEngineLibrary;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,14 @@ namespace LikeABrawler2
             } 
         }
         public static Dictionary<uint, BrawlerFighterInfo> Infos = new Dictionary<uint, BrawlerFighterInfo>();
+
+        public static BrawlerFighterInfo Get(uint characterUID)
+        {
+            if (Infos.ContainsKey(characterUID))
+                return Infos[characterUID];
+            else
+                return new BrawlerFighterInfo();
+        }
 
         public bool IsDead;
         public bool IsFlinching;

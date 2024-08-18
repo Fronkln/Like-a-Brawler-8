@@ -56,6 +56,8 @@ namespace LikeABrawler2
                     return CheckExtremeHeat(fighter, op, paramsPtr);
                 case 7:
                     return CheckPlayerJob(fighter, op, paramsPtr);
+                case 8:
+                    return CheckAIParam(fighter, op, paramsPtr);
             }
 
             return false;
@@ -179,6 +181,29 @@ namespace LikeABrawler2
                 case 3:
                     return job != (byte)Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer);
             }
+        }
+
+        private static bool CheckAIParam(IntPtr fighterPtr, byte op, byte* paramsPtr)
+        {
+            Fighter fighter = new Fighter(fighterPtr);
+            BaseAI ai = fighter.TryGetAI();
+
+            if (ai == null)
+                return false;
+
+            BaseAIParams param = (BaseAIParams)(*(paramsPtr + 1));
+
+            switch (op)
+            {
+                default:
+                    return true;
+
+                case 0:
+                    return ai.CheckParam(param);
+                case 3:
+                    return !ai.CheckParam(param);
+            }
+            
         }
     }
 }

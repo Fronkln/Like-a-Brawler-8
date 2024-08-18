@@ -79,6 +79,12 @@ namespace LikeABrawler2
             if (AI.Fighter.GetStatus().IsSuperArmor() /*|| IsCounterAttacking*/)
                 return false;
 
+            if (!inf.Attacker.IsValid())
+                return false;
+
+            if (!AI.Character.IsFacingEntity(inf.Attacker))
+                return false;
+
             /*
             if (AI.BlockModule.ShouldBlockAttack(inf))
                 return false;

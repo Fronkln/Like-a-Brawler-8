@@ -65,6 +65,7 @@ namespace LikeABrawler2
             if (soldierName == null)
                 soldierName = "";
 
+            //story bosses
             switch (soldierName)
             {
                 case "elvis_btl01_0400_000_6":
@@ -103,6 +104,9 @@ namespace LikeABrawler2
                 case "elvis_boss_amon_ult_lose":
                     ai = new EnemyAIAmonLose();
                     break;
+                case "elvis_btl09_0300_000_1":
+                    ai = new EnemyAIBossYamai2();
+                    break;
             }
 
             if(ai == null)
@@ -130,6 +134,17 @@ namespace LikeABrawler2
             bool bossCtrlType = (!string.IsNullOrEmpty(rpgEnemyName) && rpgEnemyName.Contains("boss")) || soldierName.Contains("boss");
             //elvis_crm_hbs03_c03_01b
             bool encounterBoss = BrawlerBattleManager.IsEncounter && ( (soldierName.Contains("_crm_") && !soldierName.Contains("_men")) || soldierName.StartsWith("elvis_job"));
+
+            //generic bosses
+            switch(soldierName)
+            {
+                case "elvis_dungeon_h_1-5F_104":
+                    encounterBoss = true;
+                    break;
+                case "elvis_dungeon_h_1-10F_rescue_510":
+                    encounterBoss = true;
+                    break;
+            }
 
             uint ctrlType = (uint)fighter.Character.Attributes.ctrl_type;
 

@@ -22,8 +22,9 @@ namespace LikeABrawler2
         public static EHC[] KiryuHActs;
         private static EHC KasugaHAct;
 
-        private static bool m_getupHyperArmorDoOnce = false;
+        private static bool m_isAttackingDoOnce = false;
 
+        private static bool m_getupHyperArmorDoOnce = false;
         private static bool m_transitMortal = false;
         
         public static bool GodMode = false;
@@ -31,6 +32,8 @@ namespace LikeABrawler2
         public static bool IsExtremeHeat = false;
 
         public static event Action OnPerfectGuard;
+        public static event Action OnStartAttack;
+
 
 
         private delegate void FighterSetupWeapon(IntPtr fighter);
@@ -159,6 +162,7 @@ namespace LikeABrawler2
 
         public static void OnBattleEnd()
         {
+            m_isAttackingDoOnce = false;
             IsExtremeHeat = false;
             CurrentStyle = PlayerStyle.Default;
 
@@ -318,6 +322,27 @@ namespace LikeABrawler2
             }
 
             MortalReversalManager.Update();
+
+            var fighterInf = BrawlerFighterInfo.Player;
+
+
+            if(fighterInf.Fighter != null)
+            {
+                if (!m_isAttackingDoOnce)
+                {
+                    if (fighterInf.IsAttack)
+                    {
+                        m_isAttackingDoOnce = true;
+                        OnStartAttack?.Invoke();
+                    }
+                }
+                else
+                {
+                    if (!fighterInf.IsAttack)
+                        m_isAttackingDoOnce = false;
+                }
+            }
+
         }
 
         private static void GameInputUpdate()

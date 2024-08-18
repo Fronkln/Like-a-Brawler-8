@@ -46,29 +46,50 @@ namespace DBGen
             foreach (string str in list)
             {
                 RPGSkillEntry entry = JsonConvert.DeserializeObject<RPGSkillEntry>(File.ReadAllText(Path.Combine(rootDir, str + ".dat")));
-                ArmpEntry skillEntry = rpgSkill.MainTable.AddEntry(str);
+                ArmpEntry skillEntry = null;
 
-                skillEntry.SetValueFromColumn("name", entry.Name);
+                if (string.IsNullOrEmpty(entry.OverrideName))
+                    skillEntry = rpgSkill.MainTable.AddEntry(str);
+                else
+                    skillEntry = rpgSkill.MainTable.GetEntry(entry.OverrideName);
+
+                bool replaceMode = !string.IsNullOrEmpty(entry.OverrideName);
 
                 if (!string.IsNullOrEmpty(entry.Motion))
                     skillEntry.SetValueFromColumn("motion_id", (ushort)motionGmt.MainTable.GetEntry(entry.Motion).ID);
+                else
+                    skillEntry.SetValueFromColumn("motion_id", (ushort)0);
 
-                if(!string.IsNullOrEmpty(entry.CommandSet))
+                if (!string.IsNullOrEmpty(entry.CommandSet))
+                {
                     skillEntry.SetValueFromColumn("command_set", Convert.ToByte(cfcList.MainTable.SubTable.GetEntry(entry.CommandSet).GetValueFromColumn("0")));
+                    skillEntry.SetValueFromColumn("command_name", entry.CommandName);
+                }
+                else
+                {
+                    skillEntry.SetValueFromColumn("command_set", (byte)0);
+                    skillEntry.SetValueFromColumn("command_name", null);
+                }
 
-                skillEntry.SetValueFromColumn("category", (byte)entry.Category);
-                skillEntry.SetValueFromColumn("use_cond", entry.UseCond);
-                skillEntry.SetValueFromColumn("attribute", entry.Attribute);
-                skillEntry.SetValueFromColumn("boot_dist", entry.BootDist);
-                skillEntry.SetValueFromColumn("boot_dist_min", entry.BootDistMin);
-                skillEntry.SetValueFromColumn("eff_range", entry.EffRange);
-                skillEntry.SetValueFromColumn("eff_target_lot_type", entry.EffTargetLotType);
-                skillEntry.SetValueFromColumn("sort_id", entry.SortID);
-                skillEntry.SetValueFromColumn("rest_time", entry.RestTime);
-                skillEntry.SetValueFromColumn("command_name", entry.CommandName);
-                skillEntry.SetValueFromColumn("is_sync", entry.IsSync);
+                if (!replaceMode)
+                {
+                    skillEntry.SetValueFromColumn("name", entry.Name);
+                    skillEntry.SetValueFromColumn("category", (byte)entry.Category);
+                    skillEntry.SetValueFromColumn("use_cond", entry.UseCond);
+                    skillEntry.SetValueFromColumn("attribute", entry.Attribute);
+                    skillEntry.SetValueFromColumn("boot_dist", entry.BootDist);
+                    skillEntry.SetValueFromColumn("boot_dist_min", entry.BootDistMin);
+                    skillEntry.SetValueFromColumn("eff_range", entry.EffRange);
+                    skillEntry.SetValueFromColumn("eff_target_lot_type", entry.EffTargetLotType);
+                    skillEntry.SetValueFromColumn("sort_id", entry.SortID);
+                    skillEntry.SetValueFromColumn("rest_time", entry.RestTime);
+                    skillEntry.SetValueFromColumn("is_sync", entry.IsSync);
+                }
 
-                Console.WriteLine("Added " + entry.Name);
+                if(!replaceMode)
+                    Console.WriteLine("Added " + entry.Name);
+                else
+                    Console.WriteLine("Replaced " + skillEntry.Name);
             }
 
             File.WriteAllLines(Path.Combine(Program.dbPath, "rpg_skill.db_index"), Program.CacheARMP(rpgSkill));

@@ -73,7 +73,7 @@ namespace DBGen
             if (Directory.Exists(Path.Combine(targetDbDir, lang)))
                 targetDbDir = Path.Combine(targetDbDir, lang);
 
-            if(NoCodename)
+            if(!NoCodename)
                 targetPuidDir = Path.Combine(Directory.GetCurrentDirectory(), $"puid.{codeName}"); //puid.elvis
             else
                 targetPuidDir = Path.Combine(Directory.GetCurrentDirectory(), $"puid");
