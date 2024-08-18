@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace LikeABrawler2
 {
-    public struct BrawlerFighterInfo
+    public class BrawlerFighterInfo
     {
-        public Fighter Fighter;
+        public Fighter Fighter = new Fighter();
 
         public static BrawlerFighterInfo Player { 
             get 
@@ -44,8 +44,8 @@ namespace LikeABrawler2
         public float MoveTime;
         public float DownTime;
 
-        public ECAssetArms RightWeapon;
-        public ECAssetArms LeftWeapon;
+        public ECAssetArms RightWeapon = new ECAssetArms();
+        public ECAssetArms LeftWeapon = new ECAssetArms();
 
         //Purpose: Cache fighter variables
         //Reduces PInvoke(probably) and eliminates several crashes

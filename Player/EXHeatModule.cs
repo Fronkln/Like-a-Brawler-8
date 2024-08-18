@@ -12,6 +12,9 @@ namespace LikeABrawler2
         private static RepeatingTask m_exHeatDecay = new RepeatingTask(
             delegate
             {
+                //kiryu has less MP
+                m_exHeatDecay.m_tickRate = BrawlerPlayer.IsKiryu() ? 0.2f : 0.1f;
+
                 if(!Mod.IsGamePaused && !BrawlerPlayer.GodMode)
                 if(BrawlerBattleManager.CurrentPhase == BattleTurnManager.TurnPhase.Action)
                 if (BrawlerPlayer.IsExtremeHeat)

@@ -113,7 +113,9 @@ namespace LikeABrawler2
             {
                 switch((uint)fighter.Character.Attributes.ctrl_type)
                 {
-                    //wong
+                    case 178:
+                        ai = new EnemyAIBossSawashiro();
+                        break;
                     case 263:
                         ai = new EnemyAIBossWong();
                         break;
@@ -142,6 +144,9 @@ namespace LikeABrawler2
                     encounterBoss = true;
                     break;
                 case "elvis_dungeon_h_1-10F_rescue_510":
+                    encounterBoss = true;
+                    break;
+                case "elvis_dungeon_y_1-10F_rescue_510": //pompadeur
                     encounterBoss = true;
                     break;
             }

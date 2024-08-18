@@ -23,13 +23,13 @@ namespace LikeABrawler2
 
             int numHeatActions = 0;
 
-            if (heatMax < HeatActionManager.TEMP_HACT_COST)
+            if (heatMax < (int)HeatActionManager.GetHActCost())
             {
                 if (curHeat == heatMax)
                     numHeatActions = 1;
             }
             else
-                numHeatActions = curHeat / HeatActionManager.TEMP_HACT_COST;
+                numHeatActions = curHeat / (int)HeatActionManager.GetHActCost();
 
             if (numHeatActions > m_HeatActionCount)
                 OnCanDoHeat();

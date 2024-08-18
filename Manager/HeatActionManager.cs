@@ -25,8 +25,9 @@ namespace LikeABrawler2
         public static float DamageScale = 0;
 
         //Temp means ideally we might want to leave hacts to do actual heat reduction later down the line.
-        public const int TEMP_HACT_COST = 85;
-        private const float HACT_COOLDOWN = 2f;
+        private const int TEMP_HACT_COST = 85;
+        private const int HACT_COST_KIRYU = 70;
+        private const float HACT_COOLDOWN = 2.5f;
 
         private static float m_hactCd = 0;
 
@@ -50,24 +51,45 @@ namespace LikeABrawler2
             return AwaitingHAct || BrawlerBattleManager.IsHAct;
         }
 
-        private static long GetHActCost()
+        public static long GetHActCost()
         {
             long heatMax = Player.GetHeatMax(BrawlerPlayer.CurrentPlayer);
             long heatNow = Player.GetHeatNow(BrawlerPlayer.CurrentPlayer);
 
-            if (heatMax < TEMP_HACT_COST)
+
+            if (BrawlerPlayer.IsKasuga())
             {
-                if (!BrawlerPlayer.IsExtremeHeat)
-                    return (long)(heatMax * 0.85f); //85%
+                if (heatMax < TEMP_HACT_COST)
+                {
+                    if (!BrawlerPlayer.IsExtremeHeat)
+                        return (long)(heatMax * 0.85f); //85%
+                    else
+                        return (long)(heatMax * 0.35f); //35%
+                }
                 else
-                    return (long)(heatMax * 0.35f); //35%
+                {
+                    if (!BrawlerPlayer.IsExtremeHeat)
+                        return TEMP_HACT_COST;
+                    else
+                        return (long)((TEMP_HACT_COST - (TEMP_HACT_COST * 0.2f))); //60% of base cost
+                }
             }
             else
             {
-                if (!BrawlerPlayer.IsExtremeHeat)
-                    return TEMP_HACT_COST;
+                if (heatMax < HACT_COST_KIRYU)
+                {
+                    if (!BrawlerPlayer.IsExtremeHeat)
+                        return (long)(heatMax * 0.65f); //65%
+                    else
+                        return (long)(heatMax * 0.2f); //20%
+                }
                 else
-                    return (long)((TEMP_HACT_COST - (TEMP_HACT_COST * 0.2f))); //60% of base cost
+                {
+                    if (!BrawlerPlayer.IsExtremeHeat)
+                        return HACT_COST_KIRYU;
+                    else
+                        return (long)((HACT_COST_KIRYU - (HACT_COST_KIRYU * 0.2f))); //60% of base cost
+                }
             }
 
         }
@@ -87,7 +109,7 @@ namespace LikeABrawler2
         {
             if (BrawlerBattleManager.Battling && BrawlerBattleManager.CurrentPhase == BattleTurnManager.TurnPhase.Action)
             {
-                if (m_hactCd > 0)
+                if (m_hactCd > 0 && !BrawlerBattleManager.IsHAct)
                     m_hactCd -= DragonEngine.deltaTime;
 
                 //HAct Priority, Stage -> Shared Player -> Player

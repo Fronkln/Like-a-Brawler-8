@@ -372,6 +372,10 @@ namespace LikeABrawler2
                 case HeatActionConditionType.HumanMode:
                     flag = actor.Character.HumanModeManager.CurrentMode.ModeName == cond.ParamString1;
                     break;
+
+                case HeatActionConditionType.MotionID:
+                    flag = (uint)actor.Character.GetMotion().GmtID == cond.Param1U32;
+                    break;
             }
 
             switch (cond.LogicalOperator)

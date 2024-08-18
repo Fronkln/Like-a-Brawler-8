@@ -48,12 +48,8 @@ namespace LikeABrawler2
 
                 if (DragonEngine.IsKeyDown(VirtualKey.B))
                 {
-                    DragonEngine.Log("test offsets");
-
-                    SceneBase curScene = DragonEngineLibrary.Service.SceneService.CurrentScene;
-
-                    DragonEngine.Log("Stage ID: " + (int)curScene.StageID);
-                    DragonEngine.Log("Scene addr " + curScene.Pointer.ToString("X"));
+                    foreach (var kv in EnemyManager.Enemies)
+                        kv.Value.TransitMortalAttack();
                 }
 
                 //  Mod.ReloadContent();

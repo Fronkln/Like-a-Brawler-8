@@ -205,6 +205,7 @@
     <Compile Include="AI\Enemy\Boss\EnemyAIBossHecaton.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossKuwaki.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossLandSurfer.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossSawashiro.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossWong.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossWPB.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossWPD.cs" />

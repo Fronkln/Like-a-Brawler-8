@@ -9,7 +9,7 @@ namespace LikeABrawler2
 {
     internal class RepeatingTask : DETask
     {
-        private float m_tickRate = 0;
+        public float m_tickRate = 0;
         private float m_curTick = 0;
 
         public bool Paused = false;
