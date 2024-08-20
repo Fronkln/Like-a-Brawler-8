@@ -376,6 +376,16 @@ namespace LikeABrawler2
                 case HeatActionConditionType.MotionID:
                     flag = (uint)actor.Character.GetMotion().GmtID == cond.Param1U32;
                     break;
+
+                case HeatActionConditionType.IsBoss:
+                    if(ai != null)
+                    {
+                        var enemyAI = ai as BaseEnemyAI;
+
+                        if (enemyAI != null)
+                            flag = enemyAI.IsBoss();
+                    }
+                    break;
             }
 
             switch (cond.LogicalOperator)

@@ -87,12 +87,7 @@ namespace LikeABrawler2
 
         public unsafe static void Update()
         {
-            Character character = null;
-
-            if (PlayerFighter.IsValid())
-                character = PlayerFighter.Character;
-            else
-                character = DragonEngine.GetHumanPlayer();
+            Character character = DragonEngine.GetHumanPlayer();
 
             if (!PlayerCharacter.IsValid() && character.IsValid())
             {
@@ -101,6 +96,7 @@ namespace LikeABrawler2
             }
 
             PlayerCharacter = character;
+            PlayerFighter = FighterManager.GetPlayer();
 
 #if DEMO
             //DEMO: Chapter 1 only
@@ -123,8 +119,6 @@ namespace LikeABrawler2
             //TODO: Improve this battle start detection
             if (!m_battleStartedDoOnce)
             {
-                PlayerFighter = FighterManager.GetPlayer();
-
                 if (PlayerFighter.IsValid())
                 {
                     if (Mod.IsRealtime())
@@ -599,7 +593,9 @@ namespace LikeABrawler2
         //On player character valid, not fighter
         private static void OnPlayerSpawn()
         {
-            DragonEngine.Log("Player spawned, address: " + BrawlerBattleManager.PlayerCharacter.Pointer.ToString("X"));
+            DragonEngine.Log("Player spawned, address: " + PlayerCharacter.Pointer.ToString("X"));
+
+            BrawlerPlayer.CurrentPlayer = PlayerCharacter.Attributes.player_id;
 
             if (BrawlerPlayer.IsKasuga())
             {
