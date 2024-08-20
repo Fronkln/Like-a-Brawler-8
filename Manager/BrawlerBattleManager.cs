@@ -1,6 +1,7 @@
 ﻿using DragonEngineLibrary;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 
 namespace LikeABrawler2
@@ -87,7 +88,14 @@ namespace LikeABrawler2
 
         public unsafe static void Update()
         {
-            Character character = DragonEngine.GetHumanPlayer();
+
+            Character character = null;
+
+            if (PlayerFighter.IsValid())
+                character = PlayerFighter.Character;
+            else
+                character = DragonEngine.GetHumanPlayer();
+
 
             if (!PlayerCharacter.IsValid() && character.IsValid())
             {
@@ -96,7 +104,6 @@ namespace LikeABrawler2
             }
 
             PlayerCharacter = character;
-            PlayerFighter = FighterManager.GetPlayer();
 
 #if DEMO
             //DEMO: Chapter 1 only
@@ -115,6 +122,18 @@ namespace LikeABrawler2
             AllEnemiesNearest = AllEnemies.OrderBy(x => Vector3.Distance(PlayerFighter.Character.Transform.Position, x.Character.Transform.Position)).ToArray();
 
             RPGCamera = BattleTurnManager.RPGCamera;
+
+            if(!Battling)
+                PlayerFighter = FighterManager.GetPlayer();
+            else
+            {
+                int idx = NakamaManager.FindIndex(BrawlerPlayer.CurrentPlayer);
+
+                if (idx >= 0)
+                    PlayerFighter = FighterManager.GetFighter((uint)idx);
+                else
+                    PlayerFighter = new Fighter();
+            }
 
             //TODO: Improve this battle start detection
             if (!m_battleStartedDoOnce)

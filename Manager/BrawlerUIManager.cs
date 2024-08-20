@@ -1,4 +1,5 @@
 ﻿using DragonEngineLibrary;
+using DragonEngineLibrary.Service;
 using ElvisCommand;
 using System.Linq;
 
@@ -71,7 +72,13 @@ namespace LikeABrawler2
 
         private unsafe static UIHandleBase GetPlayerGauge()
         {
-            ulong* handle = (ulong*)(DragonEngine.GetHumanPlayer().GetSceneEntity((SceneEntity)0X9F).Get().Pointer.ToInt64() + 0xC8);
+
+            EntityBase sceneEnt = SceneService.CurrentScene.Get().GetSceneEntity((SceneEntity)0X9F);
+
+            if (!sceneEnt.IsValid())
+                return new UIHandleBase();
+
+            ulong* handle = (ulong*)(sceneEnt.Pointer.ToInt64() + 0xC8);
             UIHandleBase uiHandle = new UIHandleBase(*handle);
 
             UIHandleBase gauge = new UIHandleBase();
