@@ -85,7 +85,8 @@ namespace LikeABrawler2
                     {
                         if (!Supporters.ContainsKey(fighter.Character.UID))
                         {
-                            CreateSupporter(fighter, fighter.Character.Attributes.player_id);
+                            if(fighter.Character.UID != DragonEngine.GetHumanPlayer().UID)
+                                CreateSupporter(fighter, fighter.Character.Attributes.player_id);
                         }
                     }
                 }
@@ -100,7 +101,8 @@ namespace LikeABrawler2
                 supporter.Update();
 
                 if (BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action && !HeatActionManager.IsHAct())
-                    supporter.CombatUpdate();
+                    if(supporter.Character != BrawlerBattleManager.PlayerCharacter)
+                        supporter.CombatUpdate();
             }
         }
 

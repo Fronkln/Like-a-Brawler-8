@@ -63,12 +63,15 @@ namespace LikeABrawler2
             {
                 m_nextAttackTime -= DragonEngine.deltaTime;
 
-                if (m_nextAttackTime < 0)
-                {
-                    SupporterManager.NextSupporterAttacker = this;
-                    m_nextAttackTime = GetWaitTime();
-                }
+                if (m_nextAttackTime <= 0)
+                    TakeTurn();
             }
+        }
+
+        public void TakeTurn()
+        {
+            SupporterManager.NextSupporterAttacker = this;
+            m_nextAttackTime = GetWaitTime();
         }
 
         public override void OnStartTurn()

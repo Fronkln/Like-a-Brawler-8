@@ -59,6 +59,7 @@ namespace LikeABrawler2
 
         private static uint m_bgmID;
         private static uint m_bgmTime;
+        private static bool m_specialBgmPlaying = false;
 
 
         private delegate void TestTest(IntPtr sMan, IntPtr handle, bool pause);
@@ -86,7 +87,12 @@ namespace LikeABrawler2
 
         public unsafe static void Update()
         {
-            Character character = DragonEngine.GetHumanPlayer();
+            Character character = null;
+
+            if (PlayerFighter.IsValid())
+                character = PlayerFighter.Character;
+            else
+                character = DragonEngine.GetHumanPlayer();
 
             if (!PlayerCharacter.IsValid() && character.IsValid())
             {
@@ -95,7 +101,6 @@ namespace LikeABrawler2
             }
 
             PlayerCharacter = character;
-            PlayerFighter = FighterManager.GetPlayer();
 
 #if DEMO
             //DEMO: Chapter 1 only
@@ -118,6 +123,8 @@ namespace LikeABrawler2
             //TODO: Improve this battle start detection
             if (!m_battleStartedDoOnce)
             {
+                PlayerFighter = FighterManager.GetPlayer();
+
                 if (PlayerFighter.IsValid())
                 {
                     if (Mod.IsRealtime())
@@ -241,6 +248,34 @@ namespace LikeABrawler2
         }
 
 
+        /// <summary>
+        /// (EXPERIMENTAL) makes the provided nakama the main player.
+        /// </summary>
+        public unsafe static void MakeNakamaMain(uint idx)
+        {
+            Character oldChara = PlayerCharacter;
+            Character chara = NakamaManager.GetCharacterHandle(idx);
+
+            unsafe
+            {
+                byte* free_movement_mode = (byte*)(oldChara.Pointer.ToInt64() + 0x11A3);
+                *free_movement_mode = 0;
+            }
+
+            PlayerCharacter = chara;
+            PlayerFighter = FighterManager.GetFighter(idx);
+            BrawlerPlayer.CurrentPlayer = chara.Attributes.player_id;
+
+            EntityHandle<CameraBase> cam = PlayerCharacter.GetSceneEntity<CameraBase>(SceneEntity.camera_free);
+
+            if(cam.IsValid())
+            {
+                IntPtr camPtr = cam.Get().Pointer;
+                uint* camTarget = (uint*)(camPtr + 692);
+                *camTarget = chara.UID;
+            }
+        }
+
         public unsafe static void PlaySpecialMusic(ushort cue, ushort id)
         {
             SoundManager.PlayBGM(0, cue, id, 0);
@@ -249,10 +284,15 @@ namespace LikeABrawler2
 
             SoundManager.Pause(handle1, false);
             SoundManager.Pause(handle2, true);
+
+            m_specialBgmPlaying = true;
         }
 
         public unsafe static void StopSpecialMusic()
         {
+            if (!m_specialBgmPlaying)
+                return;
+
             int handle1 = *(int*)(SoundManager.Pointer() + 0xD4);
             int handle2 = *(int*)(SoundManager.Pointer() + 0xD8);
 
@@ -260,6 +300,8 @@ namespace LikeABrawler2
 
             SoundManager.Pause(handle1, true);
             SoundManager.Pause(handle2, false);
+
+            m_specialBgmPlaying = false;
         }
 
         private static void DoBadBattleWarning()
@@ -272,7 +314,7 @@ namespace LikeABrawler2
             HeatActionManager.RequestTalk(opts);
         }
 
-        public static void ProcSpecialBattle()
+        private static void ProcSpecialBattle()
         {
             switch(BattleConfigID)
             {
@@ -313,6 +355,21 @@ namespace LikeABrawler2
                         new DETaskTime(1f, delegate { TutorialManager.StartTutorial(TutorialManager.Tutorial05_Kasuga()); });
                     });
                     break;
+
+                case 188: //crane fight
+                    new DETask(delegate { return BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action; }, delegate
+                    {
+                        new DETaskTime(1f, delegate { DoBadBattleWarning(); });
+                    });
+                    break;
+                case 189:
+                    new DETask(delegate { return BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action; }, delegate
+                    {
+                        //Adachi protagonist
+                        new DETaskTime(0.05f, delegate { SpecialBattle.SplitFight(); });
+                    });
+                    break;
+
             }
         }
 
@@ -420,6 +477,7 @@ namespace LikeABrawler2
             SupporterManager.Update();
             EnemyManager.Update();
             WeaponManager.Update();
+            SpecialBattle.Update();
         }
 
         private static void RealtimeCombatUpdate()
@@ -539,7 +597,7 @@ namespace LikeABrawler2
         }
 
         //On player character valid, not fighter
-        public static void OnPlayerSpawn()
+        private static void OnPlayerSpawn()
         {
             DragonEngine.Log("Player spawned, address: " + BrawlerBattleManager.PlayerCharacter.Pointer.ToString("X"));
 
@@ -561,12 +619,12 @@ namespace LikeABrawler2
             RevelationManager.OnPlayerSpawn();
         }
 
-        public static void PrepareRealtimeBattle()
+        private static void PrepareRealtimeBattle()
         {
             DBManager.Init();
         }
 
-        public static void OnRealtimeBattleStart()
+        private static void OnRealtimeBattleStart()
         {
             DragonEngine.Log("Realtime battle start!");
 
@@ -644,7 +702,7 @@ namespace LikeABrawler2
                     0x90, 0x90, 0x90, 0x90, 0x90 });
         }
 
-        public static void OnForceDeliveryHelpOFF()
+        private static void OnForceDeliveryHelpOFF()
         {
             DragonEngineLibrary.Unsafe.CPP.PatchMemory(m_forceDeliveryAddr,
                 new byte[] {
@@ -779,13 +837,14 @@ namespace LikeABrawler2
         /// <summary>
         /// Called when player fighter is no longer valid.
         /// </summary>
-        public static void OnBattleEnd()
+        private static void OnBattleEnd()
         {
             BrawlerPlayer.CurrentStyle = PlayerStyle.Default;
 
             BrawlerPatches.Disable();
             BrawlerPatches.CombatPatches.OnCombatEnd();
             BrawlerFighterInfo.Infos.Clear();
+            SpecialBattle.OnBattleEnd();
 
             Battling = false;
             m_battleStartedDoOnce = false;
@@ -811,7 +870,7 @@ namespace LikeABrawler2
             OnBattleEndEvent?.Invoke();
         }
 
-        public static void OnBattleResult()
+        private static void OnBattleResult()
         {
             StopSpecialMusic();
         }
@@ -819,7 +878,7 @@ namespace LikeABrawler2
         /// <summary>
         /// AllEnemies is zero during a Y8B hact
         /// </summary>
-        public static void OnEnemiesDefeatedInY8BHact()
+        private static void OnEnemiesDefeatedInY8BHact()
         {
             BattleEndedInY8BHAct = true;
 

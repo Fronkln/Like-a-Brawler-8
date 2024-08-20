@@ -119,6 +119,9 @@ namespace LikeABrawler2
                     case 263:
                         ai = new EnemyAIBossWong();
                         break;
+                    case 186:
+                        ai = new EnemyAIMachinery();
+                        break;
                 }
             }
 
@@ -161,6 +164,9 @@ namespace LikeABrawler2
                     {
                         case 159:
                             ai = new EnemyAIBossHecaton();
+                            break;
+                        case 172:
+                            ai = new EnemyAIBossWeaponMaster();
                             break;
                         case 208:
                             ai = new EnemyAIBossLandSurfer();

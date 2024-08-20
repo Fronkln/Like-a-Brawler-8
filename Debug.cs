@@ -48,8 +48,11 @@ namespace LikeABrawler2
 
                 if (DragonEngine.IsKeyDown(VirtualKey.B))
                 {
-                    foreach (var kv in EnemyManager.Enemies)
-                        kv.Value.TransitMortalAttack();
+                    //foreach (var kv in EnemyManager.Enemies)
+                    //  kv.Value.TransitMortalAttack();
+
+                    for (int i = 1; i < 4; i++)
+                        NakamaManager.GetCharacterHandle((uint)i).Get().ToDead();
                 }
 
                 //  Mod.ReloadContent();

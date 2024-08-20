@@ -21,6 +21,7 @@ namespace LikeABrawler2
         public static EHC PlayerHActs;
         public static EHC[] KiryuHActs;
         private static EHC KasugaHAct;
+        private static EHC AdachiHAct;
 
         private static bool m_isAttackingDoOnce = false;
 
@@ -86,6 +87,11 @@ namespace LikeABrawler2
             return CurrentPlayer == Player.ID.kasuga;
         }
 
+        public static bool IsOtherPlayer()
+        {
+            return !IsKiryu() && !IsKasuga();
+        }
+
         public static bool AllowStyleChange()
         {
             if (!TutorialManager.Active)
@@ -97,6 +103,10 @@ namespace LikeABrawler2
         public static bool CanExtremeHeat()
         {
             if (BrawlerFighterInfo.Player.IsSync)
+                return false;
+            
+            //Adachi
+            if (IsOtherPlayer())
                 return false;
 
             if (IsKasuga())
@@ -117,6 +127,7 @@ namespace LikeABrawler2
             };
 
             KasugaHAct = YazawaCommandManager.LoadYHC("player/kasuga_sud.ehc");
+            AdachiHAct = YazawaCommandManager.LoadYHC("player/adachi_detective.ehc");
 
             StageEHC = new Dictionary<StageID, EHC>()
             {
@@ -128,28 +139,47 @@ namespace LikeABrawler2
         {
             Weapon weapon = BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon);
 
-            if(weapon.Unit.IsValid())
-                return WeaponManager.GetEHCSetForWeapon(Asset.GetArmsCategory(weapon.Unit.Get().AssetID));
+            bool isKiryu = IsKiryu();
+            bool isKasuga = IsKasuga();
 
-            if (IsKiryu())
+            if (isKiryu || isKasuga)
             {
-                switch (CurrentStyle)
-                {
-                    default:
-                        return KiryuHActs[0];
+                if (weapon.Unit.IsValid())
+                    return WeaponManager.GetEHCSetForWeapon(Asset.GetArmsCategory(weapon.Unit.Get().AssetID));
 
-                    case PlayerStyle.Default:
-                        return KiryuHActs[0];
-                    case PlayerStyle.Legend:
-                        return KiryuHActs[0];
-                    case PlayerStyle.Rush:
-                        return KiryuHActs[1];
-                    case PlayerStyle.Beast:
-                        return KiryuHActs[2];
+                if (IsKiryu())
+                {
+                    switch (CurrentStyle)
+                    {
+                        default:
+                            return KiryuHActs[0];
+
+                        case PlayerStyle.Default:
+                            return KiryuHActs[0];
+                        case PlayerStyle.Legend:
+                            return KiryuHActs[0];
+                        case PlayerStyle.Rush:
+                            return KiryuHActs[1];
+                        case PlayerStyle.Beast:
+                            return KiryuHActs[2];
+                    }
                 }
+                else
+                    return KasugaHAct;
             }
             else
-                return KasugaHAct;
+            {
+                switch(CurrentPlayer)
+                {
+                    default:
+                        return null;
+                    case Player.ID.adachi:
+                        if (Player.GetCurrentJob(Player.ID.adachi) == RPGJobID.adachi_01)
+                            return AdachiHAct;
+                        else
+                            return null;
+                }
+            }
         }
 
         public static void OnBattleStart()
@@ -175,7 +205,6 @@ namespace LikeABrawler2
 
             if (!player.IsValid() || Mod.IsTurnBased())
                 return;
-
 
             unsafe
             {

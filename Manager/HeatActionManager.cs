@@ -119,14 +119,19 @@ namespace LikeABrawler2
                 HeatActionInformation newPerformableHact = null;
 
 
-                if (BrawlerPlayer.StageEHC.ContainsKey(stageID))
-                    newPerformableHact = Iterate(BrawlerPlayer.StageEHC[stageID]);
+                //aka = are we the main player or are we temporarily another player like Adachi
+                if (DragonEngine.GetHumanPlayer().UID == BrawlerBattleManager.PlayerCharacter.UID)
+                {
+                    if (BrawlerPlayer.StageEHC.ContainsKey(stageID))
+                        newPerformableHact = Iterate(BrawlerPlayer.StageEHC[stageID]);
 
-                if(newPerformableHact == null)
-                    newPerformableHact = Iterate(BrawlerPlayer.PlayerHActs);
+                    if (newPerformableHact == null)
+                        newPerformableHact = Iterate(BrawlerPlayer.PlayerHActs);
 
+                }
+               
                 if (newPerformableHact == null)
-                    newPerformableHact = Iterate(BrawlerPlayer.GetCurrentPlayerHActSet());
+                        newPerformableHact = Iterate(BrawlerPlayer.GetCurrentPlayerHActSet());
 
                 PerformableHact = newPerformableHact;
 
@@ -320,12 +325,20 @@ namespace LikeABrawler2
             switch (type)
             {
                 case HeatActionActorType.Player:
-                    return HActReplaceID.hu_player;
+                    if (performer.IsPlayer())
+                        return HActReplaceID.hu_player;
+                    else
+                        return HActReplaceID.hu_player1;
                 case HeatActionActorType.Fighter:
-                    if (!performer.IsMainPlayer())
+                    if (!performer.IsMainPlayer() && !performer.IsPlayer())
                         return HActReplaceID.hu_npc_00;
                     else
-                        return HActReplaceID.hu_player;
+                    {
+                        if (performer.IsPlayer())
+                            return HActReplaceID.hu_player;
+                        else
+                            return HActReplaceID.hu_player1;
+                    }
                 case HeatActionActorType.Enemy1:
                     return HActReplaceID.hu_enemy_00;
                 case HeatActionActorType.Enemy2:

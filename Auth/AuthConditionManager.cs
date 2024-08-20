@@ -26,6 +26,7 @@ namespace LikeABrawler2
             Register(133700006, ConditionFolderLABBattleOverByY8BHact.Check);
             Register(133700007, ConditionFolderIsNotSupporter.CheckDisabled);
             Register(133700008, ConditionFolderKiryuStyle.Check);
+            Register(133700009, ConditionFolderIsActiveBrawlerPlayer.CheckDisabled);
         }
 
 

@@ -206,6 +206,7 @@
     <Compile Include="AI\Enemy\Boss\EnemyAIBossKuwaki.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossLandSurfer.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossSawashiro.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossWeaponMaster.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossWong.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossWPB.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossWPD.cs" />
@@ -215,6 +216,7 @@
     <Compile Include="AI\Enemy\Boss\EnemyAIBossYamai2.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossYamai1.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossLongPierrot.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIMachinery.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAITomizawa.cs" />
     <Compile Include="AI\Enemy\EnemyAIBoss.cs" />
     <Compile Include="AI\Enemy\EnemyAILongPierrot.cs" />
@@ -244,6 +246,7 @@
     <Compile Include="Auth\ConditionFolderIsNotSupporter.cs" />
     <Compile Include="Auth\ConditionFolderPlayerJob.cs" />
     <Compile Include="BrawlerSaveData.cs" />
+    <Compile Include="ConditionFolderIsActiveBrawlerPlayer.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="DebugBattleConsole.cs" />
     <Compile Include="EnemyRebalanceEntry.cs" />
@@ -251,6 +254,7 @@
     <Compile Include="Enum\PlayerStyle.cs" />
     <Compile Include="Enum\TutorialModifier.cs" />
     <Compile Include="Manager\AuraManager.cs" />
+    <Compile Include="Manager\SpecialBattle.cs" />
     <Compile Include="Manager\TownsfolkManager.cs" />
     <Compile Include="Manager\RevelationManager.cs" />
     <Compile Include="Patches\AuthPatches.cs" />
@@ -260,6 +264,7 @@
     <Compile Include="Patches\NopPatch.cs" />
     <Compile Include="Patches\ParticlePatches.cs" />
     <Compile Include="Patches\PausePatches.cs" />
+    <Compile Include="Patches\TalkPatches.cs" />
     <Compile Include="Patches\UIPatches.cs" />
     <Compile Include="Player\EXHeatModule.cs" />
     <Compile Include="Manager\BrawlerUIManager.cs" />

@@ -240,11 +240,14 @@ namespace LikeABrawler2
         {
             Fighter fighter = new Fighter((IntPtr)(*fighterPtrPtr));
 
-            if(fighter.IsPartyMember())
+            if(fighter.IsAnyPartyMember())
             {
                 //TODO MAYBE: Let party member choose their automode
-                int* autoMode = (int*)fighterPtrPtr + 2;
-                *autoMode = 3;
+                if (!fighter.IsMainPlayer())
+                {
+                    int* autoMode = (int*)fighterPtrPtr + 2;
+                    *autoMode = 3;
+                }
             }
 
             return m_handleAutoModeTrampoline(thisPtr, selectCommandInfo, fighterPtrPtr);

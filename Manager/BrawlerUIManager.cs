@@ -35,14 +35,20 @@ namespace LikeABrawler2
                 CreateUI();
             }
 
+            ProcessPlayerGauge();
+
+            DragonEngine.Log("Player Gauge: " + m_playerGauge);
+        }
+
+        private static void ProcessPlayerGauge()
+        {
+
             m_playerGauge = GetPlayerGauge();
             m_playerGauge_NextLabel = m_playerGauge.GetChild(4);
             m_playerGauge_HealthGauge = m_playerGauge.GetChild(5);
             m_playerGauge_HealthGaugeLabel = m_playerGauge.GetChild(8);
             m_playerGauge_HeatGauge = m_playerGauge.GetChild(6);
             m_playerGauge_HeatGaugeLabel = m_playerGauge.GetChild(7);
-
-            DragonEngine.Log("Player Gauge: " + m_playerGauge);
         }
 
         private static void OnBattleEnd()
@@ -73,12 +79,22 @@ namespace LikeABrawler2
             UIHandleBase gaugesRoot = uiHandle.GetChild(0).GetChild(0);
             m_gaugeRoot = gaugesRoot;
 
-            for (int i = 0; i < gaugesRoot.GetChildCount(); i++)
+            if (!BrawlerPlayer.IsOtherPlayer())
             {
-                if (!gaugesRoot.GetChild(i).IsVisible())
-                    break;
+                for (int i = 0; i < gaugesRoot.GetChildCount(); i++)
+                {
+                    if (!gaugesRoot.GetChild(i).IsVisible())
+                        break;
 
-                gauge = gaugesRoot.GetChild(i).GetChild(0).GetChild(0);
+                    gauge = gaugesRoot.GetChild(i).GetChild(0).GetChild(0);
+                }
+            }
+            else
+            {
+                int idx = NakamaManager.FindIndex(BrawlerPlayer.CurrentPlayer);
+                idx = idx + 2;
+
+                gauge = gaugesRoot.GetChild(idx).GetChild(0).GetChild(0);
             }
 
             return gauge;
@@ -104,6 +120,7 @@ namespace LikeABrawler2
             if (!Mod.IsRealtime())
                 return;
 
+            ProcessPlayerGauge();
             Minimap.SetVisible(!Debug.NoUI);
 
             if (BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action || BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Cleanup)

@@ -58,6 +58,10 @@ namespace LikeABrawler2
                     return CheckPlayerJob(fighter, op, paramsPtr);
                 case 8:
                     return CheckAIParam(fighter, op, paramsPtr);
+                case 9:
+                    return CheckIsRealtime(fighter, op, paramsPtr);
+                case 10:
+                    return CheckIsActiveBrawlerPlayer(fighter, op, paramsPtr);
             }
 
             return false;
@@ -204,6 +208,39 @@ namespace LikeABrawler2
                     return !ai.CheckParam(param);
             }
             
+        }
+
+        private static bool CheckIsRealtime(IntPtr fighterPtr, byte op, byte* paramsPtr)
+        {
+            switch (op)
+            {
+                default:
+                    return true;
+
+                case 0:
+                    return Mod.IsRealtime();
+                case 3:
+                    return !Mod.IsRealtime();
+            }
+        }
+
+        private static bool CheckIsActiveBrawlerPlayer(IntPtr fighterPtr, byte op, byte* paramsPtr)
+        {
+            if(!CheckIsRealtime(fighterPtr, 0, paramsPtr)) 
+                return false;
+
+            Fighter fighter = new Fighter(fighterPtr);
+
+            switch (op)
+            {
+                default:
+                    return true;
+
+                case 0:
+                    return fighter.IsMainPlayer();
+                case 3:
+                    return !fighter.IsMainPlayer();
+            }
         }
     }
 }

@@ -36,6 +36,14 @@ namespace LikeABrawler2
                 return SupporterManager.GetAI(fighter);
         }
 
+        public static bool IsAnyPartyMember(this Fighter fighter)
+        {
+            return FighterManager.GetFighter(10) == fighter || 
+                   FighterManager.GetFighter(1) == fighter ||
+                   FighterManager.GetFighter(2) == fighter ||
+                   FighterManager.GetFighter(3) == fighter;
+        }
+
         //TODO: Instead of checking like this get the fighter index and check if less than 4
         public static bool IsPartyMember(this Fighter fighter)
         {

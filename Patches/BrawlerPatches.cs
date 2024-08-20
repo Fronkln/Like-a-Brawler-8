@@ -23,6 +23,7 @@ namespace LikeABrawler2
         public static UIPatches UIPatches = new UIPatches();
         public static CameraPatches CameraPatches = new CameraPatches();
         public static AuthPatches AuthPatches = new AuthPatches();
+        public static TalkPatches TalkPatches = new TalkPatches();
 
         public static bool Enabled = false;
 
@@ -46,6 +47,7 @@ namespace LikeABrawler2
             UIPatches.Init();
             CameraPatches.Init();
             AuthPatches.Init();
+            TalkPatches.Init();
 
             //DRAGON ENGINE: Allow us to set speed for "unprocessed"
             DragonEngineLibrary.Unsafe.CPP.NopMemory(DragonEngineLibrary.Unsafe.CPP.PatternSearch("74 ? 0F B6 C1 48 8D 0D ? ? ? ? C5 FA 11 0C 81"), 2);
@@ -72,6 +74,7 @@ namespace LikeABrawler2
             BattleTurnManagerPatches.Activate();
             CameraPatches.Activate();
             AuthPatches.Activate();
+            TalkPatches.Activate();
             
 
             if (BrawlerBattleManager.PlayerFighter.IsValid())
@@ -96,6 +99,7 @@ namespace LikeABrawler2
             PausePatches.Deactivate();
             CameraPatches.Deactivate();
             AuthPatches.Deactivate();
+            TalkPatches.Deactivate();
 
             CombatPatches.EnableAssignment();
         }
