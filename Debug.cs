@@ -88,6 +88,12 @@ namespace LikeABrawler2
                     DragonEngine.Log("0 damage");
                     BrawlerBattleManager.PlayerFighter.GetStatus().AttackPower = 0;
                 }
+                if (DragonEngine.IsKeyDown(VirtualKey.Numpad8))
+                {
+                    DragonEngine.Log("300 damage");
+                    BrawlerBattleManager.PlayerFighter.GetStatus().AttackPower = 300;
+                }
+
 
                 if (DragonEngine.IsKeyDown(VirtualKey.Numpad9))
                 {

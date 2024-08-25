@@ -107,6 +107,19 @@ namespace LikeABrawler2
                 case "elvis_btl09_0300_000_1":
                     ai = new EnemyAIBossYamai2();
                     break;
+                case "elvis_lng04_btl11_0060_1":
+                    ai = new EnemyAIBossWPJ_BTL11_0060();
+                    break;
+                case "elvis_btl12_0300_000_1":
+                    ai = new EnemyAIBossMajima();
+                    break;
+                case "elvis_btl12_0300_000_2":
+                    ai = new EnemyAIBossSaejima();
+                    break;
+                case "elvis_btl12_0300_000_3":
+                    ai = new EnemyAIBossDaigo();
+                    break;
+
             }
 
             if(ai == null)
@@ -150,6 +163,21 @@ namespace LikeABrawler2
                     encounterBoss = true;
                     break;
                 case "elvis_dungeon_y_1-10F_rescue_510": //pompadeur
+                    encounterBoss = true;
+                    break;
+                case "elvis_dungeon_y_1-10F_rescue_530": //pipe crit guy
+                    encounterBoss = true;
+                    break;
+                case "elvis_dungeon_y_1-10F_rescue_540":
+                    encounterBoss = true;
+                    break;
+                case "elvis_dungeon_y_1-10F_rescue_550": //billboard
+                    encounterBoss = true;
+                    break;
+                case "elvis_dungeon_y_6-10F_boss_001": //cigar zombie ctrltype 248
+                    encounterBoss = true;
+                    break;
+                case "elvis_lng05_btl12_0018_1":
                     encounterBoss = true;
                     break;
             }

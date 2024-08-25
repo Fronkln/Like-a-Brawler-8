@@ -88,6 +88,7 @@ namespace LikeABrawler2
                 WeaponManager.Init();
                 RevelationManager.Init();
                 TownsfolkManager.Init();
+                HActLifeGaugeManager.Init();
 
                 new Thread(InputThread).Start();
 

@@ -36,6 +36,11 @@ namespace LikeABrawler2
         private static ParticleManagerPlay _ptcManPlayTrampoline;
         private static unsafe IntPtr ParticleManager_Play(IntPtr manager, IntPtr result, uint particleID, IntPtr mtx, uint type)
         {
+            //RPG effects we dont want in a realtime setting
+            //These pibs include the movement area, the yellow indicator above players head etc...
+            if (particleID == 0x31EC || particleID == 0x3898 || particleID == 0x31EB)
+                particleID = 0;
+
             if (particleID == 12399)
                 particleID = 23136; //HYa0001 -> BHYa0001 (smaller version of pib)
 

@@ -13,6 +13,8 @@ namespace LikeABrawler2
     {
         [return: MarshalAs(UnmanagedType.U1)]
         private delegate bool HumanModeManagerDamageExecValid(IntPtr humanModeManager, IntPtr battleDamageInfo);
+        [return: MarshalAs(UnmanagedType.U1)]
+        private delegate bool HumanModeManageTransitDamage(IntPtr humanModeManager, IntPtr battleDamageInfo);
 
         [return: MarshalAs(UnmanagedType.U1)]
         private delegate bool HumanModeManagerIsInputSway(IntPtr humanModeManager);

@@ -6,8 +6,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
-namespace Brawler
+namespace LikeABrawler2
 {
     struct HActDamageResult
     {
@@ -26,7 +27,12 @@ namespace Brawler
 
         private IntPtr m_hactDmgFunc;
 
-        public static event Action<Fighter, long, long> OnDamageDealt;
+        public static event Action<Character, long, long> OnDamageDealt;
+
+        public static void OnDamageDealtEvent(Character chara, long oldHp, long newHp)
+        {
+            OnDamageDealt?.Invoke(chara, oldHp, newHp);
+        }
 
         public override void Init()
         {
@@ -40,10 +46,10 @@ namespace Brawler
             if (_dmgTrampoline == null)
             {
                 _dmgDeleg = new DamageNodeProcHook(DmgProc);
-                _dmgTrampoline = BrawlerPatches.HookEngine.CreateHook<DamageNodeProcHook>(m_hactDmgFunc, _dmgDeleg);
+                _dmgTrampoline = BrawlerPatches.HookEngine.CreateHook<DamageNodeProcHook>(m_hactDmgFunc, DmgProc);
             }
-            else
-                BrawlerPatches.HookEngine.EnableHook(_dmgTrampoline);
+
+           // BrawlerPatches.HookEngine.EnableHook(_dmgTrampoline);
         }
 
         protected override void SetInactive()
@@ -159,105 +165,24 @@ namespace Brawler
                 return;
             }
 
-            unsafe
+            Fighter victim = new Fighter(fighter);
+
+            //Bep/Sync/Normal Y8 hact damage
+            if (BrawlerBattleManager.IsHAct)
             {
-                TimingInfoDamage* damage = (TimingInfoDamage*)dmg;
+                long hp = victim.GetStatus().CurrentHP;
 
-                //Bep/Sync/Normal Y8 hact damage
-                if (damage->attaker > 5 || damage->attack_id == 0 || !BrawlerBattleManager.IsHAct)
-                {
-                    _dmgTrampoline(node, dmg, fighter);
-                    return;
-                }
+                _dmgTrampoline(node, dmg, fighter);
+               // long newHp = victim.GetStatus().CurrentHP;
+               // OnDamageDealt?.Invoke(victim.Character, hp, newHp);
 
-                Fighter victim = new Fighter(fighter);
-
-                if (damage->recover == 0)
-                {
-                    //Player attack. Thog care
-                    //A poorly implemented damage function
-                    if (damage->attaker == 0 || damage->attaker == 3)
-                        ProcessDamage(FighterManager.GetFighter(0));
-
-                    //Closest enemy to player
-                    if (damage->attaker == 4)
-                        if (BrawlerBattleManager.AllEnemiesNearest.Length > 0)
-                            ProcessDamage(BrawlerBattleManager.AllEnemiesNearest[0]);
-                }
-                else
-                {
-                    ECBattleStatus status = victim.GetStatus();
-                    status.SetHPCurrent(status.CurrentHP + damage->damage);
-                }
-
-
-                void ProcessDamage(Fighter attacker)
-                {
-                    BaseEnemyAI ai = EnemyManager.GetAI(victim);
-
-                    if (victim.IsPlayer())
-                    {
-                        if (!BrawlerPlayer.AllowDamage(new BattleDamageInfo()))
-                            return;
-                    }
-                    else
-                    {
-                        if (ai != null && !ai.AllowDamage())
-                            return;
-                    }
-
-                    HActDamageResult result = CalculateDamage(attacker,
-                        victim,
-                        damage->damage,
-                        damage->direct_damage,
-                        *(float*)&damage->attack_id,
-                        damage->direct_damage_is_hp_ratio == 1,
-                        damage->no_dead == 1,
-                        damage->force_dead == 1);
-
-
-                    ECBattleStatus victimStatus = victim.GetStatus();
-
-#if DEBUG
-                    Console.WriteLine(result.DebugText);
-#endif
-                    if (ai != null && ai.IsBoss())
-                    {
-                        result.Damage = ai.ProcessHActDamage(AuthManager.PlayingScene.Get().TalkParamID, result.Damage);
-                    }
-
-                    long finalHp = finalHp = victimStatus.CurrentHP - result.Damage;
-
-                    if (ai != null)
-                    {
-                        int resistedDamage = (int)((result.Damage * ai.HeatActionDamageResist));
-                        finalHp += resistedDamage;
-                    }
-
-                    bool shouldDie = result.Dies;
-
-                    //Yakuza 7 Bug: Fighters dying before hacts ending can cause hanging if they are the last
-                    //if we do not manage how turn phases change.
-                    if (shouldDie)
-                        victim.Character.ToDead();
-                    else
-                    {
-                        if (finalHp <= 0)
-                            finalHp = 1;
-                    }
-
-                    if (finalHp < 0)
-                        finalHp = 0;
-
-                    victimStatus.SetHPCurrent(finalHp);
-                    OnDamageDealt?.Invoke(victim, victimStatus.CurrentHP, finalHp);
-
-                    return;
-                }
-
+                return;
             }
-
-            _dmgTrampoline(node, dmg, fighter);
+            else
+            {
+                _dmgTrampoline(node, dmg, fighter);
+                return;
+            }
         }
     }
 }

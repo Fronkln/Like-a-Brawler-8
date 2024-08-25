@@ -19,7 +19,8 @@ namespace LikeABrawler2
         private IntPtr m_invisFighterJmp2;
         private IntPtr m_invisFighterJmp3;
         private IntPtr m_yorokeFunc;
-        
+        private IntPtr m_ecbattleStatusCalculateHpFunc;
+
         private IntPtr m_transitKiryuGuardFunc;
         private HijackedFunction m_transitKiryuGuardHijack;
         private NopPatch m_transitOrigFuncNopPatch;
@@ -39,6 +40,9 @@ namespace LikeABrawler2
 
         private delegate bool TurnCommandDecideManagerHandleAutoMode(IntPtr thisPtr, IntPtr selectCommandInfo, long** fighterPtrPtr);
 
+
+        private delegate void ECBattleStatusInitializeHP(IntPtr status);
+
         public override void Init()
         {
             base.Init();
@@ -56,12 +60,19 @@ namespace LikeABrawler2
             m_invisFighterJmp3 = CPP.PatternSearch("76 ? C5 78 2F 47 10");
             m_yorokeFunc = CPP.ReadCall(CPP.PatternSearch("E8 ? ? ? ? 48 8B 8E E8 07 00 00 8B 59 08"));
             m_battleTransformOnTrampoline = BrawlerPatches.HookEngine.CreateHook<FighterManagerPlayTransformEffect>(m_fighterTransformEffectFunc, ECRender_BattleTransformOn);
+            m_ecbattleStatusCalculateHpFunc = CPP.PatternSearch("48 89 4C 24 08 55 53 56 57 41 54 41 55 41 57");
 
             m_transitKiryuGuardFunc = CPP.PatternSearch("48 8B C4 48 89 58 10 48 89 70 18 48 89 78 20 55 41 54 41 55 41 56 41 57 48 8D A8 18 FF FF FF 48 81 EC ? ? ? ? C5 F8 29 70 C8 C5 F8 29 78 B8 C5 78 29 40 A8 C5 78 29 48 98 48 8B F1");
             
             IntPtr origCall = CPP.PatternSearch("E8 ? ? ? ? 48 8B D3 48 8B C8 E8 ? ? ? ? 48 8B 06");
             m_transitOrigFuncNopPatch = new NopPatch(origCall+5);
             m_transitKiryuGuardHijack = new HijackedFunction(origCall, m_transitKiryuGuardFunc);
+
+            if (m_ecbattleStatusInitializeHpTrampoline == null)
+            {
+                m_ecbattleStatusInitializeHpTrampoline = BrawlerPatches.HookEngine.CreateHook<ECBattleStatusInitializeHP>(m_ecbattleStatusCalculateHpFunc, ECBattleStatus_InitializeHP);
+                BrawlerPatches.HookEngine.EnableHook(m_ecbattleStatusInitializeHpTrampoline);
+            }
         }
 
         protected override void SetActive()
@@ -82,6 +93,7 @@ namespace LikeABrawler2
 
             if(m_transitKiryuCounterTrampoline == null)
                 m_transitKiryuCounterTrampoline = BrawlerPatches.HookEngine.CreateHook<TransitHijackedKiryuGuard>(m_transitKiryuGuardFunc, TransitKiryuCounter);
+
 
             BrawlerPatches.HookEngine.EnableHook(m_battleTransformOnTrampoline);
             BrawlerPatches.HookEngine.EnableHook(m_canDamSyncTrampoline);
@@ -154,6 +166,45 @@ namespace LikeABrawler2
         public void DisableAssignment()
         {
             CPP.NopMemory(m_inputStateAssignment, 2);
+        }
+
+
+        private static ECBattleStatusInitializeHP m_ecbattleStatusInitializeHpTrampoline;
+
+        private unsafe static void ECBattleStatus_InitializeHP(IntPtr status)
+        {
+            m_ecbattleStatusInitializeHpTrampoline(status);
+
+
+            if (!Mod.IsRealtime())
+                return;
+
+            ECBattleStatus statusobj = new ECBattleStatus() { Pointer = status };
+            Character owner = statusobj.Owner;
+
+            long val = statusobj.CurrentHP;
+            uint uid = statusobj.Owner.UID;
+
+            IntPtr addr = owner.Pointer;
+
+            Fighter fighter = new Fighter((IntPtr)(&addr));
+
+            if (!owner.IsPartyMember() && owner.UID != BrawlerBattleManager.PlayerCharacter.UID)
+            {
+                uint soldierID = (uint)owner.Attributes.soldier_data_id;
+                EnemyRebalanceEntry rebalancedDat = DBManager.GetSoldierRebalance(soldierID);
+
+                if (rebalancedDat == null)
+                    return;
+
+                statusobj.SetHPMax(rebalancedDat.Health);
+                statusobj.SetHPCurrent(rebalancedDat.Health);
+                statusobj.AttackPower = rebalancedDat.Attack;
+                statusobj.DefensePower = rebalancedDat.Defense;
+            }
+
+            long val2 = statusobj.CurrentHP;
+
         }
 
         //Originally cbattle_manager constructor, it only gets called once on game start, so we can easily make this function our own!

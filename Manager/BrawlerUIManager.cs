@@ -26,6 +26,9 @@ namespace LikeABrawler2
         {
             BrawlerBattleManager.OnBattleStartEvent += OnBattleStart;
             BrawlerBattleManager.OnBattleEndEvent += OnBattleEnd;
+
+            HeatActionManager.OnHActStartEvent += OnHActStart;
+            HeatActionManager.OnHActEndEvent += OnHActEnd;
         }
 
         private static void OnBattleStart()
@@ -43,7 +46,6 @@ namespace LikeABrawler2
 
         private static void ProcessPlayerGauge()
         {
-
             m_playerGauge = GetPlayerGauge();
             m_playerGauge_NextLabel = m_playerGauge.GetChild(4);
             m_playerGauge_HealthGauge = m_playerGauge.GetChild(5);
@@ -57,6 +59,16 @@ namespace LikeABrawler2
             m_hactPrompt.SetVisible(false);
         }
 
+
+        private static void OnHActStart()
+        {
+            m_gaugeRoot.SetVisible(false);
+        }
+
+        private static void OnHActEnd()
+        {
+            m_gaugeRoot.SetVisible(true);
+        }
         public static void OnSwitchToTurnBased()
         {
             m_hactPrompt.SetVisible(false);
@@ -122,10 +134,15 @@ namespace LikeABrawler2
             else
             {
                 Minimap.SetVisibilityID(1);
+                m_hactPrompt.SetVisible(false);
+                m_wepPickup.SetVisible(false);
             }
 
             if (!Mod.IsRealtime())
                 return;
+
+            if(BrawlerBattleManager.IsHAct)
+                m_gaugeRoot.SetVisible(false);
 
             ProcessPlayerGauge();
             Minimap.SetVisible(!Debug.NoUI);

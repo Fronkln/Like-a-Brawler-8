@@ -1,7 +1,6 @@
 ﻿using System;
 using MinHook;
 using DragonEngineLibrary;
-using Brawler;
 
 namespace LikeABrawler2
 {

@@ -32,8 +32,6 @@ namespace LikeABrawler2
 
             ECBattleStatus status = Fighter.GetStatus();
 
-            ApplyBalanceChange();
- 
             DragonEngine.Log(GetType().ToString() +
                 "\nSoldier ID: " + DBManager.GetSoldier(soldierID) +
                 "\nHealth: " + status.CurrentHP +
@@ -44,20 +42,9 @@ namespace LikeABrawler2
                 "\nAssetR: " + Fighter.GetWeapon(AttachmentCombinationID.right_weapon).ToString());
         }
 
-        private void ApplyBalanceChange()
+        public static void ApplyBalanceChange(Fighter character)
         {
-            uint soldierID = (uint)Character.Attributes.soldier_data_id;
-            EnemyRebalanceEntry rebalancedDat = DBManager.GetSoldierRebalance(soldierID);
 
-            if (rebalancedDat == null)
-                return;
-
-            ECBattleStatus status = Fighter.GetStatus();
-
-            Fighter.GetStatus().SetHPMax(rebalancedDat.Health);
-            Fighter.GetStatus().SetHPCurrent(rebalancedDat.Health);
-            Fighter.GetStatus().AttackPower = rebalancedDat.Attack;
-            Fighter.GetStatus().DefensePower = rebalancedDat.Defense;
         }
 
         public virtual void LoadContent()

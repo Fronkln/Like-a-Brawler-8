@@ -81,7 +81,7 @@ namespace LikeABrawler2
             if(phase == BattleTurnManager.TurnPhase.Event && HeatActionManager.IsY8BHact)
             {
                 //this will immediately lead back to Action and bring turn based UI visible
-                new DETaskTime(0.01f, delegate { BattleTurnManager.ChangePhase(BattleTurnManager.TurnPhase.Start); });
+                //new DETaskTime(0.01f, delegate { BattleTurnManager.ChangePhase(BattleTurnManager.TurnPhase.Start); });
                 return;
             }
             m_changeTurnPhase.Invoke(battleTurnManager, phase);
@@ -111,15 +111,6 @@ namespace LikeABrawler2
             if (BrawlerBattleManager.CurrentPhase == BattleTurnManager.TurnPhase.Action && (step == BattleTurnManager.ActionStep.Ready || step == BattleTurnManager.ActionStep.ActionStart || step == BattleTurnManager.ActionStep.TriggeredEvent))
                 return;
             */
-
-            if (!BrawlerBattleManager.IsReinforcementsFight)
-            {
-                if (BrawlerBattleManager.BattleEndedInY8BHAct && BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action)
-                {
-                    if (step == BattleTurnManager.ActionStep.Init || step == BattleTurnManager.ActionStep.SelectCommand)
-                        return;
-                }
-            }
 
             if(step == BattleTurnManager.ActionStep.SelectTarget && SupporterManager.SkipDoubleTurn)
             {
@@ -153,7 +144,7 @@ namespace LikeABrawler2
             //Return, and it wont update turn based combat including turns, important for special events like
             //mortal attacks
 
-            if(EnemyManager.IsAnyoneMortalAttacking() || MortalReversalManager.Procedure || BrawlerBattleManager.BattleEndedInY8BHAct || RevelationManager.RevelationProcedure)
+            if (EnemyManager.IsAnyoneMortalAttacking() || MortalReversalManager.Procedure || RevelationManager.RevelationProcedure)
                 return;
 
             _btlTurnManagerExecPhaseActionTrampoline(mng);

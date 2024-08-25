@@ -369,6 +369,10 @@ namespace LikeABrawler2
                     });
                     break;
 
+                case 161:
+                    SpecialBattle.TriosFight();
+                    break;
+
                 case 188: //crane fight
                     new DETask(delegate { return BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action; }, delegate
                     {
@@ -461,6 +465,9 @@ namespace LikeABrawler2
             if (BattleConfigID == 100)
                 return true;
 
+            if (BattleConfigID == 228)
+                return true;
+
             return false;
         }
         private static void RealtimeUpdate()
@@ -491,6 +498,7 @@ namespace LikeABrawler2
             EnemyManager.Update();
             WeaponManager.Update();
             SpecialBattle.Update();
+            HActLifeGaugeManager.Update();
         }
 
         private static void RealtimeCombatUpdate()
@@ -686,7 +694,7 @@ namespace LikeABrawler2
             BattleConfigID = BattleTurnManager.BattleConfigID;
             IsEncounter = BattleConfigID <= 2;
 
-            IsReinforcementsFight = CheckReinforcementsFight();
+            IsReinforcementsFight = true;  //CheckReinforcementsFight();
             ProcSpecialBattle();
             LoadBattleResources();
 

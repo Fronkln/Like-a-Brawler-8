@@ -94,6 +94,9 @@ namespace LikeABrawler2
 
         public static bool AllowStyleChange()
         {
+            if (SpecialBattle.IsDreamSequence())
+                return false;
+
             if (!TutorialManager.Active)
                 return true;
 
@@ -103,6 +106,9 @@ namespace LikeABrawler2
         public static bool CanExtremeHeat()
         {
             if (BrawlerFighterInfo.Player.IsSync)
+                return false;
+
+            if (SpecialBattle.IsDreamSequence())
                 return false;
             
             //Adachi
@@ -208,8 +214,8 @@ namespace LikeABrawler2
 
             unsafe
             {
-                byte* free_movement_mode = (byte*)(player.Character.Pointer.ToInt64() + 0x11A3);
-                *free_movement_mode = 1;
+                bool* free_movement_mode = (bool*)(player.Character.Pointer.ToInt64() + 0x11A3);
+                *free_movement_mode = AllowPlayerMovement();
             }
 
             HeatModule.Update();
@@ -374,6 +380,14 @@ namespace LikeABrawler2
 
         }
 
+        public static bool AllowPlayerMovement()
+        {
+            if (SpecialBattle.IsDreamSequenceStart())
+                return false;
+
+            return true;
+        }
+
         private static void GameInputUpdate()
         {
             if (BattleManager.PadInfo.IsJustPush(BattleButtonID.run))
@@ -462,6 +476,9 @@ namespace LikeABrawler2
 
         public static void OnExtremeHeatModeOFF()
         {
+            if (!IsExtremeHeat)
+                return;
+
             IsExtremeHeat = false;
             BrawlerBattleManager.OnPlayerExitEXHeat();
 
@@ -488,7 +505,7 @@ namespace LikeABrawler2
             BrawlerBattleManager.PlayerFighter.GetStatus().SetSuperArmor(false);
         }
 
-        public static void OnStyleSwitch(PlayerStyle newStyle)
+        public static void OnStyleSwitch(PlayerStyle newStyle, bool quick = false)
         {
             if (CurrentStyle == newStyle)
                 return;
@@ -532,25 +549,21 @@ namespace LikeABrawler2
                     styleSoundIdx = 6;
                     styleCommandSet = FighterCommandManager.FindSetID("p_kiryu_crash_brawler");
                     break;
+
+                case PlayerStyle.Resurgence:
+                    styleCommandSet = FighterCommandManager.FindSetID("p_kiryu_legend");
+                    break;
             }
 
             if (IsExtremeHeat && newStyle != PlayerStyle.Legend)
                 OnExtremeHeatModeOFF();
 
-            short command = FighterCommandManager.GetSet(styleCommandSet).FindCommandInfo("StyleStart");
-
-            //CRASH IF SWITCHING TO LEGEND AS NEW STYLE
-           // if(newStyle != PlayerStyle.Legend && CurrentStyle != newStyle)
-
-                //30.07.2024: Changing style this way will make Kiryu deal no damage when/after using weapons.
-                //A better way must be found.
-                //Maybe do not call the humanmode, but call the battleturnmanager function instead.
-              //  BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToStyleChange((int)overrideStyle);
-
-            //new DETaskTime(0.1f, delegate { BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)styleCommandSet); });
-
-            if(command >= 0)
-                BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToAttackMode(new FighterCommandID((ushort)styleCommandSet, command));
+            if (!quick)
+            {
+                short command = FighterCommandManager.GetSet(styleCommandSet).FindCommandInfo("StyleStart");
+                if (command >= 0)
+                    BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToAttackMode(new FighterCommandID((ushort)styleCommandSet, command));
+            }
 
             BrawlerBattleManager.PlayerFighter.DropWeapon(new DropWeaponOption(AttachmentCombinationID.right_weapon, false));
 

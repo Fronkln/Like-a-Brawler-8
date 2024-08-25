@@ -182,7 +182,7 @@ namespace LikeABrawler2
 
         public static bool CanHAct()
         {
-            return m_hactCd <= 0 && !MortalReversalManager.Procedure && !BrawlerPlayer.IsInputDisableHAct() && !IsHAct() && AllowHAct() && (Player.GetHeatNow(BrawlerPlayer.CurrentPlayer) >= GetHActCost()) && PerformableHact != null;
+            return BrawlerBattleManager.Battling && m_hactCd <= 0 && !MortalReversalManager.Procedure && !BrawlerPlayer.IsInputDisableHAct() && !IsHAct() && AllowHAct() && (Player.GetHeatNow(BrawlerPlayer.CurrentPlayer) >= GetHActCost()) && PerformableHact != null;
         }
 
 

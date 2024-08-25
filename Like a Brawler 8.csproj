@@ -201,16 +201,21 @@
     <Compile Include="AI\Enemy\Boss\EnemyAIAmonLose.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIAsakura1.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossCalorieKnight.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossDaigo.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossDwight1.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossHecaton.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossKuwaki.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossLandSurfer.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossMajima.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossSaejima.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossSawashiro.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossSumo.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossWeaponMaster.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossWong.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossWPB.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossWPD.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossWPG.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossWPJ.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossWPY.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossWPE.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossYamai2.cs" />
@@ -218,6 +223,7 @@
     <Compile Include="AI\Enemy\Boss\EnemyAIBossLongPierrot.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIMachinery.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAITomizawa.cs" />
+    <Compile Include="AI\Enemy\Boss\Scene\EnemyAIBossWPJ_BTL11_0060.cs" />
     <Compile Include="AI\Enemy\EnemyAIBoss.cs" />
     <Compile Include="AI\Enemy\EnemyAILongPierrot.cs" />
     <Compile Include="AI\Enemy\EnemyAIYamaiHostess.cs" />
@@ -254,6 +260,7 @@
     <Compile Include="Enum\PlayerStyle.cs" />
     <Compile Include="Enum\TutorialModifier.cs" />
     <Compile Include="Manager\AuraManager.cs" />
+    <Compile Include="Manager\HActLifeGaugeManager.cs" />
     <Compile Include="Manager\SpecialBattle.cs" />
     <Compile Include="Manager\TownsfolkManager.cs" />
     <Compile Include="Manager\RevelationManager.cs" />
