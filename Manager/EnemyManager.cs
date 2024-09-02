@@ -180,6 +180,9 @@ namespace LikeABrawler2
                 case "elvis_lng05_btl12_0018_1":
                     encounterBoss = true;
                     break;
+                case "elvis_lng06_btl13_0060_1": //samuel: chainsaw boss, uses WPC
+                    encounterBoss = true;
+                    break;
             }
 
             uint ctrlType = (uint)fighter.Character.Attributes.ctrl_type;
@@ -202,8 +205,14 @@ namespace LikeABrawler2
                         case 213:
                             ai = new EnemyAIBossCalorieKnight();
                             break;
+                        case 242:
+                            ai = new EnemyAIBossSumo();
+                            break;
                         case 243:
                             ai = new EnemyAIBossLongPierrot();
+                            break;
+                        case 260:
+                            ai = new EnemyAIBossDwight1();
                             break;
                     }
 

@@ -126,6 +126,9 @@ namespace LikeABrawler2
                 }
                 else
                 {
+
+                    bool playHactOnce = false;
+
                     if (m_dreamSequenceFighting)
                     {
                         if(!m_warpedOnce)
@@ -138,10 +141,10 @@ namespace LikeABrawler2
                                 {
                                     BrawlerBattleManager.PlayerCharacter.GetRender().Reload((CharacterID)9416);
                                     m_dreamSequenceEnemy.Character.GetRender().Reload((CharacterID)9403);
-
+                                    
                                     new DETask(delegate
                                     {
-                                        return !BrawlerBattleManager.IsHActOrWaiting && m_dreamSequenceEnemy.IsHPBelowRatio(0.7f) & !m_dreamSequenceEnemy.Character.HumanModeManager.IsDamage();
+                                        return !BrawlerBattleManager.IsHActOrWaiting && m_dreamSequenceEnemy.IsHPBelowRatio(0.3f) & !m_dreamSequenceEnemy.Character.HumanModeManager.IsDamage();
                                     }, delegate
                                     {
                                         HActRequestOptions opts = new HActRequestOptions();
@@ -157,7 +160,13 @@ namespace LikeABrawler2
                                         opts.base_mtx.matrix.UpDirection = new Vector3(0, 1f, 0);
                                         opts.base_mtx.matrix.LeftDirection = new Vector3(0.37f, 0, -0.93f);
 
-                                        HeatActionManager.RequestTalk(opts);
+
+                                        new DETask(delegate
+                                        {
+                                            HeatActionManager.RequestTalk(opts);
+                                            return AuthManager.PlayingScene.IsValid() && AuthManager.PlayingScene.Get().TalkParamID == opts.id;
+                                        }, delegate { playHactOnce = true; });
+
                                     });
                                 }
 
@@ -165,6 +174,62 @@ namespace LikeABrawler2
                                 {
                                     BrawlerBattleManager.PlayerCharacter.GetRender().Reload((CharacterID)11486);
                                     m_dreamSequenceEnemy.Character.GetRender().Reload((CharacterID)103);
+
+                                    new DETask(delegate
+                                    {
+                                        return !BrawlerBattleManager.IsHActOrWaiting && m_dreamSequenceEnemy.IsHPBelowRatio(0.3f) & !m_dreamSequenceEnemy.Character.HumanModeManager.IsDamage();
+                                    }, delegate
+                                    {
+                                        HActRequestOptions opts = new HActRequestOptions();
+                                        opts.id = DBManager.GetTalkParam("y8bb1750_majima_combo");
+
+                                        opts.Register(HActReplaceID.hu_player, BrawlerBattleManager.PlayerCharacter);
+                                        opts.Register(HActReplaceID.hu_enemy_00, m_dreamSequenceEnemy.Character);
+
+                                        opts.base_mtx.matrix = m_dreamSequenceEnemy.Character.GetMatrix();
+
+                                        opts.base_mtx.matrix.Position = new Vector3(-0.066f, -49.96f, 349.21f);
+                                        opts.base_mtx.matrix.ForwardDirection = new Vector3(-0.88f, 0, 0.48f);
+                                        opts.base_mtx.matrix.UpDirection = new Vector3(0, 1f, 0);
+                                        opts.base_mtx.matrix.LeftDirection = new Vector3(0.48f, 0, 0.88f);
+
+                                        new DETask(delegate
+                                        {
+                                            HeatActionManager.RequestTalk(opts);
+                                            return AuthManager.PlayingScene.IsValid() && AuthManager.PlayingScene.Get().TalkParamID == opts.id;
+                                        }, delegate { playHactOnce = true; });
+                                    });
+                                }
+
+                                if(m_dreamSequenceEnemy == EnemyAIBossSaejima.Instance.Fighter)
+                                {
+                                    BrawlerBattleManager.PlayerCharacter.GetRender().Reload((CharacterID)9402);
+                                    m_dreamSequenceEnemy.Character.GetRender().Reload((CharacterID)16652);
+
+                                    new DETask(delegate
+                                    {
+                                        return !BrawlerBattleManager.IsHActOrWaiting && m_dreamSequenceEnemy.IsHPBelowRatio(0.3f) & !m_dreamSequenceEnemy.Character.HumanModeManager.IsDamage();
+                                    }, delegate
+                                    {
+                                        HActRequestOptions opts = new HActRequestOptions();
+                                        opts.id = DBManager.GetTalkParam("y8bb1760_sae_soul");
+
+                                        opts.Register(HActReplaceID.hu_player, BrawlerBattleManager.PlayerCharacter);
+                                        opts.Register(HActReplaceID.hu_enemy_00, m_dreamSequenceEnemy.Character);
+
+                                        opts.base_mtx.matrix = m_dreamSequenceEnemy.Character.GetMatrix();
+
+                                        opts.base_mtx.matrix.Position = new Vector3(147.95f, -49.96f, 349.21f);
+                                        opts.base_mtx.matrix.ForwardDirection = new Vector3(-0.88f, 0, 0.48f);
+                                        opts.base_mtx.matrix.UpDirection = new Vector3(0, 1f, 0);
+                                        opts.base_mtx.matrix.LeftDirection = new Vector3(0.48f, 0, 0.88f);
+
+                                        new DETask(delegate
+                                        {
+                                            HeatActionManager.RequestTalk(opts);
+                                            return AuthManager.PlayingScene.IsValid() && AuthManager.PlayingScene.Get().TalkParamID == opts.id;
+                                        }, delegate { playHactOnce = true; });
+                                    });
                                 }
 
                                 DragonEngine.Log("WARPED");

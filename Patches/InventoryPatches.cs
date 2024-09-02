@@ -38,11 +38,12 @@ namespace LikeABrawler2
             if(Mod.IsTurnBased())
                 return m_canEquipTrampoline(armsID, equipSlot, playerID, boolean, job);
 
-            if (Player.GetCurrentJob(Player.ID.kasuga) != RPGJobID.kasuga_freeter)
+            var jobId = Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer);
+
+            if (jobId != RPGJobID.kasuga_freeter && jobId != RPGJobID.kiryu_01)
                 return m_canEquipTrampoline(armsID, equipSlot, playerID, boolean, job);
 
-
-            if (equipSlot != PartyEquipSlotID.weapon || playerID != Player.ID.kasuga)
+            if (equipSlot != PartyEquipSlotID.weapon || playerID != BrawlerPlayer.CurrentPlayer)
                 return m_canEquipTrampoline(armsID, equipSlot, playerID, boolean, job);
 
             string name = ((ArmsID)armsID).ToString().ToLowerInvariant();

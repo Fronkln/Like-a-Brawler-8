@@ -358,6 +358,13 @@ namespace LikeABrawler2
                     AllowPlayerTransformThisFight = false;
                     break;
 
+                case 85: //narasaki fight
+                    new DETask(delegate { return BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action; }, delegate
+                    {
+                        new DETaskTime(0.5f, delegate { DoBadBattleWarning(); });
+                    });
+                    break;
+
                 //Poundmates Introduction
                 //TODO IMPORTANT: Give player 200 USD for this fight because our tutorial makes the poundmate paid for some reason.
                 case 147:

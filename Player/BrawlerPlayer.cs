@@ -27,7 +27,7 @@ namespace LikeABrawler2
 
         private static bool m_getupHyperArmorDoOnce = false;
         private static bool m_transitMortal = false;
-        
+
         public static bool GodMode = false;
 
         public static bool IsExtremeHeat = false;
@@ -61,7 +61,7 @@ namespace LikeABrawler2
         public static bool IsInputGuard(HumanModeManager humanModeManager)
         {
             //
-            return BattleManager.PadInfo.CheckCommand(BattleButtonID.guard, 1, 1000, 0) 
+            return BattleManager.PadInfo.CheckCommand(BattleButtonID.guard, 1, 1000, 0)
                 && !BattleManager.PadInfo.CheckCommand(BattleButtonID.guard, 2, 1000, 0);
         }
 
@@ -110,7 +110,7 @@ namespace LikeABrawler2
 
             if (SpecialBattle.IsDreamSequence())
                 return false;
-            
+
             //Adachi
             if (IsOtherPlayer())
                 return false;
@@ -175,7 +175,7 @@ namespace LikeABrawler2
             }
             else
             {
-                switch(CurrentPlayer)
+                switch (CurrentPlayer)
                 {
                     default:
                         return null;
@@ -234,7 +234,7 @@ namespace LikeABrawler2
         //OnAttackHit/OnAttackLand
         public static void OnHitEnemy(Fighter enemy, BattleDamageInfoSafe dmg)
         {
-            if(!IsExtremeHeat)
+            if (!IsExtremeHeat)
             {
                 int curHeat = Player.GetHeatNow(CurrentPlayer);
                 int maxHeat = Player.GetHeatMax(CurrentPlayer);
@@ -260,12 +260,16 @@ namespace LikeABrawler2
             AssetArmsCategoryID category = Asset.GetArmsCategory(assetId);
             DragonEngine.Log("Equipping inventory weapon, category: " + category);
 
-            switch(category)
+            switch (category)
             {
                 default:
                     BrawlerBattleManager.PlayerFighter.Equip(weapon, AttachmentCombinationID.right_weapon);
                     break;
                 case AssetArmsCategoryID.X:
+                    BrawlerBattleManager.PlayerFighter.Equip(weapon, AttachmentCombinationID.right_weapon);
+                    BrawlerBattleManager.PlayerFighter.Equip(weapon, AttachmentCombinationID.left_weapon);
+                    break;
+                case AssetArmsCategoryID.M:
                     BrawlerBattleManager.PlayerFighter.Equip(weapon, AttachmentCombinationID.right_weapon);
                     BrawlerBattleManager.PlayerFighter.Equip(weapon, AttachmentCombinationID.left_weapon);
                     break;
@@ -276,7 +280,7 @@ namespace LikeABrawler2
 
         public static void ToNormalMoveset()
         {
-            if(IsKasuga())
+            if (IsKasuga())
                 BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, GetCommandSetForJob(Player.ID.kasuga, RPGJobID.kasuga_freeter));
             else
                 BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)FighterCommandManager.FindSetID("p_kiryu_legend_brawler"));
@@ -314,22 +318,24 @@ namespace LikeABrawler2
 
             GameInputUpdate();
 
-            if (DragonEngine.IsKeyHeld(VirtualKey.LeftShift))
-            {
-                if(IsKasuga() && Player.GetCurrentJob(Player.ID.kasuga) == RPGJobID.kasuga_freeter)
-                {
-                    if (DragonEngine.IsKeyHeld(VirtualKey.N1))
-                    {
-                        DragonEngine.Log("Ichi equips job weapon");
-                        ItemID weapon = Party.GetEquipItemID(Player.ID.kasuga, PartyEquipSlotID.weapon);
 
-                        if (weapon != 0)
-                            PullOutWeapon(weapon);
-                    }
+            if (BattleManager.PadInfo.IsJustPush(BattleButtonID.down))
+            {
+                RPGJobID curJob = Player.GetCurrentJob(CurrentPlayer);
+
+                if (curJob == RPGJobID.kasuga_freeter || curJob == RPGJobID.kiryu_01)
+                {
+                    DragonEngine.Log("Player equips job weapon");
+                    ItemID weapon = Party.GetEquipItemID(CurrentPlayer, PartyEquipSlotID.weapon);
+
+                    if (weapon != 0)
+                        PullOutWeapon(weapon);
                 }
+
             }
 
-            if(IsExtremeHeat)
+
+            if (IsExtremeHeat)
                 BrawlerBattleManager.PlayerFighter.GetStatus().SetSuperArmor(true);
 
             if (!m_getupHyperArmorDoOnce)
@@ -361,7 +367,7 @@ namespace LikeABrawler2
             var fighterInf = BrawlerFighterInfo.Player;
 
 
-            if(fighterInf.Fighter != null)
+            if (fighterInf.Fighter != null)
             {
                 if (!m_isAttackingDoOnce)
                 {
@@ -450,7 +456,7 @@ namespace LikeABrawler2
                 return;
 
             if (BattleManager.PadInfo.IsJustPush(BattleButtonID.heavy))
-                if (HeatActionManager.PerformableHact != null && HeatActionManager.CanHAct())
+                if (HeatActionManager.CanHAct())
                     HeatActionManager.ExecHeatAction(HeatActionManager.PerformableHact);
         }
 
@@ -497,7 +503,7 @@ namespace LikeABrawler2
                 playerChara.Components.EffectEvent.Get().PlayEventOverride(EffectEventCharaID.YZ_Chara_Cange01);
             }
 
-            if(IsKiryu())
+            if (IsKiryu())
             {
                 OnStyleSwitch(PlayerStyle.Default);
             }
@@ -518,7 +524,7 @@ namespace LikeABrawler2
 
             uint styleCommandSet = 0;
 
-            switch(newStyle)
+            switch (newStyle)
             {
                 case PlayerStyle.Default:
                     styleAnim = DBManager.GetSkill("kiryu_to_legend");
@@ -634,7 +640,7 @@ namespace LikeABrawler2
         {
             bool isJustGuard = *((bool*)(dmg._ptr.ToInt64() + 0x109));
 
-            if(isJustGuard)
+            if (isJustGuard)
             {
                 *(int*)(dmg._ptr.ToInt64() + 0x120) = 0;
                 *(int*)(dmg._ptr.ToInt64() + 0x124) = 0;
@@ -655,7 +661,7 @@ namespace LikeABrawler2
 
             BaseEnemyAI attacker = EnemyManager.GetAI(dmg.Attacker.UID);
 
-            if(attacker != null && attacker.IsMortalAttack())
+            if (attacker != null && attacker.IsMortalAttack())
             {
                 EffectEventManager.PlayScreen(28);
                 DragonEngine.Log("YEOWCH! MORTAL ATTACK");
@@ -665,7 +671,7 @@ namespace LikeABrawler2
 
         public static BattleCommandSetID GetCommandSetForJob(Player.ID playerID, RPGJobID id)
         {
-            switch(id)
+            switch (id)
             {
                 default:
                     return RPG.GetJobCommandSetID(playerID, id);
