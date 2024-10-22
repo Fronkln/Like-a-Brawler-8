@@ -10,7 +10,7 @@ namespace LikeABrawler2
         private static UIHandleBase m_hactPrompt;
         private static UIHandleBase m_wepPickup;
 
-        private static UIHandleBase m_gaugeRoot;
+        public static UIHandleBase GaugeRoot;
         private static UIHandleBase m_playerGauge;
         private static UIHandleBase m_playerGauge_NextLabel;
         private static UIHandleBase m_playerGauge_HealthGauge;
@@ -54,6 +54,21 @@ namespace LikeABrawler2
             m_playerGauge_HeatGaugeLabel = m_playerGauge.GetChild(7);
         }
 
+        public static void DoSoloFight()
+        {
+            if (GaugeRoot.GetChildCount() <= 1)
+                return;
+
+            //release UI until we are at player
+            var ch1 = GaugeRoot.GetChild(0);
+            var ch2 = GaugeRoot.GetChild(1);
+            var ch3 = GaugeRoot.GetChild(2);
+
+            ch1.Release();
+            ch2.Release();
+            ch3.Release();
+        }
+
         private static void OnBattleEnd()
         {
             m_hactPrompt.SetVisible(false);
@@ -62,12 +77,12 @@ namespace LikeABrawler2
 
         private static void OnHActStart()
         {
-            m_gaugeRoot.SetVisible(false);
+            GaugeRoot.SetVisible(false);
         }
 
         private static void OnHActEnd()
         {
-            m_gaugeRoot.SetVisible(true);
+            GaugeRoot.SetVisible(true);
         }
         public static void OnSwitchToTurnBased()
         {
@@ -96,7 +111,7 @@ namespace LikeABrawler2
             UIHandleBase gauge = new UIHandleBase();
 
             UIHandleBase gaugesRoot = uiHandle.GetChild(0).GetChild(0);
-            m_gaugeRoot = gaugesRoot;
+            GaugeRoot = gaugesRoot;
 
             if (!BrawlerPlayer.IsOtherPlayer())
             {
@@ -142,7 +157,7 @@ namespace LikeABrawler2
                 return;
 
             if(BrawlerBattleManager.IsHAct)
-                m_gaugeRoot.SetVisible(false);
+                GaugeRoot.SetVisible(false);
 
             ProcessPlayerGauge();
             Minimap.SetVisible(!Debug.NoUI);
@@ -164,7 +179,7 @@ namespace LikeABrawler2
 
             if (BrawlerBattleManager.Battling)
             {
-                m_gaugeRoot.SetVisible(!Debug.NoUI);
+                GaugeRoot.SetVisible(!Debug.NoUI);
                 m_playerGauge_HealthGauge.SetValue((float)playerHp / (float)Player.GetHPMax(BrawlerPlayer.CurrentPlayer));
                 m_playerGauge_HealthGaugeLabel.SetText(playerHp.ToString());
                 m_playerGauge_HeatGauge.SetValue((float)Player.GetHeatNow(BrawlerPlayer.CurrentPlayer) / (float)Player.GetHeatMax(BrawlerPlayer.CurrentPlayer));

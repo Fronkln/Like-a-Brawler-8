@@ -48,11 +48,7 @@ namespace LikeABrawler2
 
                 if (DragonEngine.IsKeyDown(VirtualKey.B))
                 {
-                    //foreach (var kv in EnemyManager.Enemies)
-                    //  kv.Value.TransitMortalAttack();
-
-                    for (int i = 1; i < 4; i++)
-                        NakamaManager.GetCharacterHandle((uint)i).Get().ToDead();
+                    BrawlerUIManager.DoSoloFight();
                 }
 
                 //  Mod.ReloadContent();
@@ -86,7 +82,9 @@ namespace LikeABrawler2
                 if(DragonEngine.IsKeyHeld(VirtualKey.J))
                 {
                     DragonEngine.Log("0 damage");
-                    BrawlerBattleManager.PlayerFighter.GetStatus().AttackPower = 0;
+
+                    for (uint i = 0; i < 4; i++)
+                        FighterManager.GetFighter(i).GetStatus().AttackPower = 0;
                 }
                 if (DragonEngine.IsKeyDown(VirtualKey.Numpad8))
                 {

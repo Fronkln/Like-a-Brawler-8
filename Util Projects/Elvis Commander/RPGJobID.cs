@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Yazawa_Commander
+﻿namespace Yazawa_Commander
 {
     public enum RPGJobID : uint
     {
@@ -31,5 +25,20 @@ namespace Yazawa_Commander
         woman_nightqueen,        // constant 0x14
         dlc_01,      // constant 0x15
         woman_martial,       // constant 0x16
+        kiryu_01 = 23,
+        woman_kunoichi,
+        man_samurai,
+        man_actionstar,
+        man_marine,
+        man_footballer,
+        man_western,
+        man_firedancer,
+        woman_housekeeper,
+        woman_tropicaldancer,
+        woman_tennis,
+        chitose_01,
+        tomizawa_01,
+        sonhi_01,
+        kasuga_sujimon
     };
 }

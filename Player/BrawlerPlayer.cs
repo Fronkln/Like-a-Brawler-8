@@ -68,7 +68,7 @@ namespace LikeABrawler2
         public static bool IsInputDeliveryHelp()
         {
             PadInputInfo inf = BattleManager.PadInfo;
-            return inf.IsHold(BattleButtonID.guard) && inf.IsHold(BattleButtonID.light) && inf.IsHold(BattleButtonID.heavy);
+            return inf.IsHold(BattleButtonID.guard) && BattleManager.PadInfo.IsJustPush(BattleButtonID.down);
         }
 
         public static bool IsKiryu()
@@ -311,6 +311,14 @@ namespace LikeABrawler2
             {
                 Player.SetHeatNow(CurrentPlayer, Player.GetHeatMax(CurrentPlayer));
                 BrawlerBattleManager.PlayerFighter.GetStatus().SetHPCurrent(Player.GetHPMax(CurrentPlayer));
+
+                Fighter p1 = FighterManager.GetFighter(1);
+                Fighter p2 = FighterManager.GetFighter(2);
+                Fighter p3 = FighterManager.GetFighter(3);
+
+                p1.GetStatus().SetHPCurrent(p1.GetStatus().MaxHP);
+                p2.GetStatus().SetHPCurrent(p2.GetStatus().MaxHP);
+                p3.GetStatus().SetHPCurrent(p3.GetStatus().MaxHP);
             }
 
             EXModule.Update();
@@ -319,7 +327,7 @@ namespace LikeABrawler2
             GameInputUpdate();
 
 
-            if (BattleManager.PadInfo.IsJustPush(BattleButtonID.down))
+            if (BattleManager.PadInfo.IsJustPush(BattleButtonID.down) && !BattleManager.PadInfo.IsHold(BattleButtonID.guard))
             {
                 RPGJobID curJob = Player.GetCurrentJob(CurrentPlayer);
 
@@ -496,8 +504,15 @@ namespace LikeABrawler2
 
                 BrawlerBattleManager.PlayerFighter.Character.GetRender().Reload(CharacterID.m_dummy, 7, true);
                 //BrawlerBattleManager.PlayerFighter.Character.GetRender().ReadyBattleTransform(false);
-                playerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get().DestroyEntity();
-                playerFighter.GetWeapon(AttachmentCombinationID.left_weapon).Unit.Get().DestroyEntity();
+
+                var wep1 = playerFighter.GetWeapon(AttachmentCombinationID.right_weapon);
+                var wep2 = playerFighter.GetWeapon(AttachmentCombinationID.left_weapon);
+
+                BrawlerBattleManager.PlayerFighter.DropWeapon(new DropWeaponOption(AttachmentCombinationID.left_weapon, false));
+                BrawlerBattleManager.PlayerFighter.DropWeapon(new DropWeaponOption(AttachmentCombinationID.right_weapon, false));
+
+                wep1.Unit.Get().DestroyEntity();
+                wep2.Unit.Get().DestroyEntity();
                 ToNormalMoveset();
 
                 playerChara.Components.EffectEvent.Get().PlayEventOverride(EffectEventCharaID.YZ_Chara_Cange01);
@@ -539,7 +554,7 @@ namespace LikeABrawler2
                     overrideStyle = PlayerStyle.Default;
                     BrawlerBattleManager.PlaySpecialMusic(DBManager.GetSoundCuesheet("bbg_k"), 1);
 
-                    BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToAttackMode(new FighterCommandID((ushort)styleCommandSet, (ushort)FighterCommandManager.GetCommandID(styleCommandSet, "StyleStart")));
+                    //BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToAttackMode(new FighterCommandID((ushort)styleCommandSet, (ushort)FighterCommandManager.GetCommandID(styleCommandSet, "StyleStart")));
                     break;
 
                 case PlayerStyle.Rush:
@@ -568,9 +583,13 @@ namespace LikeABrawler2
             {
                 short command = FighterCommandManager.GetSet(styleCommandSet).FindCommandInfo("StyleStart");
                 if (command >= 0)
+                {
+                    BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToEndReady();
                     BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToAttackMode(new FighterCommandID((ushort)styleCommandSet, command));
+                }
             }
 
+            BrawlerBattleManager.PlayerFighter.DropWeapon(new DropWeaponOption(AttachmentCombinationID.left_weapon, false));
             BrawlerBattleManager.PlayerFighter.DropWeapon(new DropWeaponOption(AttachmentCombinationID.right_weapon, false));
 
             CurrentStyle = newStyle;

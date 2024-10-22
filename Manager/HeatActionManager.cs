@@ -207,13 +207,13 @@ namespace LikeABrawler2
             m_hactCd = 0;
         }
 
-        public static void RequestTalk(HActRequestOptions opts)
+        public static bool RequestTalk(HActRequestOptions opts)
         {
             if (AwaitingHAct)
-                return;
+                return false;
 
             IsY8BHact = true;
-            HActManager.RequestHAct(opts);
+            return HActManager.RequestHAct(opts);
         }
 
         public static void ExecHeatAction(HeatActionInformation info)
@@ -300,6 +300,12 @@ namespace LikeABrawler2
 
             opts.id = DBManager.GetTalkParam(info.Hact.TalkParam);
             opts.is_force_play = true;
+
+            if(opts.id == 0)
+            {
+                DragonEngine.Log("ERROR! TRIED TO PLAY HACT THAT DOES NOT EXIST " + info.Hact.TalkParam + " " + info.Hact.Name);
+                return;
+            }
 
             foreach (var kv in info.Map)
             {

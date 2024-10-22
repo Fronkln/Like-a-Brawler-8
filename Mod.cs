@@ -141,7 +141,7 @@ namespace LikeABrawler2
         private static void GameUpdate()
         {
             IsGameFocused = ApplicationIsActivated();
-            IsGameFocused = GameVarManager.GetValueBool(GameVarID.is_pause);
+            IsGamePaused = GameVarManager.GetValueBool(GameVarID.is_pause);
 
 #if DEBUG
             Debug.GameUpdate();

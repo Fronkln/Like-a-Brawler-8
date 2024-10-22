@@ -32,8 +32,9 @@ namespace LikeABrawler2
             m_changeTurnPhase = BrawlerPatches.HookEngine.CreateHook<BattleTurnManager_ChangePhase>(m_changePhaseFunc, BattleTurnManager_ChangeTurnPhase);
             m_changeTurnStep = BrawlerPatches.HookEngine.CreateHook<BattleTurnManager_ChangeActionStep>(m_changeStepFunc, BattleTurnManager_ChangeTurnActionStep);
 
-            BrawlerPatches.HookEngine.EnableHook(m_changeTurnPhase);
-            BrawlerPatches.HookEngine.EnableHook(m_changeTurnStep);
+            //04.09.2024 i dont think we do actually
+            //BrawlerPatches.HookEngine.EnableHook(m_changeTurnPhase);
+            //BrawlerPatches.HookEngine.EnableHook(m_changeTurnStep);
         }
 
         protected override void SetActive()
@@ -50,6 +51,8 @@ namespace LikeABrawler2
             BrawlerPatches.HookEngine.EnableHook(m_setupTurnBattleFighter);
             BrawlerPatches.HookEngine.EnableHook(_btlTurnManagerDmgNotifyTrampoline);
             BrawlerPatches.HookEngine.EnableHook(_btlTurnManagerExecPhaseActionTrampoline);
+            BrawlerPatches.HookEngine.EnableHook(m_changeTurnPhase);
+            BrawlerPatches.HookEngine.EnableHook(m_changeTurnStep);
         }
 
         protected override void SetInactive()
@@ -60,11 +63,16 @@ namespace LikeABrawler2
             if (_btlTurnManagerDmgNotifyTrampoline != null)
                 BrawlerPatches.HookEngine.DisableHook(_btlTurnManagerDmgNotifyTrampoline);
 
-           if(_btlTurnManagerExecPhaseActionTrampoline != null)
+            if (_btlTurnManagerExecPhaseActionTrampoline != null)
                 BrawlerPatches.HookEngine.DisableHook(_btlTurnManagerExecPhaseActionTrampoline);
 
-           if(m_setupTurnBattleFighter != null)
+            if (m_setupTurnBattleFighter != null)
                 BrawlerPatches.HookEngine.DisableHook(m_setupTurnBattleFighter);
+
+            if (m_changeTurnStep != null)
+                BrawlerPatches.HookEngine.DisableHook(m_changeTurnPhase);
+            if (m_changeTurnStep != null)
+                BrawlerPatches.HookEngine.DisableHook(m_changeTurnStep);
         }
 
         private static BattleTurnManager_ChangePhase m_changeTurnPhase;
@@ -78,7 +86,7 @@ namespace LikeABrawler2
                 return;
             }
 
-            if(phase == BattleTurnManager.TurnPhase.Event && HeatActionManager.IsY8BHact)
+            if (phase == BattleTurnManager.TurnPhase.Event && HeatActionManager.IsY8BHact)
             {
                 //this will immediately lead back to Action and bring turn based UI visible
                 //new DETaskTime(0.01f, delegate { BattleTurnManager.ChangePhase(BattleTurnManager.TurnPhase.Start); });
@@ -87,7 +95,7 @@ namespace LikeABrawler2
             m_changeTurnPhase.Invoke(battleTurnManager, phase);
 
             //Reduce cleanup phase time and not wait the full 5 seconds.
-            if(phase == BattleTurnManager.TurnPhase.Cleanup)
+            if (phase == BattleTurnManager.TurnPhase.Cleanup)
             {
                 if (BrawlerBattleManager.BattleEndedInY8BHAct)
                 {
@@ -100,7 +108,7 @@ namespace LikeABrawler2
         private static BattleTurnManager_ChangeActionStep m_changeTurnStep;
         private static void BattleTurnManager_ChangeTurnActionStep(IntPtr battleTurnManager, BattleTurnManager.ActionStep step)
         {
-            if(Mod.IsTurnBased())
+            if (Mod.IsTurnBased())
             {
                 m_changeTurnStep.Invoke(battleTurnManager, step);
                 return;
@@ -112,7 +120,7 @@ namespace LikeABrawler2
                 return;
             */
 
-            if(step == BattleTurnManager.ActionStep.SelectTarget && SupporterManager.SkipDoubleTurn)
+            if (step == BattleTurnManager.ActionStep.SelectTarget && SupporterManager.SkipDoubleTurn)
             {
                 SupporterManager.SkipDoubleTurn = false;
                 step = BattleTurnManager.ActionStep.TriggeredEvent;

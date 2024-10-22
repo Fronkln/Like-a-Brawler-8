@@ -47,7 +47,7 @@ namespace LikeABrawler2
 
 
         public static void OnBattleEnd()
-        {
+        { 
             Supporters.Clear();
             NextSupporterAttacker = null;
             SkipDoubleTurn = false;
@@ -100,7 +100,7 @@ namespace LikeABrawler2
                 BaseSupporterAI supporter = kv.Value;
                 supporter.Update();
 
-                if (BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action && !HeatActionManager.IsHAct())
+                if (BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action && !HeatActionManager.IsHAct() && !Mod.IsGamePaused)
                     if(supporter.Character != BrawlerBattleManager.PlayerCharacter)
                         supporter.CombatUpdate();
             }
@@ -128,6 +128,7 @@ namespace LikeABrawler2
 
             ai.Fighter = fighter;
             ai.Character = fighter.Character;
+            BrawlerFighterInfo.Infos.Add(ai.Character.UID, new BrawlerFighterInfo() { Fighter = fighter});
 
             ai.Awake();
 

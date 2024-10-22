@@ -19,7 +19,6 @@ namespace LikeABrawler2
 
         public override void HActUpdate()
         {
-
             HeatActionInformation performableHact = HeatActionSimulator.Check(Fighter, HActList);
 
             if (performableHact != null)
@@ -27,7 +26,7 @@ namespace LikeABrawler2
                 performableHact.PosOverride = BrawlerBattleManager.PlayerCharacter.GetPosCenter();
                 HeatActionManager.ExecHeatAction(performableHact);
 
-                m_hactCd = 3.5f;
+                m_hactCd = HACT_COOLDOWN;
             }
         }
 

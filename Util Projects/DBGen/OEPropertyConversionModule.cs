@@ -99,6 +99,14 @@ namespace DBGen
                     voiceSE.SoundIndex = (byte)oePropertyVoiceSE.ID;
                     voiceSE.Unk = 128;
 
+
+                    switch(voiceSE.SoundIndex)
+                    {
+                        case 9:
+                            voiceSE.SoundIndex = 1;
+                            break;
+                    }
+
                     deNode = voiceSE;
                     break;
 

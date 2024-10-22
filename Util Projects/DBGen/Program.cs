@@ -113,6 +113,8 @@ namespace DBGen
             {
                 MotionFlagInfoModule.Procedure();
                 Console.WriteLine();
+                OEPropertyConversionModule.Procedure();
+                Console.WriteLine();
                 SoundCuesheetModule.Procedure();
                 Console.WriteLine();
                 ParticleModule.Procedure();
@@ -132,8 +134,6 @@ namespace DBGen
                 InputActionModule.Procedure();
                 Console.WriteLine();
                 InputGameStateModule.Procedure();
-                Console.WriteLine();
-                OEPropertyConversionModule.Procedure();
                 BattleCtrlTypeModule.Procedure();
                 Console.WriteLine();
                 BattleCommandSetModule.Procedure();

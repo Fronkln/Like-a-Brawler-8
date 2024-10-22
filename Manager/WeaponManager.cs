@@ -56,6 +56,7 @@ namespace LikeABrawler2
                         [AssetArmsCategoryID.H] = YazawaCommandManager.LoadYHC("player/kasuga_wph.ehc"),
                         [AssetArmsCategoryID.N] = YazawaCommandManager.LoadYHC("player/player_wpn.ehc"),
                         [AssetArmsCategoryID.M] = YazawaCommandManager.LoadYHC("player/player_wpm.ehc"),
+                        [AssetArmsCategoryID.V] = YazawaCommandManager.LoadYHC("player/player_wpv.ehc"),
                     }
                 },
                 [Player.ID.kiryu] = new Dictionary<JobWeaponType, Dictionary<AssetArmsCategoryID, EHC>>
@@ -64,11 +65,13 @@ namespace LikeABrawler2
                     {
                         [AssetArmsCategoryID.A] = YazawaCommandManager.LoadYHC("player/player_wpa.ehc"),
                         [AssetArmsCategoryID.B] = YazawaCommandManager.LoadYHC("player/player_wpb.ehc"),
-                        [AssetArmsCategoryID.C] = YazawaCommandManager.LoadYHC("player/player_wpc.ehc"),
+                        [AssetArmsCategoryID.C] = YazawaCommandManager.LoadYHC("player/kiryu_wpc.ehc"),
                         [AssetArmsCategoryID.F] = YazawaCommandManager.LoadYHC("player/player_wpf.ehc"),
                         [AssetArmsCategoryID.D] = YazawaCommandManager.LoadYHC("player/kiryu_wpd.ehc"),
+                        [AssetArmsCategoryID.H] = YazawaCommandManager.LoadYHC("player/kiryu_wph.ehc"),
                         [AssetArmsCategoryID.N] = YazawaCommandManager.LoadYHC("player/player_wpn.ehc"),
                         [AssetArmsCategoryID.M] = YazawaCommandManager.LoadYHC("player/player_wpm.ehc"),
+                        [AssetArmsCategoryID.V] = YazawaCommandManager.LoadYHC("player/player_wpv.ehc"),
                     }
                 }
             };

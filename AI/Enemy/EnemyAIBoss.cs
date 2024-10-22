@@ -46,9 +46,13 @@ namespace LikeABrawler2
 
         protected override void OnTakeDamageEvent(BattleDamageInfoSafe dmg)
         {
-            base.OnTakeDamageEvent(dmg);
+            Character attacker = dmg.Attacker;
+            bool isBackAttack = false;
 
-            if (RecentHitsWithoutAttack > 6)
+            if (attacker.IsValid())
+                isBackAttack = Vector3.Distance(attacker.Transform.Position, Character.Transform.Position) <= 3f && !Character.IsFacingEntity(attacker, 0.1f);
+
+            if (RecentHitsWithoutAttack > 6 && !isBackAttack)
                 if (!m_hasAntiSpamArmor && m_antiSpamArmorCooldown <= 0)
                 {
                     m_antiSpamArmorCooldown = 10f;

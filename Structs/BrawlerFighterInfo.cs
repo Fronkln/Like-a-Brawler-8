@@ -89,12 +89,12 @@ namespace LikeABrawler2
         }
 
         /// <summary>
-        /// We are either down, dead, ragdolled, in sync, getting up or flinching in pain.
+        /// We are either down, dead, ragdolled, in sync, swaying, getting up or flinching in pain.
         /// </summary>
         /// <returns></returns>
         public bool CantAttackOverall()
         {
-            return IsDead || IsFlinching || IsSync || IsDown || IsGettingUp || IsRagdoll || MortalReversalManager.Procedure;
+            return IsDead || IsFlinching || IsSync || IsDown || IsGettingUp || IsRagdoll || Fighter.Character.HumanModeManager.CurrentMode.ModeName == "Sway" || MortalReversalManager.Procedure;
         }
     }
 }

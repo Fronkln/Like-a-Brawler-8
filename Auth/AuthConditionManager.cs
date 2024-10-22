@@ -27,6 +27,7 @@ namespace LikeABrawler2
             Register(133700007, ConditionFolderIsNotSupporter.CheckDisabled);
             Register(133700008, ConditionFolderKiryuStyle.Check);
             Register(133700009, ConditionFolderIsActiveBrawlerPlayer.CheckDisabled);
+            Register(133700010, ConditionFolderNotHActOrWaiting.CheckDisabled);
         }
 
 

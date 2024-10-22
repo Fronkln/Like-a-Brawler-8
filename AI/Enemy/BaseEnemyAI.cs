@@ -1,6 +1,8 @@
 ﻿using DragonEngineLibrary;
 using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace LikeABrawler2
 {
@@ -52,6 +54,7 @@ namespace LikeABrawler2
         private float m_counterAttackTime = 0;
         private bool m_counterAttacking = false;
 
+        public List<Fighter> PlayersNearest = new List<Fighter>();
         public float DistToPlayer { get { return Vector3.Distance(Character.Transform.Position, BrawlerBattleManager.PlayerCharacter.Transform.Position); } }
 
         public override void Awake()
@@ -112,10 +115,23 @@ namespace LikeABrawler2
 
         protected virtual void OnTakeDamageEvent(BattleDamageInfoSafe dmg)
         {
-            if(!IsBoss())
+            Character attacker = dmg.Attacker;
+            bool isBackAttack = false;
+
+            if(attacker.IsValid())
+                isBackAttack = Vector3.Distance(attacker.Transform.Position, Character.Transform.Position) <= 3f && !Character.IsFacingEntity(attacker, 0.1f);
+
+            if (!IsBoss() && !isBackAttack)
             {
+                int hitLimit = 0;
+
+                if (IsBeingJuggled())
+                    hitLimit = 12;
+                else
+                    hitLimit = 6;
+
                 //Hyperarmor for goonies
-                if (RecentHitsWithoutAttack > 6)
+                if (hitLimit> 6)
                     if (!m_hasAntiSpamArmor && m_antiSpamArmorCooldown <= 0)
                     {
                         m_antiSpamArmorCooldown = 20f;
@@ -221,6 +237,27 @@ namespace LikeABrawler2
             uint* tagFighter = (uint*)(Fighter.GetStatus().Pointer.ToInt64() + 0x2014);
             *tagFighter = BrawlerBattleManager.PlayerCharacter.UID;
 
+            PlayersNearest.Clear();
+
+
+            if (BrawlerBattleManager.PlayerFighter.IsValid())
+                PlayersNearest.Add(BrawlerBattleManager.PlayerFighter);
+
+            Fighter p1 = FighterManager.GetFighter(1);
+            Fighter p2 = FighterManager.GetFighter(2);
+            Fighter p3 = FighterManager.GetFighter(3);
+
+            if (p1.IsValid())
+                PlayersNearest.Add(p1);
+
+            if (p2.IsValid())
+                PlayersNearest.Add(p2);
+
+            if (p3.IsValid())
+                PlayersNearest.Add(p3);
+
+            PlayersNearest = PlayersNearest.OrderBy(x => Vector3.Distance(Character.Transform.Position, x.Character.Transform.Position)).ToList();
+
             bool gettingUp = BrawlerInfo.IsGettingUp;
 
             if (gettingUp && !m_gettingUp)
@@ -231,7 +268,10 @@ namespace LikeABrawler2
             float dt = DragonEngine.deltaTime;
 
             LastHitTime += dt;
-            LastTurnTime = 0;
+
+            if(!IsMyTurn())
+                LastTurnTime += dt;
+
             m_antiSpamArmorCooldown -= dt;
 
             if (m_hasAntiSpamArmor && !Character.HumanModeManager.IsDamage())
@@ -399,6 +439,27 @@ namespace LikeABrawler2
         protected virtual void OnStartGettingUp()
         {
 
+        }
+
+        public void ApplyFear(float seconds)
+        {
+            ExEffectInfo str = new ExEffectInfo();
+            str.effID = 11;
+            str.idk = str.effID;
+            str.effSetID = 1479;
+            str.idk2 = str.effSetID;
+            str.category = 0x11;
+            str.bKeepInfinity = true;
+            str.nKeepDamage = 255;
+
+            var ptr = str.ToIntPtr();
+            Fighter.GetStatus().AddExEffect(str.ToIntPtr(), false, false);
+            Marshal.FreeHGlobal(ptr);
+
+            new DETaskTime(seconds, delegate
+            {
+                Fighter.GetStatus().RemoveExEffect(11, false, false);
+            });
         }
     }
 }

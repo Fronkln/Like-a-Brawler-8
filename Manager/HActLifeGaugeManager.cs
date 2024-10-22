@@ -146,7 +146,7 @@ namespace LikeABrawler2
 
             foreach(var kv in HeatActionManager.PerformingHAct.Map)
             {
-                if(kv.Key.ToString().StartsWith("Enemy"))
+                if(kv.Key.ToString().StartsWith("Enemy") && !kv.Value.IsPlayer())
                 {
                     if(firstEnem._ptr == IntPtr.Zero)
                         firstEnem = kv.Value;
@@ -159,8 +159,8 @@ namespace LikeABrawler2
                     inf.SetValue(status.CurrentHP);
 
                     var constructor = kv.Value.Character.GetConstructor();
-                    var agent = kv.Value.Character.GetConstructor().GetAgentComponent();
-                    var soldierInfo = kv.Value.Character.GetConstructor().SoldierInfo.Get();
+                    var agent = constructor.GetAgentComponent();
+                    var soldierInfo = constructor.SoldierInfo.Get();
 
                     string name = soldierInfo.Name;
                     inf.m_nameRoot.SetText(name);

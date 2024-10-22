@@ -53,6 +53,12 @@ namespace LikeABrawler2
                     return;
                 }    
 
+                if(!Attacker.IsValid() || Attacker.IsDead())
+                {
+                    Procedure = false;
+                    return;
+                }
+
                 DragonEngine.SetSpeed(DESpeedType.General, 0.1f);
                 DragonEngine.SetSpeed(DESpeedType.Character, 0.1f);
                 DragonEngine.SetSpeed(DESpeedType.Player, 0.1f);

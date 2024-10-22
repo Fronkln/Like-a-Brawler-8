@@ -12,12 +12,19 @@ namespace LikeABrawler2
         private static RepeatingTask m_exHeatDecay = new RepeatingTask(
             delegate
             {
+                if (!BrawlerPlayer.IsExtremeHeat)
+                    return;
+
+                if (Mod.IsGamePaused)
+                    return;
+
+                if (BrawlerPlayer.GodMode)
+                    return;
+
                 //kiryu has less MP
                 m_exHeatDecay.m_tickRate = BrawlerPlayer.IsKiryu() ? 0.2f : 0.1f;
 
-                if(!Mod.IsGamePaused && !BrawlerPlayer.GodMode)
                 if(BrawlerBattleManager.CurrentPhase == BattleTurnManager.TurnPhase.Action)
-                if (BrawlerPlayer.IsExtremeHeat)
                     if(Player.GetHeatNow(BrawlerPlayer.CurrentPlayer) > 0)
                         Player.SetHeatNow(BrawlerPlayer.CurrentPlayer, Player.GetHeatNow(BrawlerPlayer.CurrentPlayer) - 1);
             }, !Mod.IsDemo() ? 0.1f : 0.2f //Make it decay slower in demo for more player experiment

@@ -8,6 +8,7 @@ namespace LikeABrawler2
     internal static class EnemyManager
     {
         public static Dictionary<uint, BaseEnemyAI> Enemies = new Dictionary<uint, BaseEnemyAI>();
+        public static BaseAI ForcedAttacker = null;
 
         public static void Update()
         {
@@ -46,7 +47,7 @@ namespace LikeABrawler2
                 BaseEnemyAI enemy = kv.Value;
                 enemy.Update();
 
-                if (BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action && !HeatActionManager.IsHAct())
+                if (BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action && !HeatActionManager.IsHAct() && !Mod.IsGamePaused)
                 {
                     enemy.CombatUpdate();
 
@@ -119,6 +120,9 @@ namespace LikeABrawler2
                 case "elvis_btl12_0300_000_3":
                     ai = new EnemyAIBossDaigo();
                     break;
+                case "elvis_btl14_0300_7":
+                    ai = new EnemyAIBossSupporterBryce();
+                    break;
 
             }
 
@@ -183,6 +187,12 @@ namespace LikeABrawler2
                 case "elvis_lng06_btl13_0060_1": //samuel: chainsaw boss, uses WPC
                     encounterBoss = true;
                     break;
+                case "elvis_btl14_0300_1": //ichiban finale palekana officer
+                    encounterBoss = true;
+                    break;
+                case "elvis_btl14_0350_1": //ichiban finale SMG palekana boss
+                    encounterBoss = true;
+                    break;
             }
 
             uint ctrlType = (uint)fighter.Character.Attributes.ctrl_type;
@@ -214,6 +224,12 @@ namespace LikeABrawler2
                         case 260:
                             ai = new EnemyAIBossDwight1();
                             break;
+                        case 274:
+                            ai = new EnemyAIBossEbina();
+                            break;
+                        case 278:
+                            ai = new EnemyAIBossBryce();
+                            break;
                     }
 
                     if (ai == null)
@@ -231,6 +247,9 @@ namespace LikeABrawler2
                                 break;
                             case AssetArmsCategoryID.D:
                                 ai = new EnemyAIBossWPD();
+                                break;
+                            case AssetArmsCategoryID.R:
+                                ai = new EnemyAIBossWPR();
                                 break;
                             case AssetArmsCategoryID.Y:
                                 ai = new EnemyAIBossWPY();

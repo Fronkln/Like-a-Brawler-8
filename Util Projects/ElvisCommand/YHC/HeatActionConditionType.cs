@@ -45,6 +45,7 @@
         IsSupporter = 40,
         SupporterFlags = 41,
         WeaponFlags = 42,
-        HumanMode = 43
+        HumanMode = 43,
+        StatusEffect = 44
     }
 }

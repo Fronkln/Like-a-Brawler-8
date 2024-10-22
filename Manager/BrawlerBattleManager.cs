@@ -1,7 +1,6 @@
 ﻿using DragonEngineLibrary;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 
 namespace LikeABrawler2
@@ -61,6 +60,8 @@ namespace LikeABrawler2
         private static uint m_bgmID;
         private static uint m_bgmTime;
         private static bool m_specialBgmPlaying = false;
+
+        public static bool SoloBattleOnce = false;
 
 
         private delegate void TestTest(IntPtr sMan, IntPtr handle, bool pause);
@@ -182,6 +183,14 @@ namespace LikeABrawler2
                     if (paused)
                     {
                         PlayerFighter.GetStatus().SetHPCurrent(Player.GetHPNow(BrawlerPlayer.CurrentPlayer));
+
+                        Fighter p2 = FighterManager.GetFighter(1);
+                        Fighter p3 = FighterManager.GetFighter(2);
+                        Fighter p4 = FighterManager.GetFighter(3);
+
+                        p2.GetStatus().SetHPCurrent(Player.GetHPNow(p2.Character.Attributes.player_id));
+                        p3.GetStatus().SetHPCurrent(Player.GetHPNow(p3.Character.Attributes.player_id));
+                        p4.GetStatus().SetHPCurrent(Player.GetHPNow(p4.Character.Attributes.player_id));
                     }
                 }
                 else
@@ -289,8 +298,17 @@ namespace LikeABrawler2
             }
         }
 
+        private static bool AllowSpecialMusic()
+        {
+            //ebina battle
+            return BattleConfigID != 174;
+        }
+
         public unsafe static void PlaySpecialMusic(ushort cue, ushort id)
         {
+            if (!AllowSpecialMusic())
+                return;
+
             SoundManager.PlayBGM(0, cue, id, 0);
             int handle1 = *(int*)(SoundManager.Pointer() + 0xD4);
             int handle2 = *(int*)(SoundManager.Pointer() + 0xD8);
@@ -378,6 +396,52 @@ namespace LikeABrawler2
 
                 case 161:
                     SpecialBattle.TriosFight();
+                    break;
+                case 174: // ebina
+                    new DETask(delegate { return BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action && !GameVarManager.GetValueBool(GameVarID.is_hact); }, delegate
+                    {
+                        new DETaskTime(0.06f, delegate
+                        {
+                            if (NakamaManager.GetCharacterHandle(1).IsValid())
+                            {
+                                HActRequestOptions opts = new HActRequestOptions();
+                                opts.base_mtx.matrix = PlayerCharacter.GetMatrix();
+                                opts.base_mtx.matrix.ForwardDirection = new Vector4(0, 0, -1);
+                                opts.base_mtx.matrix.LeftDirection = new Vector4(-1, 0, 0);
+                                opts.id = DBManager.GetTalkParam("y8bb1780_ebn_party_decide");
+                                opts.is_force_play = true;
+
+                                opts.Register(HActReplaceID.hu_npc_00, FighterManager.GetFighter(1).Character);
+                                opts.Register(HActReplaceID.hu_npc_01, FighterManager.GetFighter(2).Character);
+                                opts.Register(HActReplaceID.hu_npc_02, FighterManager.GetFighter(3).Character);
+
+                                HeatActionManager.RequestTalk(opts);
+
+                                new DETask(delegate { return HeatActionManager.IsHAct(); }, delegate
+                                {
+                                    SkipTurn();
+                                    new DETask(delegate
+                                    {
+                                        SkipTurn();
+                                        return !HeatActionManager.IsHAct();
+                                    }, null);
+                                });
+                                
+                            }
+                        });
+                    });
+                    break;
+                case 175: //shark fight (vs player)
+                    new DETask(delegate { return BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action; }, delegate
+                    {
+                        new DETaskTime(0.3f, delegate { DoBadBattleWarning(); });
+                    });
+                    break;
+                case 182: //blessed leviathan fight
+                    new DETask(delegate { return BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action; }, delegate
+                    {
+                        new DETaskTime(0.3f, delegate { DoBadBattleWarning(); });
+                    });
                     break;
 
                 case 188: //crane fight
@@ -513,7 +577,6 @@ namespace LikeABrawler2
             if (Mod.IsGamePaused)
                 return;
 
-            CharacterAttributes attribs = PlayerCharacter.Attributes;
             BrawlerPlayer.Update();
             WeaponManager.RealtimeCombatUpdate();
 
@@ -881,6 +944,7 @@ namespace LikeABrawler2
             m_battleActionStartedDoOnce = false;
             m_actionStartedDoOnce = false;
             BattleEndedInY8BHAct = false;
+            SoloBattleOnce = false;
 
             if (Mod.IsTurnBased())
                 return;
@@ -951,6 +1015,14 @@ namespace LikeABrawler2
             {
                 Fighter fighter = SupporterManager.NextSupporterAttacker.Fighter;
                 SupporterManager.NextSupporterAttacker = null;
+
+                return fighter._ptr;
+            }
+
+            if(EnemyManager.ForcedAttacker != null && EnemyManager.ForcedAttacker.Character.IsValid())
+            {
+                Fighter fighter = EnemyManager.ForcedAttacker.Fighter;
+                EnemyManager.ForcedAttacker = null;
 
                 return fighter._ptr;
             }

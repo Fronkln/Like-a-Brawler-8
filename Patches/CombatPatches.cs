@@ -20,6 +20,7 @@ namespace LikeABrawler2
         private IntPtr m_invisFighterJmp3;
         private IntPtr m_yorokeFunc;
         private IntPtr m_ecbattleStatusCalculateHpFunc;
+        private IntPtr m_fighterDisableRunFunc;
 
         private IntPtr m_transitKiryuGuardFunc;
         private HijackedFunction m_transitKiryuGuardHijack;
@@ -31,6 +32,9 @@ namespace LikeABrawler2
 
         [return: MarshalAs(UnmanagedType.U1)]
         private delegate bool FighterCanDamSync(IntPtr fighter, IntPtr armorInf);
+
+        [return: MarshalAs(UnmanagedType.U1)]
+        private delegate bool FighterDisableRun(IntPtr fighter);
 
         private delegate void TransitHijackedKiryuGuard();
 
@@ -50,6 +54,7 @@ namespace LikeABrawler2
             m_inputStateAssignment = CPP.PatternSearch("83 F8 ? 73 ? 8B 4C 87 20") + 9;
             m_fighterTransformFunc = CPP.PatternSearch("48 89 5C 24 10 48 89 74 24 18 57 48 83 EC ? 48 89 D6 48 89 CF 48 8D 99 F0 BF 00 00");
             m_fighterTransformEffectFunc = CPP.PatternSearch("40 53 48 83 EC ? 8B 81 58 05 00 00");
+            m_fighterDisableRunFunc = CPP.ReadCall(CPP.PatternSearch("E8 ? ? ? ? 84 C0 45 0F B6 F6 44 0F 45 F3"));
             m_canDamSyncJump = CPP.PatternSearch("75 ? B0 ? 48 8B 5C 24 30 48 83 C4 ? 5F C3 48 8B 5C 24 30 32 C0 48 83 C4 ? 5F C3");
             m_canDamSyncFunc = CPP.ReadCall(CPP.PatternSearch("E8 ? ? ? ? 84 C0 0F 84 ? ? ? ? 48 8B CF E8 ? ? ? ? 48 8B 80 B8 0C 00 00"));
             m_setMarkFighterFunc = CPP.ReadCall(CPP.PatternSearch("E8 ? ? ? ? 48 8B 0D ? ? ? ? 48 8B 01 45 33 C0"));
@@ -94,12 +99,15 @@ namespace LikeABrawler2
             if(m_transitKiryuCounterTrampoline == null)
                 m_transitKiryuCounterTrampoline = BrawlerPatches.HookEngine.CreateHook<TransitHijackedKiryuGuard>(m_transitKiryuGuardFunc, TransitKiryuCounter);
 
+            if (m_fighterDisableRunTrampoline == null)
+                m_fighterDisableRunTrampoline = BrawlerPatches.HookEngine.CreateHook<FighterDisableRun>(m_fighterDisableRunFunc, Fighter_DisableRun);
 
             BrawlerPatches.HookEngine.EnableHook(m_battleTransformOnTrampoline);
             BrawlerPatches.HookEngine.EnableHook(m_canDamSyncTrampoline);
             BrawlerPatches.HookEngine.EnableHook(m_ecBattleStatusSetMarkFighterTrampoline);
             BrawlerPatches.HookEngine.EnableHook(m_handleAutoModeTrampoline);
             BrawlerPatches.HookEngine.EnableHook(m_transitKiryuCounterTrampoline);
+            BrawlerPatches.HookEngine.EnableHook(m_fighterDisableRunTrampoline);
 
             CPP.PatchMemory(m_invisFighterJmp1+6, 0x99);
             CPP.PatchMemory(m_invisFighterJmp2, 0xEB);
@@ -128,6 +136,9 @@ namespace LikeABrawler2
 
             if (m_handleAutoModeTrampoline != null)
                 BrawlerPatches.HookEngine.DisableHook(m_handleAutoModeTrampoline);
+
+            if (m_fighterDisableRunTrampoline != null)
+                BrawlerPatches.HookEngine.DisableHook(m_fighterDisableRunTrampoline);
 
             CPP.PatchMemory(m_invisFighterJmp1+6, 0x20);
             CPP.PatchMemory(m_invisFighterJmp2, 0x74);
@@ -175,7 +186,6 @@ namespace LikeABrawler2
         {
             m_ecbattleStatusInitializeHpTrampoline(status);
 
-
             if (!Mod.IsRealtime())
                 return;
 
@@ -202,9 +212,6 @@ namespace LikeABrawler2
                 statusobj.AttackPower = rebalancedDat.Attack;
                 statusobj.DefensePower = rebalancedDat.Defense;
             }
-
-            long val2 = statusobj.CurrentHP;
-
         }
 
         //Originally cbattle_manager constructor, it only gets called once on game start, so we can easily make this function our own!
@@ -303,6 +310,21 @@ namespace LikeABrawler2
 
             return m_handleAutoModeTrampoline(thisPtr, selectCommandInfo, fighterPtrPtr);
 
+        }
+
+        private static FighterDisableRun m_fighterDisableRunTrampoline = null;
+        private static bool Fighter_DisableRun(IntPtr fighterPtr)
+        {
+            Fighter fighter = new Fighter(fighterPtr);
+
+            if (fighter != BrawlerBattleManager.PlayerFighter)
+                return m_fighterDisableRunTrampoline(fighterPtr);
+
+            //Let beast run with weapons
+            if (BrawlerPlayer.CurrentStyle == PlayerStyle.Beast)
+                return false;
+
+            return m_fighterDisableRunTrampoline(fighterPtr);
         }
     }
 }

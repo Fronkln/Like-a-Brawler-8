@@ -21,14 +21,18 @@ namespace LikeABrawler2
         protected bool m_extendAttack = false;
         protected float m_hactCd = 0;
 
+        protected CharacterAttributes m_attributes;
+
         //Constants
         protected const float COMBO_EXTEND_BASE_CHANCE = 45;
+        protected const float HACT_COOLDOWN = 25f;
 
         public virtual void Awake()
         {
             LoadContent();
-            
-            uint soldierID = (uint)Character.Attributes.soldier_data_id;
+
+            m_attributes = Character.Attributes;
+            uint soldierID = (uint)m_attributes.soldier_data_id;
 
             ECBattleStatus status = Fighter.GetStatus();
 
@@ -39,7 +43,8 @@ namespace LikeABrawler2
                 "\nDefense: " + status.DefensePower +
                 "\nCtrlType: " + (uint)Character.Attributes.ctrl_type +
                 "\nAssetL: " + Fighter.GetWeapon(AttachmentCombinationID.left_weapon).ToString() +
-                "\nAssetR: " + Fighter.GetWeapon(AttachmentCombinationID.right_weapon).ToString());
+                "\nAssetR: " + Fighter.GetWeapon(AttachmentCombinationID.right_weapon).ToString() +
+                "\nCharacter ID: " + (uint)m_attributes.chara_id);
         }
 
         public static void ApplyBalanceChange(Fighter character)
@@ -63,6 +68,11 @@ namespace LikeABrawler2
 
         public virtual bool CanBeHActed()
         {
+            return m_attributes.animal_kind == CharacterAnimalKind.human;
+        }
+
+        public virtual bool CanHAct()
+        {
             return true;
         }
 
@@ -71,7 +81,7 @@ namespace LikeABrawler2
             if (m_hactCd > 0)
                 m_hactCd -= DragonEngine.deltaTime;
 
-            if (HActList != null && m_hactCd <= 0)
+            if (HActList != null && CanHAct() && m_hactCd <= 0 && !BrawlerBattleManager.IsHActOrWaiting)
                 HActUpdate();
 
             bool myTurnNow = IsMyTurn();
@@ -105,8 +115,12 @@ namespace LikeABrawler2
         {
             HeatActionInformation performableHact = HeatActionSimulator.Check(Fighter, HActList);
 
-            if(performableHact != null)
+            if (performableHact != null)
+            {
+                performableHact.UseHeat = false;
                 HeatActionManager.ExecHeatAction(performableHact);
+                m_hactCd = HACT_COOLDOWN;
+            }
         }
 
         public virtual bool CanPerformHAct()

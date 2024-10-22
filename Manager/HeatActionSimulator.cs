@@ -59,7 +59,27 @@ namespace LikeABrawler2
             }
             else
             {
-                map[HeatActionActorType.Enemy1] = BrawlerBattleManager.PlayerFighter;
+                BaseEnemyAI ai = EnemyManager.GetAI(performer);
+
+                if (ai == null)
+                    return null;
+
+                List<Fighter> enemies = ai.PlayersNearest;
+                int curEnemyIdx = 0;
+
+                if (enemies != null && enemies.Count > 0)
+                {
+                    //Register enemies for player
+                    for (int i = (int)HeatActionActorType.Enemy1; ; i++)
+                    {
+                        if (curEnemyIdx >= enemies.Count || curEnemyIdx == 5)
+                            break;
+
+                        map[(HeatActionActorType)i] = enemies[curEnemyIdx];
+
+                        curEnemyIdx++;
+                    }
+                }
             }
 
             foreach (HeatActionAttack attack in hactList.Attacks)
@@ -301,7 +321,12 @@ namespace LikeABrawler2
                     bool ccond2 = (string.IsNullOrEmpty(cond.ParamString2) || commandInf.Id == cond.ParamString2);
                     bool ccond3 = (string.IsNullOrEmpty(cond.ParamString3) || commandInf.Id.StartsWith(cond.ParamString3));
 
-                    flag = ccond1 && ccond2 && ccond3;
+                    if (!string.IsNullOrEmpty(cond.ParamString1))
+                        flag = ccond2 || ccond3;
+                    else
+                        flag = ccond1 && ccond2 && ccond3;
+
+                    flag = ccond1 || ccond2 && ccond3;
                     break;
 
                 case HeatActionConditionType.EXHeat:
@@ -385,6 +410,10 @@ namespace LikeABrawler2
                         if (enemyAI != null)
                             flag = enemyAI.IsBoss();
                     }
+                    break;
+
+                case HeatActionConditionType.StatusEffect:
+                    flag = actor.HasExEffect((int)cond.Param1U32);
                     break;
             }
 
