@@ -247,8 +247,10 @@
     <Compile Include="Auth\AuthNodeLABPlayerAssetUseReduce.cs" />
     <Compile Include="Auth\AuthNodeLABSpecial.cs" />
     <Compile Include="Auth\AuthNodeRobWeapon.cs" />
+    <Compile Include="Auth\AuthNodeTransitRange.cs" />
     <Compile Include="Auth\AuthNodeTransitHAct.cs" />
     <Compile Include="Auth\AuthNodeTransitRpgSkill.cs" />
+    <Compile Include="Auth\ConditionFolderEnemiesPresent.cs" />
     <Compile Include="Auth\ConditionFolderKiryuStyle.cs" />
     <Compile Include="Auth\ConditionFolderLABBattleOverByY8BHact.cs" />
     <Compile Include="Auth\ConditionFolderLABISDemo.cs" />

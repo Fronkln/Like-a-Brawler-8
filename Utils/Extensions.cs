@@ -9,6 +9,14 @@ namespace LikeABrawler2
 {
     internal static class Extensions
     {
+        public static bool IsFacingPosition(this EntityBase ent, Vector3 position, float dotOverride = -10)
+        {
+            float dotVal = (dotOverride > -10 ? dotOverride : 0.35f);
+            float dot = Vector3.Dot(ent.Transform.forwardDirection, (position - ent.Transform.Position).normalized);
+
+            return dot >= dotVal;
+        }
+
         public static bool IsFacingEntity(this EntityBase ent, EntityBase other, float dotOverride = -10)
         {
             float dotVal = (dotOverride > -10 ? dotOverride : 0.35f);

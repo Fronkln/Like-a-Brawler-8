@@ -8,12 +8,14 @@ namespace LikeABrawler2
         public static bool Check(IntPtr disableInfo, IntPtr node)
         {
             uint* handle = (uint*)(disableInfo);
-            uint* id = (uint*)(disableInfo.ToInt64() + 36);
 
-            if (!BrawlerPlayer.IsKiryu())
+            if (!BrawlerPlayer.IsDragon())
                 return true;
 
-            return (uint)BrawlerPlayer.CurrentStyle != *id;
+            uint* id = (uint*)(disableInfo.ToInt64() + 36);
+            uint idVal = *id;
+
+            return (uint)BrawlerPlayer.CurrentStyle != idVal;
         }
     }
 }

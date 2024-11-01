@@ -11,7 +11,7 @@ namespace LikeABrawler2
 {
     public unsafe static class DBManager
     {
-        private static Dictionary<string, uint> m_motionGmt = new Dictionary<string, uint>();
+        //private static Dictionary<string, uint> m_motionGmt = new Dictionary<string, uint>();
         private static Dictionary<string, uint> m_soundCuesheet = new Dictionary<string, uint>();
         private static Dictionary<string, uint> m_rpgSkill = new Dictionary<string, uint>();
         private static Dictionary<string, uint> m_talkParam = new Dictionary<string, uint>();
@@ -34,7 +34,7 @@ namespace LikeABrawler2
             stopwatch.Start();
             DragonEngine.Log("Starting DB init.");
 
-            m_motionGmt = ReadCachedPuidArmp("motion_gmt");
+            //m_motionGmt = ReadCachedPuidArmp("motion_gmt");
             m_commandSets2 = ReadCachedDBArmp("battle_command_set");
             m_commandSets = FlipCachedDBArmp(m_commandSets2);
             m_talkParam = ReadCachedDBArmp("talk_param");
@@ -106,6 +106,7 @@ namespace LikeABrawler2
             return (RPGSkillID)m_rpgSkill[skillName];
         }
 
+        /*
         public static uint GetMotion(string motionName)
         {
             if (!m_motionGmt.ContainsKey(motionName))
@@ -113,6 +114,7 @@ namespace LikeABrawler2
 
             return m_motionGmt[motionName];
         }
+        */
 
         public static ushort GetSoundCuesheet(string name)
         {

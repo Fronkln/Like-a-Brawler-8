@@ -17,5 +17,16 @@ namespace DBGen
 
             return null;
         }
+
+        public static ArmpEntry GetEntryInvariant(this ArmpTable table, string name)
+        {
+            foreach(var entry in table.GetAllEntries())
+            {
+                if(entry.Name == name || entry.Name.ToLowerInvariant() == name) 
+                    return entry;
+            }
+
+            return null;
+        }
     }
 }

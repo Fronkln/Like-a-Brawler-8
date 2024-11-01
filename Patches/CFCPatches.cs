@@ -62,6 +62,8 @@ namespace LikeABrawler2
                     return CheckIsRealtime(fighter, op, paramsPtr);
                 case 10:
                     return CheckIsActiveBrawlerPlayer(fighter, op, paramsPtr);
+                case 11:
+                    return CheckWallJump(fighter, op, paramsPtr);
             }
 
             return false;
@@ -206,8 +208,7 @@ namespace LikeABrawler2
                     return ai.CheckParam(param);
                 case 3:
                     return !ai.CheckParam(param);
-            }
-            
+            }      
         }
 
         private static bool CheckIsRealtime(IntPtr fighterPtr, byte op, byte* paramsPtr)
@@ -240,6 +241,29 @@ namespace LikeABrawler2
                     return fighter.IsMainPlayer();
                 case 3:
                     return !fighter.IsMainPlayer();
+            }
+        }
+
+        private static bool CheckWallJump(IntPtr fighterPtr, byte op, byte* paramsPtr)
+        {
+            Fighter fighter = new Fighter(fighterPtr);
+
+            HActRangeInfo inf = new HActRangeInfo();
+
+            if (!fighter.GetStatus().HAct.GetPlayInfo(ref inf, HActRangeType.hit_wall))
+                return false;
+
+            bool valid =fighter.GetBrawlerInfo().MoveTime >= 1f && !CombatPlayerPatches.HumanModeManager_IsInputKamae(fighter.Character.HumanModeManager.Pointer) &&  Vector3.Distance(fighter.Character.Transform.Position, (Vector3)inf.Pos) <= 1f && fighter.Character.IsFacingPosition((Vector3)inf.Pos);       
+
+            switch (op)
+            {
+                default:
+                    return true;
+
+                case 0:
+                    return valid;
+                case 3:
+                    return !valid;
             }
         }
     }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace LikeABrawler2
 {
@@ -755,7 +756,16 @@ namespace LikeABrawler2
 
             SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("bbg_k"));
 
+            if(BrawlerPlayer.IsKasuga())
+                SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("style_freeter"));
+
+            if(BrawlerPlayer.IsDragon())
+            {
+                SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("style_oedragon"));
+            }
+
             EffectEventManager.LoadScreen(28); //Judge_fatalblow
+            EffectEventManager.LoadScreen(68); //Brawler_finishblow
         }
 
         //BattleTurnManager start
@@ -807,6 +817,35 @@ namespace LikeABrawler2
         {
             ChangeToRealtime();
             DragonEngine.Log("Hact Evento bro");
+        }
+
+        public static void NotifyFighterDeath(IntPtr inf)
+        {
+            FighterID id = Marshal.PtrToStructure<FighterID>(inf + 0x8);
+            BaseEnemyAI enemyAI = EnemyManager.GetAI(id.Handle);
+
+            //death of an enemy
+            if (enemyAI != null)
+            {
+                IntPtr damageInfo = Marshal.ReadIntPtr(inf);
+                long attr = Marshal.ReadInt64(damageInfo + 0x8C);
+
+                //"heavy" or "Break" attack attribute
+                if ((attr & (1 << 14)) != 0 || (attr & (1 << 5)) != 0)
+                {
+                    if (!EffectEventManager.IsPlayingScreen(68))
+                        PlayFinishingBlowEffect();
+
+                    DragonEngine.Log("Killed by finishing blow");
+                }
+            }
+
+        }
+
+        public static void PlayFinishingBlowEffect()
+        {
+            EffectEventManager.PlayScreen(68); //Brawler_finishblow
+            SoundManager.PlayCue(DBManager.GetSoundCuesheet("y8b_common"), 2, 0);
         }
 
         //We entered action for the first time

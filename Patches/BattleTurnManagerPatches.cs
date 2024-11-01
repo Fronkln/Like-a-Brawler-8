@@ -9,6 +9,7 @@ namespace LikeABrawler2
         private IntPtr m_changePhaseFunc;
         private IntPtr m_changeStepFunc;
         private IntPtr m_btlTurnAfterDamageFunc;
+        private IntPtr m_btlTurnFighterDeadFunc;
         private IntPtr m_btlTurnExecActionFunc;
         private IntPtr m_setupTurnFighterFunc;
 
@@ -27,6 +28,7 @@ namespace LikeABrawler2
             m_btlTurnAfterDamageFunc = DragonEngineLibrary.Unsafe.CPP.PatternSearch("40 56 41 56 48 83 EC ? 4C 8B 02");
             m_btlTurnExecActionFunc = DragonEngineLibrary.Unsafe.CPP.PatternSearch("4D 85 ED 0F 84 ? ? ? ? 48 8D 8E BC 05 00 00") - 207;
             m_setupTurnFighterFunc = DragonEngineLibrary.Unsafe.CPP.PatternSearch("48 89 5C 24 10 48 89 74 24 18 55 57 41 54 41 56 41 57 48 8D 6C 24 E0");
+            m_btlTurnFighterDeadFunc = DragonEngineLibrary.Unsafe.CPP.PatternSearch("40 53 41 56 48 83 EC ? 49 89 CE");
 
             //We want these two to be active always
             m_changeTurnPhase = BrawlerPatches.HookEngine.CreateHook<BattleTurnManager_ChangePhase>(m_changePhaseFunc, BattleTurnManager_ChangeTurnPhase);
@@ -44,12 +46,14 @@ namespace LikeABrawler2
             if (_btlTurnManagerDmgNotifyTrampoline == null)
             {
                 _btlTurnManagerDmgNotifyTrampoline = BrawlerPatches.HookEngine.CreateHook<BattleTurnManagerDmgNotify>(m_btlTurnAfterDamageFunc, BattleTurnManager_OnAfterDamage);
+                _btlTurnManagerFighterDeadNotifyTrampoline = BrawlerPatches.HookEngine.CreateHook<BattleTurnManagerDmgNotify>(m_btlTurnFighterDeadFunc, BattleTurnManager_OnFighterDead);
                 _btlTurnManagerExecPhaseActionTrampoline = BrawlerPatches.HookEngine.CreateHook<BattleTurnManagerExecPhase>(m_btlTurnExecActionFunc, BattleTurnManager_ExecPhaseAction);
                 m_setupTurnBattleFighter = BrawlerPatches.HookEngine.CreateHook<FighterSetupTurnBattleFighter>(m_setupTurnFighterFunc, SetupTurnBattleFighter);
             }
 
             BrawlerPatches.HookEngine.EnableHook(m_setupTurnBattleFighter);
             BrawlerPatches.HookEngine.EnableHook(_btlTurnManagerDmgNotifyTrampoline);
+            BrawlerPatches.HookEngine.EnableHook(_btlTurnManagerFighterDeadNotifyTrampoline);
             BrawlerPatches.HookEngine.EnableHook(_btlTurnManagerExecPhaseActionTrampoline);
             BrawlerPatches.HookEngine.EnableHook(m_changeTurnPhase);
             BrawlerPatches.HookEngine.EnableHook(m_changeTurnStep);
@@ -145,6 +149,14 @@ namespace LikeABrawler2
 
             _btlTurnManagerDmgNotifyTrampoline(mng, inf);
         }
+
+        private static BattleTurnManagerDmgNotify _btlTurnManagerFighterDeadNotifyTrampoline;
+        private static void BattleTurnManager_OnFighterDead(IntPtr mng, IntPtr inf)
+        {
+            _btlTurnManagerFighterDeadNotifyTrampoline(mng, inf);
+            BrawlerBattleManager.NotifyFighterDeath(inf);
+        }
+
 
         private static BattleTurnManagerExecPhase _btlTurnManagerExecPhaseActionTrampoline;
         private static void BattleTurnManager_ExecPhaseAction(IntPtr mng)

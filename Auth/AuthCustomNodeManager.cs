@@ -81,6 +81,8 @@ namespace LikeABrawler2
             RegisterPlayFunc(70016, AuthNodeButtonMash.Play);
             RegisterNewNode(70017);
             RegisterPlayFunc(70017, AuthNodeLABSpecial.Play);
+            RegisterNewNode(70018);
+            RegisterPlayFunc(70018, AuthNodeTransitRange.Play);
             //RegisterPlayLastFunc(70010, AuthNodeLABCharacterDecision.Play);
         }
     }

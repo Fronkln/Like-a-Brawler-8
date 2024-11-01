@@ -87,6 +87,11 @@ namespace LikeABrawler2
             return CurrentPlayer == Player.ID.kasuga;
         }
 
+        public static bool IsDragon()
+        {
+            return Player.GetCurrentJob(CurrentPlayer) == RPGJobID.kiryu_01;
+        }
+
         public static bool IsOtherPlayer()
         {
             return !IsKiryu() && !IsKasuga();
@@ -155,6 +160,9 @@ namespace LikeABrawler2
 
                 if (IsKiryu())
                 {
+                    if(!IsDragon())
+                        return KiryuHActs[0];
+
                     switch (CurrentStyle)
                     {
                         default:
@@ -442,7 +450,7 @@ namespace LikeABrawler2
 
         public static bool CanStyleSwitch()
         {
-            return IsKiryu();
+            return IsDragon();
         }
 
         public static bool CanExtremeHeatMode()
@@ -476,7 +484,7 @@ namespace LikeABrawler2
 
             Character playerChara = BrawlerBattleManager.PlayerCharacter;
 
-            if (!IsKiryu())
+            if (!IsDragon())
             {
                 BrawlerBattleManager.PlayerFighter.Character.GetRender().BattleTransformationOn();
                 //EquipJobWeapons(Player.GetCurrentJob(playerChara.Attributes.player_id));
@@ -497,7 +505,7 @@ namespace LikeABrawler2
             BrawlerBattleManager.OnPlayerExitEXHeat();
 
 
-            if (!IsKiryu())
+            if (!IsDragon())
             {
                 Fighter playerFighter = BrawlerBattleManager.PlayerFighter;
                 Character playerChara = playerFighter.Character;
@@ -517,8 +525,7 @@ namespace LikeABrawler2
 
                 playerChara.Components.EffectEvent.Get().PlayEventOverride(EffectEventCharaID.YZ_Chara_Cange01);
             }
-
-            if (IsKiryu())
+            else
             {
                 OnStyleSwitch(PlayerStyle.Default);
             }
