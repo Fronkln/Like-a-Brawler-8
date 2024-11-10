@@ -40,30 +40,37 @@ namespace ElvisCommand
 
             EHC ehc = new EHC();
 
-            BinaryReader reader = new BinaryReader(new MemoryStream(File.ReadAllBytes(path)));
-
-            string magic = Encoding.UTF8.GetString(reader.ReadBytes(10));
-
-            if (magic != "JHRINO_YHC")
-                return null;
-
-            reader.BaseStream.Position += 2;
-            int version = reader.ReadInt32();
-
-            if (version > VERSION)
-                return null;
-
-            int attacksCount = reader.ReadInt32();
-            reader.BaseStream.Position += 12;
-
-            for (int i = 0; i < attacksCount; i++)
+            try
             {
-                HeatActionAttack attack = new HeatActionAttack();
-                attack.Read(reader, (uint)version);
-                ehc.Attacks.Add(attack);
-            }
+                BinaryReader reader = new BinaryReader(new MemoryStream(File.ReadAllBytes(path)));
 
-            return ehc;
+                string magic = Encoding.UTF8.GetString(reader.ReadBytes(10));
+
+                if (magic != "JHRINO_YHC")
+                    return null;
+
+                reader.BaseStream.Position += 2;
+                int version = reader.ReadInt32();
+
+                if (version > VERSION)
+                    return null;
+
+                int attacksCount = reader.ReadInt32();
+                reader.BaseStream.Position += 12;
+
+                for (int i = 0; i < attacksCount; i++)
+                {
+                    HeatActionAttack attack = new HeatActionAttack();
+                    attack.Read(reader, (uint)version);
+                    ehc.Attacks.Add(attack);
+                }
+
+                return ehc;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

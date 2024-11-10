@@ -33,7 +33,8 @@ namespace LikeABrawler2
         public static EHC LoadYHC(string name)
         {
             string path = Path.Combine(Mod.ModPath, "battle", "ehc", name);
-            EHC ehc = EHC.Read(path);
+            EHC ehc = null;
+            ehc = EHC.Read(path);
 
 #if DEBUG
             if (ehc == null)

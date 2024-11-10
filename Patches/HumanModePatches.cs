@@ -117,12 +117,15 @@ namespace LikeABrawler2
             if(enemy == null)
                 return m_damageExecValidTrampoline(humanModeManager, battleDamageInfo);
 
+            enemy.PreTakeDamage(battleDamageInfo);
+
             bool exec = enemy.DamageExecValid(battleDamageInfo);
 
             if (!exec)
                 return false;
             else
             {
+                
                 bool result = m_damageExecValidTrampoline(humanModeManager, battleDamageInfo);
                 //TODO: Not make this poopshit
 

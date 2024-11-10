@@ -14,10 +14,12 @@ namespace LikeABrawler2
     {
         public static Player.ID CurrentPlayer = 0;
         public static PlayerStyle CurrentStyle = PlayerStyle.Default;
+        public static RPGJobID CurrentJob { get { return Player.GetCurrentJob(CurrentPlayer); } }
 
         public static CharacterAttributes OriginalPlayerAttributes;
 
         public static Dictionary<StageID, EHC> StageEHC = new Dictionary<StageID, EHC>();
+        public static Dictionary<RPGJobID, EHC> JobEHC = new Dictionary<RPGJobID, EHC>();
         public static EHC PlayerHActs;
         public static EHC[] KiryuHActs;
         private static EHC KasugaHAct;
@@ -34,8 +36,6 @@ namespace LikeABrawler2
 
         public static event Action OnPerfectGuard;
         public static event Action OnStartAttack;
-
-
 
         private delegate void FighterSetupWeapon(IntPtr fighter);
         private static FighterSetupWeapon SetupWeapon;
@@ -143,6 +143,14 @@ namespace LikeABrawler2
             StageEHC = new Dictionary<StageID, EHC>()
             {
                 [StageID.st_kamuro] = YazawaCommandManager.LoadYHC("stage/kamuro.ehc")
+            };
+
+            JobEHC = new Dictionary<RPGJobID, EHC>()
+            {
+                [RPGJobID.man_05] = YazawaCommandManager.LoadYHC("job/breaker.ehc"),
+                [RPGJobID.man_07] = YazawaCommandManager.LoadYHC("job/chef.ehc"),
+                [RPGJobID.man_footballer] = YazawaCommandManager.LoadYHC("job/footballer.ehc"),
+                [RPGJobID.man_western] = YazawaCommandManager.LoadYHC("job/western.ehc")
             };
         }
 
@@ -488,7 +496,18 @@ namespace LikeABrawler2
             {
                 BrawlerBattleManager.PlayerFighter.Character.GetRender().BattleTransformationOn();
                 //EquipJobWeapons(Player.GetCurrentJob(playerChara.Attributes.player_id));
-                SetupWeapon(BrawlerBattleManager.PlayerFighter._ptr);
+
+                switch(Player.GetCurrentJob(CurrentPlayer))
+                {
+                    default:
+                        SetupWeapon(BrawlerBattleManager.PlayerFighter._ptr);
+                        break;
+                    case RPGJobID.man_western:
+                        EquipJobWeapons(RPGJobID.man_western);
+                        break;
+
+                }
+
                 playerChara.HumanModeManager.CommandsetModel.SetCommandSet(0, GetCommandSetForJob(playerChara.Attributes.player_id, Player.GetCurrentJob(playerChara.Attributes.player_id)));
                 playerChara.Components.EffectEvent.Get().PlayEventOverride(EffectEventCharaID.YZ_Chara_Cange01);
             }
@@ -701,8 +720,6 @@ namespace LikeABrawler2
             {
                 default:
                     return RPG.GetJobCommandSetID(playerID, id);
-                case RPGJobID.man_western:
-                    return (BattleCommandSetID)DBManager.GetCommandSet("p_man_western_brawler");
                 case RPGJobID.kasuga_freeter:
                     return (BattleCommandSetID)DBManager.GetCommandSet("p_kasuga_brawler");
                 case RPGJobID.kasuga_braver:

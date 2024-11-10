@@ -98,6 +98,9 @@ namespace DBGen
                 return;
             }
 
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             dbPath = targetDbDir;
             puidPath = targetPuidDir;
 
@@ -148,7 +151,7 @@ namespace DBGen
                 SoldierInfoModule.Procedure();
             }
 
-            Console.WriteLine("\nDBGen complete.");
+            Console.WriteLine($"\nDBGen completed in: {watch.Elapsed}");
            // Console.ReadKey();
         }
 

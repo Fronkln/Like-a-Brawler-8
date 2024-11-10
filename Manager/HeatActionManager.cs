@@ -112,9 +112,10 @@ namespace LikeABrawler2
                 if (m_hactCd > 0 && !BrawlerBattleManager.IsHAct)
                     m_hactCd -= DragonEngine.deltaTime;
 
-                //HAct Priority, Stage -> Shared Player -> Player
+                //HAct Priority, Stage -> Job -> Shared Player -> Player
 
                 StageID stageID = SceneService.GetSceneInfo().ScenePlay.Get().StageID;
+                RPGJobID job = Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer);
 
                 HeatActionInformation newPerformableHact = null;
 
@@ -125,13 +126,16 @@ namespace LikeABrawler2
                     if (BrawlerPlayer.StageEHC.ContainsKey(stageID))
                         newPerformableHact = Iterate(BrawlerPlayer.StageEHC[stageID]);
 
+                    if (newPerformableHact == null && BrawlerPlayer.IsExtremeHeat)
+                        if(BrawlerPlayer.JobEHC.ContainsKey(job))
+                        newPerformableHact = Iterate(BrawlerPlayer.JobEHC[job]);
+
                     if (newPerformableHact == null)
                         newPerformableHact = Iterate(BrawlerPlayer.PlayerHActs);
-
                 }
                
                 if (newPerformableHact == null)
-                        newPerformableHact = Iterate(BrawlerPlayer.GetCurrentPlayerHActSet());
+                     newPerformableHact = Iterate(BrawlerPlayer.GetCurrentPlayerHActSet());
 
                 PerformableHact = newPerformableHact;
 

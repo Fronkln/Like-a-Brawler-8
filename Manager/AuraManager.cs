@@ -20,6 +20,10 @@ namespace LikeABrawler2
                 [RPGJobID.invalid] = new AuraDefinition(EffectEventCharaID.OgrefHeatAuraKr01, EffectEventCharaID.invalid),
                 [RPGJobID.kasuga_braver] = new AuraDefinition(EffectEventCharaID.boss_mabuchi_lp, EffectEventCharaID.invalid),
                 [RPGJobID.kiryu_01] = new AuraDefinition((EffectEventCharaID)2764, EffectEventCharaID.invalid),
+                [RPGJobID.man_05] = new AuraDefinition((EffectEventCharaID)2766, EffectEventCharaID.invalid),
+                [RPGJobID.man_07] = new AuraDefinition((EffectEventCharaID)2765, EffectEventCharaID.invalid),
+                [RPGJobID.man_footballer] = new AuraDefinition((EffectEventCharaID)2767, EffectEventCharaID.invalid),
+                [RPGJobID.man_western] = new AuraDefinition((EffectEventCharaID)2768, EffectEventCharaID.invalid),
             };
         }
 

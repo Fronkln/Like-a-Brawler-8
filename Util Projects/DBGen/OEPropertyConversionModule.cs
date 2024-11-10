@@ -8,6 +8,7 @@ using HActLib.Internal;
 using HActLib;
 using MotionLib;
 using MotionLibrary;
+using System.Diagnostics;
 
 namespace DBGen
 {
@@ -19,6 +20,7 @@ namespace DBGen
             string genFilePath = genDir + "convertlist.txt";
 
             string output = "motion/bep/";
+            string output2 = new DirectoryInfo("motion/gmt/").FullName;
 
             if (!File.Exists(genFilePath))
                 return;
@@ -33,6 +35,8 @@ namespace DBGen
                 Console.WriteLine("Property.bin does not exist. aborting.");
                 return;
             }
+
+            var files = new FileInfo(property).Directory.GetFiles("*.gmt", SearchOption.AllDirectories);
 
             OldEngineFormat oeProperty = OldEngineFormat.Read(property);
 
@@ -54,8 +58,24 @@ namespace DBGen
                     continue;
                 }
 
+                string gmtName = entryDat[0] + ".gmt";
+
                 OEAnimEntry entry = oeProperty.Moves.Where(x => x.Name == entryDat[0]).FirstOrDefault();
                 BEP converted = ConvertAnimEntryToBEP(entry);
+                FileInfo anim = files.FirstOrDefault(x => x.Name == gmtName);
+
+                if (anim != null)
+                {
+                    char quotationMark = '"';
+                    string path1 = $"{quotationMark}{anim.FullName}{quotationMark}";
+                    string path2 = $"{quotationMark}{Path.Combine(output2, entryDat[1] + ".gmt")}{quotationMark}";
+                    string args = $"-ig y0 -og yk2 -i {path1} -o {path2} -mtn";
+
+                    Console.WriteLine(path1);
+                    Console.WriteLine(path2);
+
+                    Process.Start("GMT_Converter.exe", args);
+                }
 
                 BEP.Write(converted, exportPath, Game.LADIW);
 

@@ -104,6 +104,31 @@ namespace LikeABrawler2
             return true;
         }
 
+        public unsafe virtual void PreTakeDamage(IntPtr battleDamageInfo)
+        {
+            //3.11.2024: THIS FUCKING SUCKS! THIS FUCKING SUCKS! THIS FUCKING
+
+            if (!BrawlerPlayer.IsExtremeHeat)
+                return;
+
+            if(BrawlerPlayer.CurrentJob == RPGJobID.man_western)
+            {
+                int attr = Marshal.ReadByte(battleDamageInfo + 0x64);
+
+                if (attr == 4)
+                {
+                    //placeholder damage calculation: TODO, use player base damage, AND weapon stats.
+                    int damage = (int)(BrawlerBattleManager.PlayerFighter.GetStatus().AttackPower * 0.45f);
+                    *(int*)(battleDamageInfo.ToInt64() + 0x120) = damage;
+                    *(int*)(battleDamageInfo.ToInt64() + 0x124) = damage;
+                    DragonEngine.Log("PEW PEW PEW!");
+                }
+
+
+            }
+
+        }
+
         public void OnTakeDamage(BattleDamageInfoSafe dmg)
         {
             LastHitTime = 0;

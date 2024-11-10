@@ -9,9 +9,6 @@ namespace LikeABrawler2
         {
             uint* handle = (uint*)(disableInfo);
 
-            if (!BrawlerPlayer.IsDragon())
-                return true;
-
             uint* id = (uint*)(disableInfo.ToInt64() + 36);
             uint idVal = *id;
 
