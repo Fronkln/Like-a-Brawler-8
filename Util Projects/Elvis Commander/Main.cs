@@ -309,10 +309,15 @@ namespace Yazawa_Commander
                 case HeatActionConditionType.HumanMode:
                     CreateInput("Human Mode", condition.Condition.ParamString1, delegate(string val) { condition.Condition.ParamString1 = val; });
                     break;
+               
                 case HeatActionConditionType.StatusEffect:
                     CreateInput("Status Effect ID", condition.Condition.Param1U32.ToString(), delegate (string val) { condition.Condition.Param1U32 = uint.Parse(val) ; });
                     break;
 
+                case HeatActionConditionType.PlayerPoint:
+                    CreateInput("Player Point ID", condition.Condition.Param1U32.ToString(), delegate (string val) { condition.Condition.Param1U32 = uint.Parse(val); });
+                    CreateInput("Value", condition.Condition.Param2U32.ToString(), delegate (string val) { condition.Condition.Param2U32 = uint.Parse(val); });
+                    break;
             }
 
         }

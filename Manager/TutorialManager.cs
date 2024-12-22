@@ -61,7 +61,7 @@ namespace LikeABrawler2
 
         public static void Update()
         {
-            if(!BrawlerBattleManager.Battling)
+            if(!BrawlerBattleManager.Battling || Mod.IsGamePaused)
                 return;
 
             if (!Active)
@@ -116,14 +116,19 @@ namespace LikeABrawler2
 
             if (currentGoal.CheckDelegate?.Invoke() == true)
             {
-                OnGoalFinish();
+                OnGoalFinish(true);
                 return;
             }
+            else if (currentGoal.TimeToComplete > 0 && m_goalTime >= currentGoal.TimeToComplete)
+                OnGoalFinish(false);
 
         }
 
-        private static void OnGoalFinish()
+        private static void OnGoalFinish(bool success)
         {
+            if (success && CurrentGoal.TimeToComplete > 0)
+                SoundManager.PlayCue(1627, 31, 0);
+
             //close, play_success doesnt seem to work
             //close will also destroy the UI element when its done playing.
             m_instructionsRoot.PlayAnimationSet(248); 
@@ -443,6 +448,7 @@ namespace LikeABrawler2
             return goals;
         }
 
+        //Kiryu introduction
         private static List<TutorialGoal> Tutorial01_Kiryu()
         {
             List<TutorialGoal> goals = new List<TutorialGoal>();
@@ -505,12 +511,14 @@ namespace LikeABrawler2
             return goals;
         }
 
+        //Dragon's Resurgence
         private static List<TutorialGoal> Tutorial02_Kiryu()
         {
             List<TutorialGoal> goals = new List<TutorialGoal>();
 
             TutorialGoal extremeHeatTutWait = new TutorialGoal();
             extremeHeatTutWait.CheckDelegate = delegate { return BrawlerBattleManager.BattleTime > 1f; };
+            extremeHeatTutWait.TimeToComplete = -1;
             TutorialGoal extremeHeat = new TutorialGoal();
             extremeHeat.SetInstructions(
                 "<color=batting_pitch_light_blue>1988 Dragon of Dojima Style</color>" +
@@ -522,12 +530,48 @@ namespace LikeABrawler2
             extremeHeat.TimeToComplete = -1;
             extremeHeat.Modifier = TutorialModifier.DontAllowPlayerDamage | TutorialModifier.DontAllowEnemyDamage | TutorialModifier.FullHeat;
 
+            TutorialGoal swayAttack = new TutorialGoal();
+            swayAttack.SetInstructions(
+                "<color=batting_pitch_light_blue>Komaki Evade & Strike</color>" +
+                "\n<symbol=button_sankaku> while dodging");
+            swayAttack.CheckDelegate = delegate { return BrawlerBattleManager.PlayerCharacter.HumanModeManager.GetCommandName().StartsWith("SwayAttack"); };
+            swayAttack.TimeToComplete = 30;
+            swayAttack.Modifier = TutorialModifier.DontAllowPlayerDamage | TutorialModifier.DontAllowEnemyDamage | TutorialModifier.FullHeat | TutorialModifier.DontAllowStyleChange;
+
+            TutorialGoal finishingHold = new TutorialGoal();
+            finishingHold.SetInstructions(
+                "<color=batting_pitch_light_blue>Finishing Hold</color>" +
+                "\n<symbol=button_maru> during a finisher");
+            finishingHold.CheckDelegate = delegate { return BrawlerBattleManager.PlayerCharacter.HumanModeManager.GetCommandName().StartsWith("FinishingHold") || m_goalTime >= 30; };
+            finishingHold.TimeToComplete = 30;
+            finishingHold.Modifier = TutorialModifier.DontAllowPlayerDamage | TutorialModifier.DontAllowEnemyDamage | TutorialModifier.FullHeat | TutorialModifier.DontAllowStyleChange;
+
+            TutorialGoal parry = new TutorialGoal();
+            parry.SetInstructions(
+                "<color=batting_pitch_light_blue>Komaki Parry</color>" +
+                "\n<symbol=button_maru> before enemy attack lands");
+            parry.CheckDelegate = delegate { return BrawlerBattleManager.PlayerCharacter.HumanModeManager.GetCommandName() == "CounterParry" || m_goalTime >= 30; };
+            parry.TimeToComplete =30;
+            parry.Modifier = TutorialModifier.DontAllowPlayerDamage | TutorialModifier.DontAllowEnemyDamage | TutorialModifier.FullHeat | TutorialModifier.DontAllowStyleChange;
+
+            TutorialGoal tigerDrop = new TutorialGoal();
+            tigerDrop.SetInstructions(
+                "<color=batting_pitch_light_blue>Komaki Tiger Drop</color>" +
+                "\n<symbol=button_r1> + <symbol=button_sankaku> before enemy attack lands");
+            tigerDrop.CheckDelegate = delegate { return BrawlerBattleManager.PlayerCharacter.HumanModeManager.GetCommandName() == "Counter" || m_goalTime >= 30; };
+            tigerDrop.TimeToComplete = 30;
+            tigerDrop.Modifier = TutorialModifier.DontAllowPlayerDamage | TutorialModifier.DontAllowEnemyDamage | TutorialModifier.FullHeat | TutorialModifier.DontAllowStyleChange;
+
             TutorialGoal extremeHeatBeatdown = new TutorialGoal();
             extremeHeatBeatdown.TimeToComplete = -1;
             extremeHeatBeatdown.Modifier = TutorialModifier.FullHeat | TutorialModifier.DontAllowStyleChange;
 
             goals.Add(extremeHeatTutWait);
             goals.Add(extremeHeat);
+            goals.Add(swayAttack);
+            goals.Add(finishingHold);
+            goals.Add(parry);
+            goals.Add(tigerDrop);
             goals.Add(extremeHeatBeatdown);
 
             return goals;

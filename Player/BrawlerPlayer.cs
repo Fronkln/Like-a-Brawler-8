@@ -2,7 +2,9 @@
 using DragonEngineLibrary.Service;
 using ElvisCommand;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -13,17 +15,18 @@ namespace LikeABrawler2
     public static class BrawlerPlayer
     {
         public static Player.ID CurrentPlayer = 0;
-        public static PlayerStyle CurrentStyle = PlayerStyle.Default;
+        public static PlayerStyle CurrentStyle = PlayerStyle.NotApplicable;
         public static RPGJobID CurrentJob { get { return Player.GetCurrentJob(CurrentPlayer); } }
 
         public static CharacterAttributes OriginalPlayerAttributes;
 
         public static Dictionary<StageID, EHC> StageEHC = new Dictionary<StageID, EHC>();
         public static Dictionary<RPGJobID, EHC> JobEHC = new Dictionary<RPGJobID, EHC>();
-        public static EHC PlayerHActs;
-        public static EHC[] KiryuHActs;
-        private static EHC KasugaHAct;
-        private static EHC AdachiHAct;
+        public static EHC PlayerSharedHActs;
+        public static Dictionary<Player.ID, EHC> PlayerHActs;
+        public static EHC[] DODHActs;
+        //private static EHC KasugaHAct;
+        //private static EHC AdachiHAct;
 
         private static bool m_isAttackingDoOnce = false;
 
@@ -97,6 +100,11 @@ namespace LikeABrawler2
             return !IsKiryu() && !IsKasuga();
         }
 
+        public static bool IsOtherPlayerLeader()
+        {
+            return IsOtherPlayer() && DragonEngine.GetHumanPlayer().UID == BrawlerBattleManager.PlayerCharacter.UID;
+        }
+
         public static bool AllowStyleChange()
         {
             if (SpecialBattle.IsDreamSequence())
@@ -117,41 +125,69 @@ namespace LikeABrawler2
                 return false;
 
             //Adachi
-            if (IsOtherPlayer())
+            if (IsOtherPlayer() && GetNormalMovesetForPlayer(CurrentPlayer) == RPG.GetJobCommandSetID(CurrentPlayer, Player.GetCurrentJob(CurrentPlayer)))
                 return false;
 
+            if (TutorialManager.Active)
+                if (TutorialManager.CurrentGoal.Modifier.HasFlag(TutorialModifier.DontAllowStyleChange))
+                    return false;
+
             if (IsKasuga())
-                return TimelineManager.CheckClockAchievement(1, 78, 47);
+                return TimelineManager.CheckClockAchievement(1, 78, 47) || Player.GetCurrentJob(CurrentPlayer) == RPGJobID.kasuga_braver;
             else
-                return TimelineManager.CheckClockAchievement(1, 86, 53);
+            {
+                if (IsDragon())
+                    return TimelineManager.CheckClockAchievement(53, 27, 6);
+                else
+                    return true;
+            }
         }
 
         public static void LoadContent()
         {
-            PlayerHActs = YazawaCommandManager.LoadYHC("player/shared.ehc");
+            PlayerSharedHActs = YazawaCommandManager.LoadYHC("player/shared.ehc");
 
-            KiryuHActs = new EHC[3]
+            DODHActs = new EHC[3]
             {
                 YazawaCommandManager.LoadYHC("player/kiryu_legend.ehc"),
                 YazawaCommandManager.LoadYHC("player/kiryu_rush.ehc"),
                 YazawaCommandManager.LoadYHC("player/kiryu_crash.ehc"),
             };
 
-            KasugaHAct = YazawaCommandManager.LoadYHC("player/kasuga_sud.ehc");
-            AdachiHAct = YazawaCommandManager.LoadYHC("player/adachi_detective.ehc");
+            PlayerHActs = new Dictionary<Player.ID, EHC>();
+
+            //ass code lol
+            foreach (string player in Enum.GetNames(typeof(Player.ID)))
+            {
+                string playerEhcPathRel = Path.Combine("player/", player + ".ehc");
+                string playerEhcPathFull = Path.Combine(Mod.ModPath, "battle", "ehc", playerEhcPathRel);
+
+                if (File.Exists(playerEhcPathFull))
+                {
+                    EHC playerEHCFile = YazawaCommandManager.LoadYHC(playerEhcPathFull);
+                    PlayerHActs[(Player.ID)Enum.Parse(typeof(Player.ID), player)] = playerEHCFile;
+                }
+            }
 
             StageEHC = new Dictionary<StageID, EHC>()
             {
                 [StageID.st_kamuro] = YazawaCommandManager.LoadYHC("stage/kamuro.ehc")
             };
 
-            JobEHC = new Dictionary<RPGJobID, EHC>()
+            JobEHC = new Dictionary<RPGJobID, EHC>();
+
+            //ass code lol
+            foreach (string job in Enum.GetNames(typeof(RPGJobID)))
             {
-                [RPGJobID.man_05] = YazawaCommandManager.LoadYHC("job/breaker.ehc"),
-                [RPGJobID.man_07] = YazawaCommandManager.LoadYHC("job/chef.ehc"),
-                [RPGJobID.man_footballer] = YazawaCommandManager.LoadYHC("job/footballer.ehc"),
-                [RPGJobID.man_western] = YazawaCommandManager.LoadYHC("job/western.ehc")
-            };
+                string jobEhcPathRel = Path.Combine("job/", job + ".ehc");
+                string jobEhcPathFull = Path.Combine(Mod.ModPath, "battle", "ehc", jobEhcPathRel);
+
+                if (File.Exists(jobEhcPathFull))
+                {
+                    EHC jobEHCFile = YazawaCommandManager.LoadYHC(jobEhcPathFull);
+                    JobEHC[(RPGJobID)Enum.Parse(typeof(RPGJobID), job)] = jobEHCFile;
+                }
+            }
         }
 
         public static EHC GetCurrentPlayerHActSet()
@@ -161,47 +197,36 @@ namespace LikeABrawler2
             bool isKiryu = IsKiryu();
             bool isKasuga = IsKasuga();
 
-            if (isKiryu || isKasuga)
+            if (weapon.Unit.IsValid())
+                return WeaponManager.GetEHCSetForWeapon(Asset.GetArmsCategory(weapon.Unit.Get().AssetID));
+
+            if (IsDragon())
             {
-                if (weapon.Unit.IsValid())
-                    return WeaponManager.GetEHCSetForWeapon(Asset.GetArmsCategory(weapon.Unit.Get().AssetID));
-
-                if (IsKiryu())
-                {
-                    if(!IsDragon())
-                        return KiryuHActs[0];
-
-                    switch (CurrentStyle)
-                    {
-                        default:
-                            return KiryuHActs[0];
-
-                        case PlayerStyle.Default:
-                            return KiryuHActs[0];
-                        case PlayerStyle.Legend:
-                            return KiryuHActs[0];
-                        case PlayerStyle.Rush:
-                            return KiryuHActs[1];
-                        case PlayerStyle.Beast:
-                            return KiryuHActs[2];
-                    }
-                }
-                else
-                    return KasugaHAct;
-            }
-            else
-            {
-                switch (CurrentPlayer)
+                switch (CurrentStyle)
                 {
                     default:
-                        return null;
-                    case Player.ID.adachi:
-                        if (Player.GetCurrentJob(Player.ID.adachi) == RPGJobID.adachi_01)
-                            return AdachiHAct;
-                        else
-                            return null;
+                        return DODHActs[0];
+
+                    case PlayerStyle.Default:
+                        return DODHActs[0];
+                    case PlayerStyle.Legend:
+                        return DODHActs[0];
+                    case PlayerStyle.Rush:
+                        return DODHActs[1];
+                    case PlayerStyle.Beast:
+                        return DODHActs[2];
                 }
             }
+
+            if (PlayerHActs.ContainsKey(CurrentPlayer))
+                return PlayerHActs[CurrentPlayer];
+
+            //Not DOD job, but still default style hact for him
+            if (isKiryu)
+                return DODHActs[0];
+
+
+            return null;
         }
 
         public static void OnBattleStart()
@@ -210,6 +235,11 @@ namespace LikeABrawler2
 
             IsExtremeHeat = false;
             ToNormalMoveset();
+
+            if (IsKiryu() || Player.GetCurrentJob(CurrentPlayer) == RPGJobID.kiryu_01)
+                CurrentStyle = PlayerStyle.Default;
+            else
+                CurrentStyle = PlayerStyle.NotApplicable;
         }
 
         public static void OnBattleEnd()
@@ -294,12 +324,66 @@ namespace LikeABrawler2
             BattleTurnManager.ForceCounterCommand(BrawlerBattleManager.PlayerFighter, BrawlerBattleManager.AllEnemies[0], DBManager.GetSkill($"player_wp{category.ToString().ToLowerInvariant()}_battou"));
         }
 
+        public static BattleCommandSetID GetCommandSetForJob(Player.ID playerID, RPGJobID id)
+        {
+            switch (id)
+            {
+                default:
+                    return RPG.GetJobCommandSetID(playerID, id);
+                case RPGJobID.kasuga_freeter:
+                    return (BattleCommandSetID)DBManager.GetCommandSet("p_kasuga_brawler");
+                case RPGJobID.kasuga_braver:
+                    return (BattleCommandSetID)DBManager.GetCommandSet("p_kasuga_hero_brawler");
+            }
+        }
+
+        public static bool DoesJobHaveWeapons(RPGJobID id)
+        {
+            return id != RPGJobID.man_actionstar && id != RPGJobID.kiryu_01 && id != RPGJobID.kasuga_freeter;
+        }
+
+        public static BattleCommandSetID GetNormalMovesetForPlayer(Player.ID player)
+        {
+            switch (player)
+            {
+                default:
+                    return RPG.GetJobCommandSetID(player, Player.GetCurrentJob(player));
+
+                case Player.ID.kasuga:
+                    return (BattleCommandSetID)DBManager.GetCommandSet("p_kasuga_brawler");
+                case Player.ID.kiryu:
+                    return (BattleCommandSetID)DBManager.GetCommandSet("p_kiryu_legend_brawler");
+                case Player.ID.saeko:
+                    return (BattleCommandSetID)DBManager.GetCommandSet("p_saeko_job_01");
+                case Player.ID.adachi:
+                    return (BattleCommandSetID)DBManager.GetCommandSet("p_adachi_job_01");
+                case Player.ID.sonhi:
+                    return (BattleCommandSetID)DBManager.GetCommandSet("p_sonhi_01");
+                case Player.ID.nanba:
+                    return (BattleCommandSetID)DBManager.GetCommandSet("p_nanba_job_01");
+                case Player.ID.chitose:
+                    return (BattleCommandSetID)DBManager.GetCommandSet("p_chitose_job_01");
+                case Player.ID.chou:
+                    return (BattleCommandSetID)DBManager.GetCommandSet("p_chou_job_01");
+                case Player.ID.tomizawa:
+                    return (BattleCommandSetID)DBManager.GetCommandSet("p_tomizawa_job_01");
+                case Player.ID.jyungi:
+                    return (BattleCommandSetID)DBManager.GetCommandSet("p_jyungi_job_01");
+            }
+        }
+
         public static void ToNormalMoveset()
         {
-            if (IsKasuga())
-                BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, GetCommandSetForJob(Player.ID.kasuga, RPGJobID.kasuga_freeter));
-            else
-                BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)FighterCommandManager.FindSetID("p_kiryu_legend_brawler"));
+            BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, GetNormalMovesetForPlayer(CurrentPlayer));
+
+            //Yakuza 8 limitation: we cannot get the equipped weapon for another job, it has to be another one
+            if (DoesJobHaveWeapons(Player.GetCurrentJob(CurrentPlayer)))
+                if(IsOtherPlayer())
+                if(BrawlerBattleManager.PlayerFighter.IsValid())
+                    SetupWeapon(BrawlerBattleManager.PlayerFighter._ptr);
+
+            //otherwise, dont do shit, if this is a party member that is the main playable character right now for some reason
+            //its modder's responsibility to edit the player cfc.
         }
 
         public static bool CanAct()
@@ -497,7 +581,7 @@ namespace LikeABrawler2
                 BrawlerBattleManager.PlayerFighter.Character.GetRender().BattleTransformationOn();
                 //EquipJobWeapons(Player.GetCurrentJob(playerChara.Attributes.player_id));
 
-                switch(Player.GetCurrentJob(CurrentPlayer))
+                switch (Player.GetCurrentJob(CurrentPlayer))
                 {
                     default:
                         SetupWeapon(BrawlerBattleManager.PlayerFighter._ptr);
@@ -508,7 +592,49 @@ namespace LikeABrawler2
 
                 }
 
-                playerChara.HumanModeManager.CommandsetModel.SetCommandSet(0, GetCommandSetForJob(playerChara.Attributes.player_id, Player.GetCurrentJob(playerChara.Attributes.player_id)));
+                //Commandset hackery to allow other players to use someone elses jobs
+                //Example: Saeko on adachi
+                RPGJobID currentJob = Player.GetCurrentJob(CurrentPlayer);
+                string currentJobName = currentJob.ToString();
+                Player.ID targetPlayerID = CurrentPlayer;
+
+                if (currentJobName.StartsWith("woman", StringComparison.OrdinalIgnoreCase))
+                    targetPlayerID = Player.ID.saeko;
+                else if (currentJobName.StartsWith("man"))
+                    targetPlayerID = Player.ID.kasuga;
+                else
+                {
+                    switch (currentJob)
+                    {
+                        case RPGJobID.adachi_01:
+                            targetPlayerID = Player.ID.adachi;
+                            break;
+                        case RPGJobID.saeko_01:
+                            targetPlayerID = Player.ID.saeko;
+                            break;
+                        case RPGJobID.sonhi_01:
+                            targetPlayerID = Player.ID.sonhi;
+                            break;
+                        case RPGJobID.kiryu_01:
+                            targetPlayerID = Player.ID.kiryu;
+                            break;
+                        case RPGJobID.chou_01:
+                            targetPlayerID = Player.ID.chou;
+                            break;
+                        case RPGJobID.chitose_01:
+                            targetPlayerID = Player.ID.chitose;
+                            break;
+                        case RPGJobID.tomizawa_01:
+                            targetPlayerID = Player.ID.tomizawa;
+                            break;
+                        case RPGJobID.jyungi_01:
+                            targetPlayerID = Player.ID.jyungi;
+                            break;
+                    }
+                }
+
+                uint commandSet = (uint)GetCommandSetForJob(targetPlayerID, Player.GetCurrentJob(CurrentPlayer));
+                playerChara.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)commandSet);
                 playerChara.Components.EffectEvent.Get().PlayEventOverride(EffectEventCharaID.YZ_Chara_Cange01);
             }
             else
@@ -636,6 +762,16 @@ namespace LikeABrawler2
 
                 float dot = -0.6f;
 
+                if (nearestEnemies.Length == 1)
+                {
+                    dot = -0.8f;
+
+                    if (kasugaFighter.Character.IsFacingEntity(nearestEnemies[0].Character, dot))
+                        return nearestEnemies[0];
+                    else
+                        return new Fighter(IntPtr.Zero);
+                }
+
                 foreach (Fighter enemy in nearestEnemies)
                 {
                     if (enemy.IsDead() || !kasugaFighter.Character.IsFacingEntity(enemy.Character, dot))
@@ -710,20 +846,6 @@ namespace LikeABrawler2
             {
                 EffectEventManager.PlayScreen(28);
                 DragonEngine.Log("YEOWCH! MORTAL ATTACK");
-            }
-        }
-
-
-        public static BattleCommandSetID GetCommandSetForJob(Player.ID playerID, RPGJobID id)
-        {
-            switch (id)
-            {
-                default:
-                    return RPG.GetJobCommandSetID(playerID, id);
-                case RPGJobID.kasuga_freeter:
-                    return (BattleCommandSetID)DBManager.GetCommandSet("p_kasuga_brawler");
-                case RPGJobID.kasuga_braver:
-                    return (BattleCommandSetID)DBManager.GetCommandSet("p_kasuga_hero_brawler");
             }
         }
 

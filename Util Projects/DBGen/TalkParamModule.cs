@@ -7,11 +7,15 @@ using System.IO;
 using HActLib;
 using System.Diagnostics;
 using System.Xml.Linq;
+using System.Security.Policy;
 
 namespace DBGen
 {
     internal static class TalkParamModule
     {
+        //adjust references
+        public static bool ComplexMode = true;
+
         public static void Procedure()
         {
             //false in Y6, only adjusts
@@ -149,7 +153,8 @@ namespace DBGen
 
                 bool dirty = false;
 
-                AdjustHAct(cmnPath, str);
+                if(ComplexMode)
+                    AdjustHAct(cmnPath, str);
 
                 if(dirty)
                 {
@@ -160,7 +165,9 @@ namespace DBGen
             foreach(string str in auths)
             {
                 string cmnPath = Path.Combine(str, "cmn", "cmn.bin");
-                AdjustHAct(cmnPath, str);
+
+                if(ComplexMode)
+                    AdjustHAct(cmnPath, str);
             }
 
             if (canAdd)

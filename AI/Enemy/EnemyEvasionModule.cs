@@ -61,7 +61,7 @@ namespace LikeABrawler2
 
         public bool ShouldEvade(BattleDamageInfoSafe inf)
         {
-            if (AI.IsMortalAttackOrPreparing())
+            if (AI.IsMortalAttackOrPreparing() || MortalReversalManager.Procedure || MortalReversalManager.Transit || MortalReversalManager.CounterFlag)
                 return false;
 
             if (AI.IsBeingJuggled())

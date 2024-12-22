@@ -120,20 +120,16 @@ namespace LikeABrawler2
                 HeatActionInformation newPerformableHact = null;
 
 
-                //aka = are we the main player or are we temporarily another player like Adachi
-                if (DragonEngine.GetHumanPlayer().UID == BrawlerBattleManager.PlayerCharacter.UID)
-                {
-                    if (BrawlerPlayer.StageEHC.ContainsKey(stageID))
-                        newPerformableHact = Iterate(BrawlerPlayer.StageEHC[stageID]);
+                if (BrawlerPlayer.StageEHC.ContainsKey(stageID))
+                    newPerformableHact = Iterate(BrawlerPlayer.StageEHC[stageID]);
 
-                    if (newPerformableHact == null && BrawlerPlayer.IsExtremeHeat)
-                        if(BrawlerPlayer.JobEHC.ContainsKey(job))
+                if (newPerformableHact == null && (BrawlerPlayer.IsExtremeHeat || BrawlerPlayer.IsOtherPlayer()))
+                    if (BrawlerPlayer.JobEHC.ContainsKey(job))
                         newPerformableHact = Iterate(BrawlerPlayer.JobEHC[job]);
 
-                    if (newPerformableHact == null)
-                        newPerformableHact = Iterate(BrawlerPlayer.PlayerHActs);
-                }
-               
+                if (newPerformableHact == null)
+                    newPerformableHact = Iterate(BrawlerPlayer.PlayerSharedHActs);
+
                 if (newPerformableHact == null)
                      newPerformableHact = Iterate(BrawlerPlayer.GetCurrentPlayerHActSet());
 
@@ -336,7 +332,7 @@ namespace LikeABrawler2
             {
                 case HeatActionActorType.Player:
                     if (performer.IsPlayer())
-                        return HActReplaceID.hu_player;
+                        return HActReplaceID.hu_player1;
                     else
                         return HActReplaceID.hu_player1;
                 case HeatActionActorType.Fighter:
@@ -344,9 +340,6 @@ namespace LikeABrawler2
                         return HActReplaceID.hu_npc_00;
                     else
                     {
-                        if (performer.IsPlayer())
-                            return HActReplaceID.hu_player;
-                        else
                             return HActReplaceID.hu_player1;
                     }
                 case HeatActionActorType.Enemy1:

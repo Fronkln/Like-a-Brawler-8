@@ -113,7 +113,7 @@ namespace LikeABrawler2
             UIHandleBase gaugesRoot = uiHandle.GetChild(0).GetChild(0);
             GaugeRoot = gaugesRoot;
 
-            if (!BrawlerPlayer.IsOtherPlayer())
+            if (!BrawlerPlayer.IsOtherPlayer() || BrawlerPlayer.IsOtherPlayerLeader())
             {
                 for (int i = 0; i < gaugesRoot.GetChildCount(); i++)
                 {

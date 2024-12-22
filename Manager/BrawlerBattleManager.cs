@@ -118,6 +118,7 @@ namespace LikeABrawler2
 #endif
 
             TutorialManager.Update();
+            ScreenEffectManager.Update(); 
 
             AllFighters = FighterManager.GetAllFighters();
             AllEnemies = AllFighters.Where(x => x.IsEnemy() && !x.IsDead()).ToArray();
@@ -360,6 +361,21 @@ namespace LikeABrawler2
                     });
                     break;
                 */
+                //Yamai first fight
+                case 8:
+                    new DETask(delegate { return !IsHActOrWaiting && ActionBattleTime > 3.5f && AllEnemies.Length <= 3; }, 
+                        delegate 
+                        {
+                            HActRequestOptions opts = new HActRequestOptions();
+                            opts.id = DBManager.GetTalkParam("eb1560_boss_yam_pc");
+                            opts.is_force_play = true;
+
+                            opts.Register(HActReplaceID.hu_enemy_00, AllEnemiesNearest[0].CharacterUID);
+
+                            HActManager.RequestHAct(opts);
+                        });
+                    break;
+
                 case 37: //Wong Tou
                     AllowAllyTransformThisFight = false;
                     AllowPlayerTransformThisFight = false;
@@ -760,12 +776,11 @@ namespace LikeABrawler2
                 SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("style_freeter"));
 
             if(BrawlerPlayer.IsDragon())
-            {
                 SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("style_oedragon"));
-            }
 
             EffectEventManager.LoadScreen(28); //Judge_fatalblow
             EffectEventManager.LoadScreen(68); //Brawler_finishblow
+            EffectEventManager.LoadScreen(69); //PhysicalWarning_Brawler
         }
 
         //BattleTurnManager start

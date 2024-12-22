@@ -11,8 +11,9 @@ namespace LikeABrawler2
 
             uint* id = (uint*)(disableInfo.ToInt64() + 36);
             uint idVal = *id;
+            uint currentStyle = (uint)BrawlerPlayer.CurrentStyle;
 
-            return (uint)BrawlerPlayer.CurrentStyle != idVal;
+            return currentStyle != idVal;
         }
     }
 }

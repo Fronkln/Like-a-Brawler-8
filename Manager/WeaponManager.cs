@@ -16,6 +16,7 @@ namespace LikeABrawler2
         private static AssetUnit m_targetNearestAsset = null;
 
         public static Dictionary<Player.ID, Dictionary<JobWeaponType, Dictionary<AssetArmsCategoryID, EHC>>> WeaponEHCs = new Dictionary<Player.ID, Dictionary<JobWeaponType, Dictionary<AssetArmsCategoryID, EHC>>>();
+        public static Dictionary<Player.ID, Dictionary<AssetArmsCategoryID, string>> WeaponCommandsets = new Dictionary<Player.ID, Dictionary<AssetArmsCategoryID, string>>();
 
         private static Dictionary<AssetArmsCategoryID, int> m_wepUseCounts = new Dictionary<AssetArmsCategoryID, int>();
 
@@ -44,6 +45,23 @@ namespace LikeABrawler2
 
             WeaponEHCs = new  Dictionary<Player.ID, Dictionary<JobWeaponType, Dictionary<AssetArmsCategoryID, EHC>>>
             {
+                [Player.ID.invalid] = new Dictionary<JobWeaponType, Dictionary<AssetArmsCategoryID, EHC>>
+                {
+                    [JobWeaponType.Unknown] = new Dictionary<AssetArmsCategoryID, EHC>()
+                    {
+                        [AssetArmsCategoryID.A] = YazawaCommandManager.LoadYHC("player/player_wpa.ehc"),
+                        [AssetArmsCategoryID.B] = YazawaCommandManager.LoadYHC("player/player_wpb.ehc"),
+                        [AssetArmsCategoryID.C] = YazawaCommandManager.LoadYHC("player/player_wpc.ehc"),
+                        [AssetArmsCategoryID.F] = YazawaCommandManager.LoadYHC("player/player_wpf.ehc"),
+                        [AssetArmsCategoryID.D] = YazawaCommandManager.LoadYHC("player/player_wpd.ehc"),
+                        [AssetArmsCategoryID.E] = YazawaCommandManager.LoadYHC("player/player_wpe.ehc"),
+                        [AssetArmsCategoryID.H] = YazawaCommandManager.LoadYHC("player/kasuga_wph.ehc"),
+                        [AssetArmsCategoryID.N] = YazawaCommandManager.LoadYHC("player/player_wpn.ehc"),
+                        [AssetArmsCategoryID.M] = YazawaCommandManager.LoadYHC("player/player_wpm.ehc"),
+                        [AssetArmsCategoryID.V] = YazawaCommandManager.LoadYHC("player/player_wpv.ehc"),
+                    }
+                },
+
                 [Player.ID.kasuga] = new Dictionary<JobWeaponType, Dictionary<AssetArmsCategoryID, EHC>>
                 {
                     [JobWeaponType.Unknown] = new Dictionary<AssetArmsCategoryID, EHC>()
@@ -52,7 +70,7 @@ namespace LikeABrawler2
                         [AssetArmsCategoryID.B] = YazawaCommandManager.LoadYHC("player/player_wpb.ehc"),
                         [AssetArmsCategoryID.C] = YazawaCommandManager.LoadYHC("player/player_wpc.ehc"),
                         [AssetArmsCategoryID.F] = YazawaCommandManager.LoadYHC("player/player_wpf.ehc"),
-                        [AssetArmsCategoryID.D] = YazawaCommandManager.LoadYHC("player/kasuga_wpd.ehc"),
+                        [AssetArmsCategoryID.D] = YazawaCommandManager.LoadYHC("player/player_wpd.ehc"),
                         [AssetArmsCategoryID.E] = YazawaCommandManager.LoadYHC("player/player_wpe.ehc"),
                         [AssetArmsCategoryID.H] = YazawaCommandManager.LoadYHC("player/kasuga_wph.ehc"),
                         [AssetArmsCategoryID.N] = YazawaCommandManager.LoadYHC("player/player_wpn.ehc"),
@@ -76,6 +94,25 @@ namespace LikeABrawler2
                         [AssetArmsCategoryID.V] = YazawaCommandManager.LoadYHC("player/player_wpv.ehc"),
                     }
                 }
+            };
+
+            WeaponCommandsets = new Dictionary<Player.ID, Dictionary<AssetArmsCategoryID, string>>() 
+            {
+                [Player.ID.invalid] = new Dictionary<AssetArmsCategoryID, string>
+                {
+
+                        [AssetArmsCategoryID.A] = "p_com_wpa",
+                        [AssetArmsCategoryID.B] = "p_com_wpb",
+                        [AssetArmsCategoryID.C] = "p_com_wpc",
+                        [AssetArmsCategoryID.F] = "p_com_wpf",
+                        [AssetArmsCategoryID.D] = "p_com_wpd",
+                        [AssetArmsCategoryID.E] = "p_com_wpe",
+                        [AssetArmsCategoryID.H] = "p_com_wph",
+                        [AssetArmsCategoryID.N] = "p_com_wpn",
+                        [AssetArmsCategoryID.M] = "p_com_wpm",
+                        [AssetArmsCategoryID.V] = "p_com_wpv",
+                    
+                },
             };
 
             foreach (string str in File.ReadAllLines(Path.Combine(Mod.ModPath, "mdb.brawler/weapon_use_count.txt")))
@@ -122,6 +159,9 @@ namespace LikeABrawler2
         public static EHC GetEHCSetForWeapon(AssetArmsCategoryID category, JobWeaponType specialType = JobWeaponType.Unknown)
         {
             Player.ID playerID = BrawlerPlayer.CurrentPlayer;
+
+            if (!WeaponEHCs.ContainsKey(playerID))
+                playerID = Player.ID.invalid;
 
             if (!WeaponEHCs[playerID].ContainsKey(specialType))
                 specialType = JobWeaponType.Unknown;
@@ -173,7 +213,7 @@ namespace LikeABrawler2
 
             if (NearestAsset != null)
             {
-                if (!player.GetWeapon(AttachmentCombinationID.right_weapon).Unit.IsValid())
+                if (!player.GetWeapon(AttachmentCombinationID.right_weapon).Unit.IsValid() && !player.GetWeapon(AttachmentCombinationID.left_weapon).Unit.IsValid())
                 {
                     if (!player.GetBrawlerInfo().CantAttackOverall())
                         if (BattleManager.PadInfo.IsJustPush(BattleButtonID.action))
@@ -203,7 +243,7 @@ namespace LikeABrawler2
                         if (!PickedUpWeapon.IsValid() || PickedUpWeapon == null)
                         {
                             PickedUpWeapon = BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit;
-                            OnWeaponPickedUp(Asset.GetArmsCategory(PickedUpWeapon.Get().AssetID));
+                            OnWeaponPickedUp(Asset.GetArmsCategory(PickedUpWeapon.Get().AssetID), false);
                         }
 
                         m_hasWeaponDoOnce = true;
@@ -233,15 +273,31 @@ namespace LikeABrawler2
             unit.DestroyEntity();
 
             PickedUpWeapon = BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.UID;
-            OnWeaponPickedUp(cat);
+            OnWeaponPickedUp(cat, true);
         }
 
-        private static void OnWeaponPickedUp(AssetArmsCategoryID cat)
+        private static void OnWeaponPickedUp(AssetArmsCategoryID cat, bool fromGround)
         {
             if (m_wepUseCounts.ContainsKey(cat))
                 PickedUpWeaponUseCount = m_wepUseCounts[cat];
             else
                 PickedUpWeaponUseCount = 3;
+
+            if (fromGround)
+            {
+                string wepCommandset = "";
+                Player.ID playerID = BrawlerPlayer.CurrentPlayer;
+
+
+                if (!WeaponCommandsets.ContainsKey(playerID))
+                    playerID = Player.ID.invalid;
+
+                if (WeaponCommandsets[playerID].ContainsKey(cat))
+                    wepCommandset = WeaponCommandsets[playerID][cat];
+
+                if (wepCommandset != "")
+                    BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)FighterCommandManager.FindSetID(wepCommandset));
+            }
         }
 
         public static void PickupNearestWeapon()

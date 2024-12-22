@@ -23,7 +23,17 @@ namespace LikeABrawler2
             if(Transit)
             {
                 CounterFlag = true;
-                BattleTurnManager.ForceCounterCommand(BrawlerBattleManager.PlayerFighter, Attacker, DBManager.GetSkill("mortal_counter_test"));
+
+                FighterCommandID command = BrawlerBattleManager.PlayerCharacter.HumanModeManager.CurrentMode.GetCommandID();
+                string targetSkillName = DBManager.GetCommandSet(command.set_) + "_mortal_counter";
+                RPGSkillID mrSkill = DBManager.GetSkill(targetSkillName);
+
+                if (mrSkill <= 0)
+                    mrSkill = DBManager.GetSkill("mortal_counter_test");
+
+                BattleTurnManager.ForceCounterCommand(BrawlerBattleManager.PlayerFighter, Attacker, mrSkill);
+
+               // BattleTurnManager.ForceCounterCommand(BrawlerBattleManager.PlayerFighter, Attacker, DBManager.GetSkill("mortal_counter_test"));
                 EffectEventManager.PlayScreen(3); //just to add a tiny bit of flair
                 DragonEngine.Log("GET. REVERSED!");
                 Transit = false;

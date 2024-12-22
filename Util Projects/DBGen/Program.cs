@@ -104,8 +104,14 @@ namespace DBGen
             dbPath = targetDbDir;
             puidPath = targetPuidDir;
 
-            //Particle must get special treatment due to hact adjusting
-            //PUIDModule.Procedure("particle", "particle", "*.pib");
+            if (Directory.Exists(refInput))
+            {
+                OEPropertyConversionModule.Procedure();
+                Console.WriteLine();
+            }
+
+                //Particle must get special treatment due to hact adjusting
+                //PUIDModule.Procedure("particle", "particle", "*.pib");
             PUIDModule.Procedure("motion_gmt", "motion/gmt", "*.gmt");
             PUIDModule.Procedure("motion_bep", "motion/bep", "*.bep");
             PUIDModule.Procedure("behavior_set", "motion/behavior", "*.mbv");
@@ -115,8 +121,6 @@ namespace DBGen
             if (Directory.Exists(refInput))
             {
                 MotionFlagInfoModule.Procedure();
-                Console.WriteLine();
-                OEPropertyConversionModule.Procedure();
                 Console.WriteLine();
                 SoundCuesheetModule.Procedure();
                 Console.WriteLine();

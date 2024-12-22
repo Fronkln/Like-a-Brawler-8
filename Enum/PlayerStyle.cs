@@ -4,6 +4,7 @@ namespace LikeABrawler2
 {
     public enum PlayerStyle
     {
+        NotApplicable = 0,
         Default = 1,
         Rush = 2,
         Beast = 3,

@@ -46,6 +46,8 @@
         SupporterFlags = 41,
         WeaponFlags = 42,
         HumanMode = 43,
-        StatusEffect = 44
+        StatusEffect = 44,
+        Swaying = 45,
+        PlayerPoint = 46
     }
 }

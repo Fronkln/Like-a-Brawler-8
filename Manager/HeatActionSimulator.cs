@@ -334,7 +334,7 @@ namespace LikeABrawler2
                     break;
 
                 case HeatActionConditionType.Running:
-                    flag = inf.IsMove && inf.MoveTime > 0.40f;
+                    flag = inf.IsMove && inf.MoveTime > 1f && !CombatPlayerPatches.HumanModeManager_IsInputKamae(actor.Character.HumanModeManager.Pointer);
                     break;
 
                 case HeatActionConditionType.IsSupporter:
@@ -414,6 +414,14 @@ namespace LikeABrawler2
 
                 case HeatActionConditionType.StatusEffect:
                     flag = actor.HasExEffect((int)cond.Param1U32);
+                    break;
+
+                case HeatActionConditionType.Swaying:
+                    flag = actor.Character.HumanModeManager.CurrentMode.ModeName == "Sway";
+                    break;
+
+                case HeatActionConditionType.PlayerPoint:
+                    flag = Logic.CheckNumberLogicalOperator(PlayerPoint.GetPoint((PlayerPoint.ID)cond.Param1U32), cond.Param1U32, cond.LogicalOperator);
                     break;
             }
 

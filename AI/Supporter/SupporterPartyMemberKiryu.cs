@@ -5,6 +5,9 @@ namespace LikeABrawler2
 {
     internal class SupporterPartyMemberKiryu : SupporterPartyMember
     {
+
+        private static bool AllowStyleChange = false;
+
         //change style a maximum of once per turn
         private bool m_styleChangeOnce = false;
         private float m_nextStyleCheckTime = 0;
@@ -41,7 +44,7 @@ namespace LikeABrawler2
                 if (m_nextStyleCheckTime > 0)
                     m_nextStyleCheckTime -= DragonEngine.deltaTime;
 
-                if (!m_styleChangeOnce)
+                if (!m_styleChangeOnce && AllowStyleChange)
                 {
                     if (TimeSinceMyTurn > 1 && BrawlerBattleManager.BattleTime > 2.5f)
                     {

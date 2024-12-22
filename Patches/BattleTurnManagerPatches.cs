@@ -9,6 +9,7 @@ namespace LikeABrawler2
         private IntPtr m_changePhaseFunc;
         private IntPtr m_changeStepFunc;
         private IntPtr m_btlTurnAfterDamageFunc;
+        private IntPtr m_btlTurnUINotifyDamageFunc;
         private IntPtr m_btlTurnFighterDeadFunc;
         private IntPtr m_btlTurnExecActionFunc;
         private IntPtr m_setupTurnFighterFunc;
@@ -18,6 +19,7 @@ namespace LikeABrawler2
         private delegate void BattleTurnManagerDmgNotify(IntPtr mng, IntPtr inf);
         private delegate void BattleTurnManagerExecPhase(IntPtr mng);
         private delegate void FighterSetupTurnBattleFighter(IntPtr fighter);
+        private delegate void BattleTurnManagerNotifyUIDamage(IntPtr dat, IntPtr inf, IntPtr arg2, IntPtr arg3);
 
         public override void Init()
         {
@@ -26,6 +28,7 @@ namespace LikeABrawler2
             m_changePhaseFunc = DragonEngineLibrary.Unsafe.CPP.PatternSearch("48 89 5C 24 18 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 E0 E9 FF FF");
             m_changeStepFunc = DragonEngineLibrary.Unsafe.CPP.PatternSearch("48 8B C4 48 89 58 18 55 56 57 41 54 41 55 41 56 41 57 48 8D A8 E8 F5 FF FF");
             m_btlTurnAfterDamageFunc = DragonEngineLibrary.Unsafe.CPP.PatternSearch("40 56 41 56 48 83 EC ? 4C 8B 02");
+            m_btlTurnUINotifyDamageFunc = DragonEngineLibrary.Unsafe.CPP.ReadCall(DragonEngineLibrary.Unsafe.CPP.PatternSearch("E8 ? ? ? ? 48 89 07 48 8B C7 89 5F 0C"));
             m_btlTurnExecActionFunc = DragonEngineLibrary.Unsafe.CPP.PatternSearch("4D 85 ED 0F 84 ? ? ? ? 48 8D 8E BC 05 00 00") - 207;
             m_setupTurnFighterFunc = DragonEngineLibrary.Unsafe.CPP.PatternSearch("48 89 5C 24 10 48 89 74 24 18 55 57 41 54 41 56 41 57 48 8D 6C 24 E0");
             m_btlTurnFighterDeadFunc = DragonEngineLibrary.Unsafe.CPP.PatternSearch("40 53 41 56 48 83 EC ? 49 89 CE");
@@ -49,6 +52,7 @@ namespace LikeABrawler2
                 _btlTurnManagerFighterDeadNotifyTrampoline = BrawlerPatches.HookEngine.CreateHook<BattleTurnManagerDmgNotify>(m_btlTurnFighterDeadFunc, BattleTurnManager_OnFighterDead);
                 _btlTurnManagerExecPhaseActionTrampoline = BrawlerPatches.HookEngine.CreateHook<BattleTurnManagerExecPhase>(m_btlTurnExecActionFunc, BattleTurnManager_ExecPhaseAction);
                 m_setupTurnBattleFighter = BrawlerPatches.HookEngine.CreateHook<FighterSetupTurnBattleFighter>(m_setupTurnFighterFunc, SetupTurnBattleFighter);
+                _btlTurnManagerDmgUINotifyDmgTrampoline = BrawlerPatches.HookEngine.CreateHook<BattleTurnManagerNotifyUIDamage>(m_btlTurnUINotifyDamageFunc, BattleTurnManager_UINotifyDamage);
             }
 
             BrawlerPatches.HookEngine.EnableHook(m_setupTurnBattleFighter);
@@ -57,6 +61,7 @@ namespace LikeABrawler2
             BrawlerPatches.HookEngine.EnableHook(_btlTurnManagerExecPhaseActionTrampoline);
             BrawlerPatches.HookEngine.EnableHook(m_changeTurnPhase);
             BrawlerPatches.HookEngine.EnableHook(m_changeTurnStep);
+           // BrawlerPatches.HookEngine.EnableHook(_btlTurnManagerDmgUINotifyDmgTrampoline);
         }
 
         protected override void SetInactive()
@@ -75,8 +80,12 @@ namespace LikeABrawler2
 
             if (m_changeTurnStep != null)
                 BrawlerPatches.HookEngine.DisableHook(m_changeTurnPhase);
+
             if (m_changeTurnStep != null)
                 BrawlerPatches.HookEngine.DisableHook(m_changeTurnStep);
+
+            if (_btlTurnManagerDmgUINotifyDmgTrampoline != null)
+                BrawlerPatches.HookEngine.DisableHook(_btlTurnManagerDmgUINotifyDmgTrampoline);
         }
 
         private static BattleTurnManager_ChangePhase m_changeTurnPhase;
@@ -136,6 +145,7 @@ namespace LikeABrawler2
         private static BattleTurnManagerDmgNotify _btlTurnManagerDmgNotifyTrampoline;
         private static void BattleTurnManager_OnAfterDamage(IntPtr mng, IntPtr inf)
         {
+            /*
             FighterID id = Marshal.PtrToStructure<FighterID>(inf + 0x8);
 
             if (id.Handle == BrawlerBattleManager.PlayerCharacter.UID)
@@ -146,8 +156,31 @@ namespace LikeABrawler2
             else
                 if (!IniSettings.ShowEnemyDamage)
                 return;
+            */
 
             _btlTurnManagerDmgNotifyTrampoline(mng, inf);
+        }
+
+        //9.12.2024: rarely crashes game
+        private static BattleTurnManagerNotifyUIDamage _btlTurnManagerDmgUINotifyDmgTrampoline;
+        private static void BattleTurnManager_UINotifyDamage(IntPtr inf, IntPtr dat, IntPtr arg2, IntPtr arg3)
+        {
+
+            if(inf == IntPtr.Zero)
+                _btlTurnManagerDmgUINotifyDmgTrampoline(inf, dat, arg2, arg3);
+
+            bool isPlayer = Marshal.ReadByte(inf + 0xD) != 0;
+
+            if (isPlayer)
+            {
+                if (!IniSettings.ShowPlayerDamage)
+                    return;
+            }
+            else
+            {
+                if (!IniSettings.ShowEnemyDamage)
+                    return;
+            }
         }
 
         private static BattleTurnManagerDmgNotify _btlTurnManagerFighterDeadNotifyTrampoline;

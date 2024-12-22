@@ -32,7 +32,7 @@ namespace DBGen
                 string[] split = lines[0].Split(' ');
 
                 ArmpEntry entry = select.MainTable.AddEntry(str);
-                ArmpTable table = ((ArmpTable)select.MainTable.GetEntry(1).GetValueFromColumn("choice")).CopyTableAsMain();
+                ArmpTable table = ((ArmpTable)select.MainTable.GetEntry(1).GetValueFromColumn("choice")).CopyAsMain(false);
 
                 entry.SetValueFromColumn("select_type", byte.Parse(split[0]));
                 entry.SetValueFromColumn("cancel_type", byte.Parse(split[1]));

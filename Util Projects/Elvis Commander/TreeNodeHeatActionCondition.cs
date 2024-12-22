@@ -174,6 +174,9 @@ namespace Yazawa_Commander
                 case HeatActionConditionType.InBepElementRange:
                     name += $"BEP In Range Of Element {Condition.Param1U32}";
                     break;
+                case HeatActionConditionType.PlayerPoint:
+                    name += $"Player Point {Condition.Param1U32} {GetLogicalOperatorSymbol(Condition.LogicalOperator)} {Condition.Param2U32}";
+                    break;
             }
 
             return name;

@@ -253,7 +253,7 @@ namespace LikeABrawler2
             if (!fighter.GetStatus().HAct.GetPlayInfo(ref inf, HActRangeType.hit_wall))
                 return false;
 
-            bool valid =fighter.GetBrawlerInfo().MoveTime >= 1f && !CombatPlayerPatches.HumanModeManager_IsInputKamae(fighter.Character.HumanModeManager.Pointer) &&  Vector3.Distance(fighter.Character.Transform.Position, (Vector3)inf.Pos) <= 1f && fighter.Character.IsFacingPosition((Vector3)inf.Pos);       
+            bool valid = fighter.GetBrawlerInfo().MoveTime >= 1f && !CombatPlayerPatches.HumanModeManager_IsInputKamae(fighter.Character.HumanModeManager.Pointer) &&  Vector3.Distance(fighter.Character.Transform.Position, (Vector3)inf.Pos) <= 1f && fighter.Character.IsFacingPosition((Vector3)inf.Pos);       
 
             switch (op)
             {
@@ -265,6 +265,11 @@ namespace LikeABrawler2
                 case 3:
                     return !valid;
             }
+        }
+
+        private static bool CheckPlayerPoint(IntPtr fighterPtr, byte op, byte* paramsPtr)
+        {
+            return false;
         }
     }
 }

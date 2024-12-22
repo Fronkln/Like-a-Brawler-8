@@ -11,6 +11,7 @@ namespace LikeABrawler2
         static AuraDefinition LastAura = new AuraDefinition(EffectEventCharaID.invalid, EffectEventCharaID.invalid);
 
         private static bool m_auraPlaying = false;
+        private static bool m_hactFlag = false;
 
 
         static AuraManager()
@@ -25,6 +26,8 @@ namespace LikeABrawler2
                 [RPGJobID.man_footballer] = new AuraDefinition((EffectEventCharaID)2767, EffectEventCharaID.invalid),
                 [RPGJobID.man_western] = new AuraDefinition((EffectEventCharaID)2768, EffectEventCharaID.invalid),
             };
+
+            HeatActionManager.OnHActEndEvent += HactEnd;
         }
 
         public static void Update()
@@ -44,6 +47,9 @@ namespace LikeABrawler2
 
             if (BrawlerBattleManager.IsHAct)
             {
+                if (m_auraPlaying)
+                    m_hactFlag = true;
+
                 m_auraPlaying = false;
             }
             else
@@ -61,12 +67,28 @@ namespace LikeABrawler2
         }
 
 
+        private static void HactEnd()
+        {
+            if(m_hactFlag)
+                StartAura();
+
+            m_hactFlag = false;
+        }
+
+        private static void Reset()
+        {
+            m_hactFlag = false;
+        }
+
         private static bool ShouldShowHeatAura()
         {
-            if (!BrawlerPlayer.IsExtremeHeat || BrawlerBattleManager.CurrentPhase >= BattleTurnManager.TurnPhase.BattleResult)
+            if (BrawlerBattleManager.CurrentPhase >= BattleTurnManager.TurnPhase.BattleResult)
                 return false;
-            else
-                return true;
+
+            if (!BrawlerPlayer.IsExtremeHeat)
+                return false;
+
+            return true;
         }
 
         private static void OnAuraChanged()
