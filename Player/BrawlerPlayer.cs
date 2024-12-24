@@ -378,9 +378,9 @@ namespace LikeABrawler2
 
             //Yakuza 8 limitation: we cannot get the equipped weapon for another job, it has to be another one
             if (DoesJobHaveWeapons(Player.GetCurrentJob(CurrentPlayer)))
-                if(IsOtherPlayer())
-                if(BrawlerBattleManager.PlayerFighter.IsValid())
-                    SetupWeapon(BrawlerBattleManager.PlayerFighter._ptr);
+                if (IsOtherPlayer())
+                    if (BrawlerBattleManager.PlayerFighter.IsValid())
+                        SetupWeapon(BrawlerBattleManager.PlayerFighter._ptr);
 
             //otherwise, dont do shit, if this is a party member that is the main playable character right now for some reason
             //its modder's responsibility to edit the player cfc.
@@ -865,6 +865,20 @@ namespace LikeABrawler2
                     // BrawlerBattleManager.PlayerFighter.Equip((AssetID)1353, AttachmentCombinationID.right_weapon, ItemID.invalid, DBManager.GetSkill("western_test"));
                     break;
             }
+        }
+
+        public unsafe static void CalculateTameDamage(IntPtr battleDamageInfo)
+        {
+            if (!AuthNodeBattleTame.ShouldApplyTame())
+                return;
+
+            int damage = (*(int*)(battleDamageInfo.ToInt64() + 0x120));
+            damage = damage + (int)(damage * 0.15f); //15% damage boost increase
+            *(int*)(battleDamageInfo.ToInt64() + 0x120) = damage;
+            *(int*)(battleDamageInfo.ToInt64() + 0x124) = damage;
+
+            //consume the tame
+            AuthNodeBattleTame.Reset();
         }
     }
 }

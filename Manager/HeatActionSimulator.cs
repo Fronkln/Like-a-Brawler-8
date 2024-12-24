@@ -334,7 +334,7 @@ namespace LikeABrawler2
                     break;
 
                 case HeatActionConditionType.Running:
-                    flag = inf.IsMove && inf.MoveTime > 1f && !CombatPlayerPatches.HumanModeManager_IsInputKamae(actor.Character.HumanModeManager.Pointer);
+                    flag = actor.IsRunning();
                     break;
 
                 case HeatActionConditionType.IsSupporter:

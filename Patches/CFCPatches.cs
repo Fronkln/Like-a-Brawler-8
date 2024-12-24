@@ -64,6 +64,10 @@ namespace LikeABrawler2
                     return CheckIsActiveBrawlerPlayer(fighter, op, paramsPtr);
                 case 11:
                     return CheckWallJump(fighter, op, paramsPtr);
+                case 12:
+                    return CheckAIIsBoss(fighter, op, paramsPtr);
+                case 13:
+                    return CheckAIPlayerDistance(fighter, op, paramsPtr);
             }
 
             return false;
@@ -269,6 +273,60 @@ namespace LikeABrawler2
 
         private static bool CheckPlayerPoint(IntPtr fighterPtr, byte op, byte* paramsPtr)
         {
+            return false;
+        }
+
+        private static bool CheckAIIsBoss(IntPtr fighterPtr, byte op, byte* paramsPtr)
+        {
+            Fighter fighter = new Fighter(fighterPtr);
+            BaseEnemyAI ai = EnemyManager.GetAI(fighter);
+
+            if (ai == null)
+                return false;
+
+            switch (op)
+            {
+                default:
+                    return true;
+
+                case 0:
+                    return ai.IsBoss();
+                case 3:
+                    return !ai.IsBoss();
+            }
+        }
+
+        private static bool CheckAIPlayerDistance(IntPtr fighterPtr, byte op, byte* paramsPtr)
+        {
+            Fighter fighter = new Fighter(fighterPtr);
+            BaseEnemyAI ai = EnemyManager.GetAI(fighter);
+
+            if (ai == null)
+                return false;
+
+            byte param = (*(paramsPtr + 1));
+
+            //lol
+            switch(param)
+            {
+                case 0:
+                    return ai.DistToPlayer <= 1.5f;
+                case 1:
+                    return ai.DistToPlayer <= 2.5f;
+                case 2:
+                    return ai.DistToPlayer >= 3.5f;
+                case 3:
+                    return ai.DistToPlayer >= 4.5f;
+                case 4:
+                    return ai.DistToPlayer >= 5.5f;
+                case 5:
+                    return ai.DistToPlayer >= 6.5f;
+                case 6:
+                    return ai.DistToPlayer >= 7.5f;
+                case 7:
+                    return ai.DistToPlayer >= 8.5f;
+            }
+
             return false;
         }
     }

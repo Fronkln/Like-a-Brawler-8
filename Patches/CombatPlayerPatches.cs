@@ -169,7 +169,18 @@ namespace LikeABrawler2
             HumanModeManager manager = new HumanModeManager() { Pointer = humanModeMngPtr };
 
             if (manager.Human.Pointer != BrawlerBattleManager.PlayerCharacter.Pointer)
-                return m_isInputGuardTrampoline(humanModeMngPtr);
+            {
+                BaseAI ai = manager.Human.TryGetAI();
+                if(ai == null)
+                    return m_isInputGuardTrampoline(humanModeMngPtr);
+
+                bool res = ai.ShouldGuard();
+
+                if (res)
+                    return true;
+                else
+                    return m_isInputGuardTrampoline(humanModeMngPtr);
+            }
             else
                 return BrawlerPlayer.IsInputGuard(manager);
         }

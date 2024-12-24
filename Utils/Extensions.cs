@@ -25,6 +25,12 @@ namespace LikeABrawler2
             return dot >= dotVal;
         }
 
+
+        public static bool IsFacingEachother(this EntityBase ent, EntityBase other, float dotOverride = -10)
+        {
+            return IsFacingEntity(ent, other, dotOverride) && IsFacingEntity(other, ent, dotOverride);
+        }
+
         public static BrawlerFighterInfo GetBrawlerInfo(this Fighter fighter)
         {
             if (!BrawlerFighterInfo.Infos.ContainsKey(fighter.Character.UID))
@@ -42,6 +48,16 @@ namespace LikeABrawler2
                 return EnemyManager.GetAI(fighter);
             else
                 return SupporterManager.GetAI(fighter);
+        }
+
+        public static BaseAI TryGetAI(this Character fighter)
+        {
+            BaseAI ai = EnemyManager.GetAI(fighter.UID);
+
+            if (ai != null)
+                return ai;
+            else
+                return SupporterManager.GetAI(fighter.UID);
         }
 
         public static bool IsAnyPartyMember(this Fighter fighter)
@@ -116,6 +132,16 @@ namespace LikeABrawler2
                 case "": throw new ArgumentException($"{nameof(input)} cannot be empty", nameof(input));
                 default: return input[0].ToString().ToUpper() + input.Substring(1);
             }
+        }
+
+        public static bool IsRunning(this Fighter fighter)
+        {
+            BrawlerFighterInfo inf = GetBrawlerInfo(fighter);
+
+            if (inf == null)
+                return false;
+
+            return inf.IsMove && inf.MoveTime > 1f && !CombatPlayerPatches.HumanModeManager_IsInputKamae(fighter.Character.HumanModeManager.Pointer);
         }
     }
 }

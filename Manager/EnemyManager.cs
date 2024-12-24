@@ -81,6 +81,9 @@ namespace LikeABrawler2
                 case "elvis_btl02_0350_000_1":
                     ai = new EnemyAIBossYamai1();
                     break;
+                case "elvis_btl03_0300_000_1":
+                    ai = new EnemyAIBossRoman();
+                    break;
                 case "elvis_btl04_0580_000_1": //Runway boss
                     ai = new EnemyAIBossWPG();
                     break;

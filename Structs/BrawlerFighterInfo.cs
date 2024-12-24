@@ -47,6 +47,8 @@ namespace LikeABrawler2
         public ECAssetArms RightWeapon = new ECAssetArms();
         public ECAssetArms LeftWeapon = new ECAssetArms();
 
+        public HumanMode CurrentMode = new HumanMode();
+
         //Purpose: Cache fighter variables
         //Reduces PInvoke(probably) and eliminates several crashes
         //Related to accesing those vars in input loop
@@ -74,6 +76,8 @@ namespace LikeABrawler2
             RightWeapon = fighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get().Arms;
             LeftWeapon = fighter.GetWeapon(AttachmentCombinationID.left_weapon).Unit.Get().Arms;
             IsAttack = fighter.Character.HumanModeManager.IsAttack();
+
+            CurrentMode = fighter.Character.HumanModeManager.CurrentMode;
 
             if (IsDown)
                 DownTime += DragonEngine.deltaTime;

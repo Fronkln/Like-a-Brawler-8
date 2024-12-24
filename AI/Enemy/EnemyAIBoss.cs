@@ -62,6 +62,13 @@ namespace LikeABrawler2
                 }
         }
 
+        protected override void OnSway()
+        {
+            base.OnSway();
+
+            m_swayAttack = new Random().Next(0, 101) <= 45;
+        }
+
         protected override void OnPlayerStartAttackingEvent()
         {
             base.OnPlayerStartAttackingEvent();

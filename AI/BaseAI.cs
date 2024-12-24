@@ -1,6 +1,7 @@
 ﻿using DragonEngineLibrary;
 using DragonEngineLibrary.Service;
 using ElvisCommand;
+using System.Security.Permissions;
 
 namespace LikeABrawler2
 {
@@ -14,11 +15,16 @@ namespace LikeABrawler2
         public BrawlerFighterInfo BrawlerInfo { get { return BrawlerFighterInfo.Get(Character.UID); } }
 
         public float ComboExtendChance = COMBO_EXTEND_BASE_CHANCE;
-        public bool MyTurn { get; private set; }
+        public bool MyTurn { get; private set; } = false;
+        public float TimeSinceLastAttack { get; private set; } = 999;
         public float TimeSinceMyTurn { get; protected set; } = 999;
 
         private bool m_attacking = false;
+        
+        //AI FLAGS
         protected bool m_extendAttack = false;
+        protected bool m_swayAttack = false;
+
         protected float m_hactCd = 0;
 
         protected CharacterAttributes m_attributes;
@@ -26,6 +32,9 @@ namespace LikeABrawler2
         //Constants
         protected const float COMBO_EXTEND_BASE_CHANCE = 45;
         protected const float HACT_COOLDOWN = 25f;
+
+        private bool m_performingNonTurnAttackDoOnce = false;
+        protected float m_nonTurnAttackPatience = 5f;
 
         public virtual void Awake()
         {
@@ -98,9 +107,12 @@ namespace LikeABrawler2
 
             if(!m_attacking)
             {
+                TimeSinceLastAttack += DragonEngine.deltaTime;
+
                 if(BrawlerInfo.IsAttack)
                 {
                     m_attacking = true;
+                    TimeSinceLastAttack = 0;
                     OnStartAttack();
                 }    
             }
@@ -108,6 +120,21 @@ namespace LikeABrawler2
             {
                 if(!BrawlerInfo.IsAttack)
                     m_attacking = false;
+            }
+
+
+            if(!m_performingNonTurnAttackDoOnce)
+            {
+                if(IsPerformingNonTurnAttack())
+                {
+                    m_performingNonTurnAttackDoOnce = true;
+                    OnPerformNonTurnAttack();
+                }
+            }
+            else
+            {
+                if (!IsPerformingNonTurnAttack())
+                    m_performingNonTurnAttackDoOnce = false;
             }
         }
 
@@ -171,6 +198,26 @@ namespace LikeABrawler2
 
         }
 
+        public virtual bool CanDoNonTurnAttack()
+        {
+            return !IsMyTurn() && TimeSinceLastAttack >= m_nonTurnAttackPatience;
+        }
+
+        public bool IsPerformingNonTurnAttack()
+        {
+            return Character.HumanModeManager.GetCommandName().StartsWith("NonTurnAttack", System.StringComparison.OrdinalIgnoreCase);
+        }
+
+        public virtual void OnPerformNonTurnAttack()
+        {
+            m_nonTurnAttackPatience = new System.Random().Next(4.5f, 7f);
+        }
+
+        public virtual bool ShouldGuard()
+        {
+            return false;
+        }
+
 
         public bool CheckParam(BaseAIParams param)
         {
@@ -180,6 +227,10 @@ namespace LikeABrawler2
                     return false;
                 case BaseAIParams.ExtendCombo:
                     return m_extendAttack;
+                case BaseAIParams.SwayAttack:
+                    return m_swayAttack;
+                case BaseAIParams.CanDoNonTurnNearbyAttack:
+                    return CanDoNonTurnAttack();
             }
         }
     }

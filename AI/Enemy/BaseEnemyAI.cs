@@ -46,6 +46,8 @@ namespace LikeABrawler2
         private bool m_gettingUp;
         private bool m_getupHyperArmorDoOnce = false;
 
+        protected bool m_swaying = false;
+
         protected bool m_isMortalAttackDoOnce = false;
         protected int m_numMortalAttacks = 0;
         protected RPGSkillID m_mortalSkill = 0;
@@ -56,6 +58,12 @@ namespace LikeABrawler2
 
         public List<Fighter> PlayersNearest = new List<Fighter>();
         public float DistToPlayer { get { return Vector3.Distance(Character.Transform.Position, BrawlerBattleManager.PlayerCharacter.Transform.Position); } }
+
+        protected float PlayerRunTowardsMeTime = 0;
+        protected float LastPlayerRunTowardsMeTime = 0;
+        protected float TimeSincePlayerRunTowardsMe = 999;
+
+        protected float GuardTime = 0;
 
         public override void Awake()
         {
@@ -104,9 +112,16 @@ namespace LikeABrawler2
             return true;
         }
 
+        public override bool CanDoNonTurnAttack()
+        {
+            return !IsMyTurn() && TimeSinceLastAttack >= m_nonTurnAttackPatience && EnemyManager.Enemies.Where(x => x.Value.IsPerformingNonTurnAttack()).Count() < 2;
+        }
+
         public unsafe virtual void PreTakeDamage(IntPtr battleDamageInfo)
         {
             //3.11.2024: THIS FUCKING SUCKS! THIS FUCKING SUCKS! THIS FUCKING
+
+            BrawlerPlayer.CalculateTameDamage(battleDamageInfo);
 
             if (!BrawlerPlayer.IsExtremeHeat)
                 return;
@@ -181,6 +196,16 @@ namespace LikeABrawler2
             return !BrawlerInfo.IsSync && !BrawlerInfo.IsDown && !IsBeingJuggled() && !IsMortalAttackOrPreparing();
         }
 
+        protected virtual void OnSway()
+        {
+           
+        }
+
+        protected virtual void OnSwayEnd()
+        {
+            m_swayAttack = false;
+        }
+
         public virtual bool TransitSway(IntPtr battleDamageInfo)
         {
             if (EvasionModule.ShouldEvade(new BattleDamageInfoSafe(battleDamageInfo)))
@@ -253,6 +278,7 @@ namespace LikeABrawler2
         {
             return true;
         }
+
         public unsafe override void CombatUpdate()
         {
             base.CombatUpdate();
@@ -360,6 +386,8 @@ namespace LikeABrawler2
             }
 
 
+            StateUpdate();
+
             if (m_mortalSkill != RPGSkillID.invalid || IsMortalAttack())
             {
                 Fighter.GetStatus().SetSuperArmor(true);
@@ -391,6 +419,51 @@ namespace LikeABrawler2
         }
 
 
+        protected virtual void StateUpdate()
+        {
+
+            bool isSway = Character.HumanModeManager.CurrentMode.ModeName == "Sway";
+
+            if (isSway)
+            {
+                if (!m_swaying)
+                    OnSway();
+
+                m_swaying = true;
+            }
+            else
+            {
+                if (m_swaying)
+                    OnSwayEnd();
+
+                m_swaying = false;
+            }
+
+            if (Character.IsFacingEachother(BrawlerBattleManager.PlayerCharacter, 0.1f))
+            {
+                if (BrawlerBattleManager.PlayerFighter.IsRunning())
+                {
+                    PlayerRunTowardsMeTime += DragonEngine.deltaTime;
+                    TimeSincePlayerRunTowardsMe = 0;
+                }
+                else
+                {
+                    LastPlayerRunTowardsMeTime = PlayerRunTowardsMeTime;
+                    PlayerRunTowardsMeTime = 0;
+                    TimeSincePlayerRunTowardsMe += DragonEngine.deltaTime;
+                }
+            }
+            else
+            {
+                LastPlayerRunTowardsMeTime = PlayerRunTowardsMeTime;
+                PlayerRunTowardsMeTime = 0;
+                TimeSincePlayerRunTowardsMe += DragonEngine.deltaTime;
+            }
+
+            if (GuardTime > 0)
+                GuardTime -= DragonEngine.deltaTime;
+        }
+
         public void ExecuteCounterAttack(RPGSkillID id, bool showEffect)
         {
           //  m_allowCounterEffectDoOnce = showEffect;
@@ -405,6 +478,12 @@ namespace LikeABrawler2
             // OnCounterAttack?.Invoke();
 
             RecentHitsWithoutAttack = 0;
+        }
+
+
+        public override bool ShouldGuard()
+        {
+            return GuardTime > 0;
         }
 
         public bool IsCounterAttacking()
@@ -438,9 +517,23 @@ namespace LikeABrawler2
 
         }
 
+        protected virtual bool TransitPlayerRunAttackResponse()
+        {
+            if (IsMyTurn())
+                return false;
+
+            if (TimeSincePlayerRunTowardsMe < 1f && DistToPlayer < 4f)
+            {
+                return true;
+
+            }
+            return false;
+        }
+
         protected virtual void OnPlayerStartAttackingEvent()
         {
-
+            if (TransitPlayerRunAttackResponse())
+                GuardTime = 1;
         }
 
         public virtual void MyTurnUpdate()

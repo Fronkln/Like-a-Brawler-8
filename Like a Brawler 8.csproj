@@ -209,6 +209,7 @@
     <Compile Include="AI\Enemy\Boss\EnemyAIBossKuwaki.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossLandSurfer.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossMajima.cs" />
+    <Compile Include="AI\Enemy\Boss\EnemyAIBossRoman.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossSaejima.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossSawashiro.cs" />
     <Compile Include="AI\Enemy\Boss\EnemyAIBossSumo.cs" />
@@ -239,6 +240,7 @@
     <Compile Include="AI\Supporter\SupporterPartyMember.cs" />
     <Compile Include="Auth\AuthConditionManager.cs" />
     <Compile Include="Auth\AuthCustomNodeManager.cs" />
+    <Compile Include="Auth\AuthNodeBattleTame.cs" />
     <Compile Include="Auth\AuthNodeButtonMash.cs" />
     <Compile Include="Auth\AuthNodeHActDamage.cs" />
     <Compile Include="Auth\AuthNodeLABAssetPickup.cs" />
