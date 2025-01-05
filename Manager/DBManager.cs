@@ -6,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
+using LibARMP;
+using LibARMP.IO;
 
 namespace LikeABrawler2
 {
@@ -23,6 +25,7 @@ namespace LikeABrawler2
 
         private static Dictionary<uint, EnemyRebalanceEntry> Rebalances = new Dictionary<uint, EnemyRebalanceEntry>();
 
+        public static ARMP BattleCommandSetTable = null;
 
         public static bool Inited = false;
 
@@ -41,6 +44,10 @@ namespace LikeABrawler2
             m_rpgSkill = ReadCachedDBArmp("rpg_skill");
             m_soldierInfo = ReadCachedDBArmp("character_npc_soldier_personal_data");
             m_rpgEnemy = FlipCachedDBArmp(ReadCachedDBArmp("battle_rpg_enemy"));
+
+
+            BattleCommandSetTable = GetARMP(DB.GetBinaryPointer(1282));
+
             //BattleRpgEnemy = ReadCachedDBArmp("battle_rpg_enemy");
 
             foreach (var kv in m_soldierInfo)
@@ -189,7 +196,7 @@ namespace LikeABrawler2
             return Rebalances[id];
         }
 
-        /*
+        
         public static ARMP GetARMP(IntPtr pointer, int bufferSize = 4194304)
         {
             byte[] buffer = new byte[4194304];
@@ -199,9 +206,9 @@ namespace LikeABrawler2
             {
                 return ArmpFileReader.ReadARMP(buffer, baseARMPMemoryAddress: pointer);
             }
-            catch
+            catch(Exception ex)
             {
-                throw new Exception("Armp read error");
+                throw new Exception("Armp read error:\n" + ex.ToString());
             }
         }
 
@@ -209,7 +216,7 @@ namespace LikeABrawler2
         {
             return null;
         }
-        */
+        
 
 
         private static Dictionary<string, uint> ReadCachedDBArmp(string name)
