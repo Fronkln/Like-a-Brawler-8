@@ -47,7 +47,7 @@ namespace DBGen
                 string dir = Path.Combine(rootDir, str);
 
                 ArmpEntry tutEntry = manual.MainTable.AddEntry(new DirectoryInfo(str).Name);
-                ArmpTable mainTable = ((ArmpTable)manual.MainTable.GetEntry(1).GetValueFromColumn("table")).CopyAsMain(false);
+                ArmpTable mainTable = ((ArmpTableMain)manual.MainTable.GetEntry(1).GetValueFromColumn("table")).Copy(false);
                 tutEntry.SetValueFromColumn("table", mainTable);
 
                 foreach (string file in new DirectoryInfo(dir).GetFiles("*.txt")

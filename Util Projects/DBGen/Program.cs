@@ -24,7 +24,7 @@ namespace DBGen
 
         public static bool isDemo;
 
-        public static string gameOverride = "y8";
+        public static string gameOverride = "y6";
 
         static void Main(string[] args)
         {
@@ -176,7 +176,7 @@ namespace DBGen
             if(!NoCodename)
                 path = Path.Combine(("puid." + Program.project), tableName + ".bin");
             else
-                path = Path.Combine("puid.", tableName + ".bin");
+                path = Path.Combine("puid", tableName + ".bin");
 
             return ArmpFileReader.ReadARMP(path);
         }

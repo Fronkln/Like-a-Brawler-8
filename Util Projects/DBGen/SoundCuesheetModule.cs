@@ -31,19 +31,10 @@ namespace DBGen
             if (!File.Exists(genListPath))
                 File.Create(genListPath).Close();
 
-            DirectoryInfo[] localizedSoundDirs = genDirInf.GetDirectories()
-                .Where(x => x.Name.StartsWith("sound"))
-                .Where(x => x.Name.Length <= 8)
-                .OrderBy(x => x.Name)
-                .ToArray();
-
-            FileInfo[][] localizedSoundDirFiles = localizedSoundDirs
-                .Select(x => x.GetFiles("*.acb"))
-                .ToArray();
-
             string[] curDat = ReadGenOutputFile();
             List<string> output = new List<string>();
 
+            /*
             foreach(FileInfo inf in localizedSoundDirFiles[0])
             {
                 string[] nameSplit = inf.Name.Split('_');
@@ -76,6 +67,7 @@ namespace DBGen
                     File.Delete(streamGenPath);
                 }
             }
+            */
 
             File.AppendAllLines(genListPath, output);
         }
@@ -98,6 +90,7 @@ namespace DBGen
                 return;
             }
 
+            /*
             DirectoryInfo[] localizedSoundDirs = genDirInf.GetDirectories()
                 .Where(x => x.Name.StartsWith("sound"))
                 .Where(x => x.Name.Length <= 8)
@@ -116,6 +109,7 @@ namespace DBGen
             //ctg10_hact_y7b1550_amogus
             localizedSoundDirFiles[0] = localizedSoundDirFiles[0]
                 .ToArray();
+            */
 
 
             ProcessGenOutputFile();
@@ -156,6 +150,7 @@ namespace DBGen
                 if(File.Exists(streamGenPath))
                     mainEntry.SetValueFromColumn("have_awb", true);
 
+                /*
                 for (int i = 1; i < localizedSoundDirFiles.Length; i++)
                 {
                     if (localizedSoundDirFiles[i].FirstOrDefault(x => x.Name == fileName) != null)
@@ -164,6 +159,7 @@ namespace DBGen
                         mainEntry.SetValueFromColumn(haveLocalizedACBColumn, true);
                     }
                 }
+                */
 
                 Console.WriteLine("Added " + name + $", category {category}");
             }

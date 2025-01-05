@@ -62,7 +62,7 @@ namespace DBGen
                 uint last = (uint)entries[entries.Count - 2].GetValueFromColumn("0");
 
                 enemyEntry.SetValueFromColumn("0", last + 1);
-                ArmpTable armp = ((ArmpTable)(entries[0].GetValueFromColumn("1"))).CopyAsMain(false);
+                ArmpTable armp = ((ArmpTableMain)(entries[0].GetValueFromColumn("1"))).Copy(false);
 
 
                 ushort ID = (ushort)((uint)enemyEntry.GetValueFromColumn("0"));

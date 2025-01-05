@@ -47,7 +47,7 @@ namespace DBGen
             {
                 string dir = Path.Combine(rootDir, str);
 
-                ArmpTable table = ((ArmpTable)talk.MainTable.GetEntry(1).GetValueFromColumn("text")).CopyAsMain(false);
+                ArmpTable table = ((ArmpTableMain)talk.MainTable.GetEntry(1).GetValueFromColumn("text")).Copy(false);
                 ArmpEntry tableEntry = talk.MainTable.AddEntry(new DirectoryInfo(dir).Name);
                 tableEntry.SetValueFromColumn("text", table);
 

@@ -5,9 +5,7 @@ using LibARMP;
 using LibARMP.IO;
 using System.IO;
 using HActLib;
-using System.Diagnostics;
-using System.Xml.Linq;
-using System.Security.Policy;
+using System.ComponentModel.DataAnnotations;
 
 namespace DBGen
 {
@@ -44,7 +42,7 @@ namespace DBGen
                 if (Program.NoCodename)
                     hactSrcDir = "hact";
                 else
-                    hactSrcDir = "hact." + Program.NoCodename;
+                    hactSrcDir = "hact." + Program.project;
             }
 
             List<string> genFileDat = null;
@@ -100,9 +98,10 @@ namespace DBGen
                         genFileDat.Add(dirName);
                         Console.WriteLine("Added " + hactDir);
                     }
-                }
 
-                File.WriteAllLines(genFilePath, genFileDat.ToArray());
+
+                    File.WriteAllLines(genFilePath, genFileDat.ToArray());
+                }
             }
 
             if (!canAdd)
@@ -144,11 +143,22 @@ namespace DBGen
 
                 if (canAdd)
                 {
-                    ArmpEntry talkEntry = talkParamBin.MainTable.AddEntry(str);
-                    talkEntry.SetValueFromColumn("path", "hact_elvis/" + str);
-                    talkEntry.SetValueFromColumn("type", byte.Parse(File.ReadAllText(metaDataPath)));
+                    ArmpEntry entry = null;
+                    if (!talkParamBin.MainTable.TryGetEntry(str, out entry))
+                    {
+                        ArmpEntry talkEntry = talkParamBin.MainTable.AddEntry(str);
+                        try
+                        {
+                            talkEntry.SetValueFromColumn("path", "hact_elvis/" + str);
+                            talkEntry.SetValueFromColumn("type", byte.Parse(File.ReadAllText(metaDataPath)));
+                        }
+                        catch
+                        {
 
-                    Console.WriteLine($"Added {str}, ID: {talkEntry.ID}");
+                        }
+
+                        Console.WriteLine($"Added {str}, ID: {talkEntry.ID}");
+                    }
                 }
 
                 bool dirty = false;
@@ -275,7 +285,7 @@ namespace DBGen
                 }
                 catch
                 {
-                    continue;
+                    newID = particlePUID.MainTable.GetEntry(ptcName).ID;
                 }
 
                 if (newID <= 0)

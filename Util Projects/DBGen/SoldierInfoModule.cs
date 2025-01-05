@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using LibARMP;
 using LibARMP.IO;
@@ -16,6 +17,8 @@ namespace DBGen
 
         public static void Procedure()
         {
+            System.Diagnostics.Stopwatch time = new System.Diagnostics.Stopwatch();
+
             string rootDir = Path.Combine(Program.refPath, "soldier");
             string listFile = Path.Combine(rootDir, "list.txt");
 
@@ -74,10 +77,14 @@ namespace DBGen
 
             }
 
+            time.Start();
+
             ArmpFileWriter.WriteARMPToFile(soldierInfoArmp, Path.Combine(Program.dbPath, "character_npc_soldier_personal_data.bin"));
             File.WriteAllLines(Path.Combine(Program.dbPath, "character_npc_soldier_personal_data.db_index"), Program.CacheARMP(soldierInfoArmp));
 
-            Console.WriteLine("------|SOLDIER INFO GEN COMPLETE|-----");
+            time.Stop();
+
+            Console.WriteLine($"------|SOLDIER INFO GEN COMPLETE IN {time.Elapsed}|-----");
         }
 
         private static void SetSoldierDat(SoldierInfoEntry soldierData, ArmpEntry entry)

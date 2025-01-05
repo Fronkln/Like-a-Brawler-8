@@ -82,7 +82,7 @@ namespace LikeABrawler2
                 {
                     [JobWeaponType.Unknown] = new Dictionary<AssetArmsCategoryID, EHC>()
                     {
-                        [AssetArmsCategoryID.A] = YazawaCommandManager.LoadYHC("player/player_wpa.ehc"),
+                        [AssetArmsCategoryID.A] = YazawaCommandManager.LoadYHC("player/kiryu_wpa.ehc"),
                         [AssetArmsCategoryID.B] = YazawaCommandManager.LoadYHC("player/player_wpb.ehc"),
                         [AssetArmsCategoryID.C] = YazawaCommandManager.LoadYHC("player/kiryu_wpc.ehc"),
                         [AssetArmsCategoryID.F] = YazawaCommandManager.LoadYHC("player/player_wpf.ehc"),

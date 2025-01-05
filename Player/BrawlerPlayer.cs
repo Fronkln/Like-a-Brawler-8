@@ -304,7 +304,7 @@ namespace LikeABrawler2
                 return;
 
             AssetArmsCategoryID category = Asset.GetArmsCategory(assetId);
-            DragonEngine.Log("Equipping inventory weapon, category: " + category);
+            DragonEngine.Log("Equipping inventory weapon, category: " + category + " Asset ID: " +(uint) assetId);
 
             switch (category)
             {
