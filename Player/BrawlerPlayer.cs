@@ -25,6 +25,9 @@ namespace LikeABrawler2
         public static EHC PlayerSharedHActs;
         public static Dictionary<Player.ID, EHC> PlayerHActs;
         public static EHC[] DODHActs;
+
+        public static EntityHandle<AssetUnit> PocketWeapon = new EntityHandle<AssetUnit>();
+
         //private static EHC KasugaHAct;
         //private static EHC AdachiHAct;
 
@@ -296,7 +299,7 @@ namespace LikeABrawler2
         }
 
 
-        public static void PullOutWeapon(ItemID weapon)
+        public unsafe static void PullOutWeapon(ItemID weapon)
         {
             AssetID assetId = Item.GetAssetID(weapon);
 
@@ -320,6 +323,11 @@ namespace LikeABrawler2
                     BrawlerBattleManager.PlayerFighter.Equip(weapon, AttachmentCombinationID.left_weapon);
                     break;
             }
+
+            PocketWeapon = BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit;
+
+            if(PocketWeapon.IsValid())
+                PocketWeapon.Get().Arms.SetFromPocket(true);
 
             BattleTurnManager.ForceCounterCommand(BrawlerBattleManager.PlayerFighter, BrawlerBattleManager.AllEnemies[0], DBManager.GetSkill($"player_wp{category.ToString().ToLowerInvariant()}_battou"));
         }
@@ -591,6 +599,10 @@ namespace LikeABrawler2
                         break;
 
                 }
+
+                BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get().Arms.SetFromPocket(true);
+                BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.left_weapon).Unit.Get().Arms.SetFromPocket(true);
+
 
                 //Commandset hackery to allow other players to use someone elses jobs
                 //Example: Saeko on adachi

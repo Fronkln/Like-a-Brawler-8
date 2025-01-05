@@ -2,13 +2,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LikeABrawler2
 {
     internal static class Extensions
     {
+        public unsafe static void SetFromPocket(this ECAssetArms arms, bool value)
+        {
+            if (!arms.IsValid())
+                return;
+
+            bool* flags = (bool*)(arms.Pointer + 0x74);
+            *flags = value;
+        }
+
         public static bool IsFacingPosition(this EntityBase ent, Vector3 position, float dotOverride = -10)
         {
             float dotVal = (dotOverride > -10 ? dotOverride : 0.35f);

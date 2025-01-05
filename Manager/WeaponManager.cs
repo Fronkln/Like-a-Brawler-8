@@ -289,6 +289,7 @@ namespace LikeABrawler2
                 Player.ID playerID = BrawlerPlayer.CurrentPlayer;
 
 
+                /*
                 if (!WeaponCommandsets.ContainsKey(playerID))
                     playerID = Player.ID.invalid;
 
@@ -297,6 +298,7 @@ namespace LikeABrawler2
 
                 if (wepCommandset != "")
                     BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)FighterCommandManager.FindSetID(wepCommandset));
+                */
             }
         }
 
