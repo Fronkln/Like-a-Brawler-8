@@ -138,6 +138,10 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\LibARMP\packages\System.Memory.4.6.0\lib\net462\System.Memory.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Net.Http.4.3.0\lib\net46\System.Net.Http.dll</HintPath>
       <Private>True</Private>
@@ -260,12 +264,15 @@
     <Compile Include="Auth\ConditionFolderLABBattleOverByY8BHact.cs" />
     <Compile Include="Auth\ConditionFolderLABISDemo.cs" />
     <Compile Include="Auth\ConditionFolderNotHActOrWaiting.cs" />
+    <Compile Include="Auth\ConditionFolderNotPocketWeapon.cs" />
     <Compile Include="Auth\ConditionFolderPlayerID.cs" />
     <Compile Include="Auth\ConditionFolderGamemode.cs" />
     <Compile Include="Auth\ConditionFolderCommandset.cs" />
     <Compile Include="Auth\ConditionFolderDragonBoost.cs" />
     <Compile Include="Auth\ConditionFolderIsNotSupporter.cs" />
     <Compile Include="Auth\ConditionFolderPlayerJob.cs" />
+    <Compile Include="Auth\ConditionFolderPlayerLevel.cs" />
+    <Compile Include="Auth\ConditionFolderPocketWeapon.cs" />
     <Compile Include="BrawlerSaveData.cs" />
     <Compile Include="BrawlerSpecial.cs" />
     <Compile Include="ConditionFolderIsActiveBrawlerPlayer.cs" />
@@ -324,7 +331,9 @@
     <Compile Include="Structs\TutorialGoal.cs" />
     <Compile Include="Task\DETask.cs" />
     <Compile Include="Task\DETaskChainHAct.cs" />
+    <Compile Include="Task\DETaskList.cs" />
     <Compile Include="Task\DETaskManager.cs" />
+    <Compile Include="Task\DETaskNextFrame.cs" />
     <Compile Include="Task\DETaskTime.cs" />
     <Compile Include="Task\RepeatingTask.cs" />
     <Compile Include="Utils.cs" />

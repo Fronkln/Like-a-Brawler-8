@@ -7,7 +7,8 @@ namespace LikeABrawler2
     {
         public static void Play(IntPtr thisObj, uint tick, IntPtr mtx, IntPtr parent)
         {
-            WeaponManager.OnHitWeapon();
+            //07.01.2025: Obsoleted, now handled without nodes on BaseEnemyAI.OnTakeDAmage
+            //WeaponManager.OnHitWeapon();
         }
     }
 }

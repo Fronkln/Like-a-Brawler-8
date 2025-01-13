@@ -17,12 +17,14 @@ namespace LikeABrawler2
             base.Awake();
 
             CounterAttacks.Add(DBManager.GetSkill("boss_asakura_punch"));
+
+            EvasionModule.SetEvasionChance(30);
         }
 
         //Asakura (Chapter 1): Huge emphasis on avoiding the player until he is alone.
         public override bool TransitSway(IntPtr battleDamageInfo)
         {
-            if (!IsMyTurn())
+            if (!IsMyTurn() && !BrawlerInfo.IsAttack)
                 return true;
 
             return base.TransitSway(battleDamageInfo);
@@ -32,7 +34,7 @@ namespace LikeABrawler2
         {
             base.CombatUpdate();
 
-            if (!m_hactDoneOnce)
+            if (!m_hactDoneOnce && BrawlerBattleManager.BattleConfigID == 5)
                 if (Fighter.IsHPBelowRatio(0.45f))
                     PerformMortalTutorial();
         }
@@ -52,7 +54,7 @@ namespace LikeABrawler2
             HActRequestOptions opts = new HActRequestOptions();
             opts.id = DBManager.GetTalkParam("y8bb1430_ask_rush");
 
-            opts.Register(HActReplaceID.hu_player, BrawlerBattleManager.PlayerCharacter);
+            opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
             opts.Register(HActReplaceID.hu_enemy_00, Character);
 
             opts.base_mtx.matrix = Character.GetMatrix();

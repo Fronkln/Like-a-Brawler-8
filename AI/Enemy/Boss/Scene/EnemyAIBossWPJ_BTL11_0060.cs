@@ -36,7 +36,7 @@ namespace LikeABrawler2
             HActRequestOptions opts = new HActRequestOptions();
             opts.id = DBManager.GetTalkParam("eb1510_boss_power_1vs1");
 
-            opts.Register(HActReplaceID.hu_player, BrawlerBattleManager.PlayerCharacter);
+            opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
             opts.Register(HActReplaceID.hu_enemy_00, Character);
 
             opts.base_mtx.matrix = Character.GetMatrix();

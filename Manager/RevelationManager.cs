@@ -170,7 +170,7 @@ namespace LikeABrawler2
             opts.id = hactID;
             opts.is_force_play = true;
 
-            opts.Register(HActReplaceID.hu_player, BrawlerBattleManager.PlayerCharacter);
+            opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
             HActManager.RequestHActProc(opts);
 
 

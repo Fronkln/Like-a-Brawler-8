@@ -24,6 +24,7 @@ namespace LikeABrawler2
         private static Dictionary<uint, string> m_rpgEnemy = new Dictionary<uint, string>();
 
         private static Dictionary<uint, EnemyRebalanceEntry> Rebalances = new Dictionary<uint, EnemyRebalanceEntry>();
+        public static Dictionary<uint, Dictionary<AssetArmsCategoryID, string>> CommandsetWepAttacks = new Dictionary<uint, Dictionary<AssetArmsCategoryID, string>>();
 
         public static ARMP BattleCommandSetTable = null;
 
@@ -72,7 +73,10 @@ namespace LikeABrawler2
             */
 
 
-            string rebalancePath = Path.Combine(Mod.ModPath, "mdb.brawler", "soldier_rebalance");
+            string mdbDir = Path.Combine(Mod.ModPath, "mdb.brawler");
+
+            string rebalancePath = Path.Combine(mdbDir, "soldier_rebalance");
+            string wepAttackPath = Path.Combine(mdbDir, "pickup_attack_list");
             
             if(Directory.Exists(rebalancePath))
             {
@@ -89,6 +93,33 @@ namespace LikeABrawler2
 
                     Rebalances[id] = JsonConvert.DeserializeObject<EnemyRebalanceEntry>(File.ReadAllText(file));
                 }
+            }
+
+            if(Directory.Exists(wepAttackPath))
+            {
+                foreach (string file in Directory.GetFiles(wepAttackPath, "*.txt"))
+                {
+                    uint commandsetID = 0;
+                    string name = Path.GetFileNameWithoutExtension(file);
+
+                    if (!m_commandSets2.ContainsKey(name))
+                        continue;
+
+                    commandsetID = m_commandSets2[name];
+
+                    Dictionary<AssetArmsCategoryID, string> dict = new Dictionary<AssetArmsCategoryID, string>();
+
+                    foreach(string str in File.ReadAllLines(file))
+                    {
+                        string[] split = str.Split(' ');
+                        dict[(AssetArmsCategoryID)Enum.Parse(typeof(AssetArmsCategoryID), split[0])] = split[1];
+                    }
+
+
+                    CommandsetWepAttacks.Add(commandsetID, dict);
+                }
+
+
             }
 
             stopwatch.Stop();
@@ -197,10 +228,12 @@ namespace LikeABrawler2
         }
 
         
-        public static ARMP GetARMP(IntPtr pointer, int bufferSize = 4194304)
+        public unsafe static ARMP GetARMP(IntPtr pointer, int bufferSize = 4194304)
         {
             byte[] buffer = new byte[4194304];
             Marshal.Copy(pointer, buffer, 0, bufferSize);
+
+            UnmanagedMemoryStream stream = new UnmanagedMemoryStream((byte*)pointer, bufferSize);
 
             try
             {

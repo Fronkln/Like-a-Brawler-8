@@ -150,7 +150,7 @@ namespace LikeABrawler2
                                         HActRequestOptions opts = new HActRequestOptions();
                                         opts.id = DBManager.GetTalkParam("y8bb1740_dgo_punch_lock");
 
-                                        opts.Register(HActReplaceID.hu_player, BrawlerBattleManager.PlayerCharacter);
+                                        opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
                                         opts.Register(HActReplaceID.hu_enemy_00, m_dreamSequenceEnemy.Character);
 
                                         opts.base_mtx.matrix = m_dreamSequenceEnemy.Character.GetMatrix();
@@ -183,7 +183,7 @@ namespace LikeABrawler2
                                         HActRequestOptions opts = new HActRequestOptions();
                                         opts.id = DBManager.GetTalkParam("y8bb1750_majima_combo");
 
-                                        opts.Register(HActReplaceID.hu_player, BrawlerBattleManager.PlayerCharacter);
+                                        opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
                                         opts.Register(HActReplaceID.hu_enemy_00, m_dreamSequenceEnemy.Character);
 
                                         opts.base_mtx.matrix = m_dreamSequenceEnemy.Character.GetMatrix();
@@ -214,7 +214,7 @@ namespace LikeABrawler2
                                         HActRequestOptions opts = new HActRequestOptions();
                                         opts.id = DBManager.GetTalkParam("y8bb1760_sae_soul");
 
-                                        opts.Register(HActReplaceID.hu_player, BrawlerBattleManager.PlayerCharacter);
+                                        opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
                                         opts.Register(HActReplaceID.hu_enemy_00, m_dreamSequenceEnemy.Character);
 
                                         opts.base_mtx.matrix = m_dreamSequenceEnemy.Character.GetMatrix();

@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using DragonEngineLibrary;
 
@@ -43,7 +43,11 @@ namespace LikeABrawler2
                 return;
 
             SoundManager.PlayCue(DBManager.GetSoundCuesheet("battle_common"), 15, 0);
-            BrawlerBattleManager.PlayerCharacter.Components.EffectEvent.Get().PlayEventOverride(EffectEventCharaID.OgrefHeatAuraKr02);
+
+            if(BrawlerPlayer.IsKasuga())
+                BrawlerBattleManager.PlayerCharacter.Components.EffectEvent.Get().PlayEventOverride((EffectEventCharaID)2769);
+            else
+                BrawlerBattleManager.PlayerCharacter.Components.EffectEvent.Get().PlayEventOverride(EffectEventCharaID.OgrefHeatAuraKr02);
         }
     }
 }

@@ -26,6 +26,9 @@ namespace LikeABrawler2
         private static bool m_initDoOnce = false;
         private static bool m_hasWeaponDoOnce = false;
 
+        private static float m_reduceCountCooldown = 0;
+        private static FighterCommandID m_lastHitCommand;
+
         public static void Init()
         {
             //TODO: Atleast seperate EHCs based on Kiryu or Kasooga
@@ -59,6 +62,7 @@ namespace LikeABrawler2
                         [AssetArmsCategoryID.N] = YazawaCommandManager.LoadYHC("player/player_wpn.ehc"),
                         [AssetArmsCategoryID.M] = YazawaCommandManager.LoadYHC("player/player_wpm.ehc"),
                         [AssetArmsCategoryID.V] = YazawaCommandManager.LoadYHC("player/player_wpv.ehc"),
+                        [AssetArmsCategoryID.Y] = YazawaCommandManager.LoadYHC("player/player_wpy.ehc"),
                     }
                 },
 
@@ -76,6 +80,7 @@ namespace LikeABrawler2
                         [AssetArmsCategoryID.N] = YazawaCommandManager.LoadYHC("player/player_wpn.ehc"),
                         [AssetArmsCategoryID.M] = YazawaCommandManager.LoadYHC("player/player_wpm.ehc"),
                         [AssetArmsCategoryID.V] = YazawaCommandManager.LoadYHC("player/player_wpv.ehc"),
+                        [AssetArmsCategoryID.Y] = YazawaCommandManager.LoadYHC("player/kasuga_wpy.ehc"),
                     }
                 },
                 [Player.ID.kiryu] = new Dictionary<JobWeaponType, Dictionary<AssetArmsCategoryID, EHC>>
@@ -92,27 +97,9 @@ namespace LikeABrawler2
                         [AssetArmsCategoryID.N] = YazawaCommandManager.LoadYHC("player/player_wpn.ehc"),
                         [AssetArmsCategoryID.M] = YazawaCommandManager.LoadYHC("player/player_wpm.ehc"),
                         [AssetArmsCategoryID.V] = YazawaCommandManager.LoadYHC("player/player_wpv.ehc"),
+                        [AssetArmsCategoryID.Y] = YazawaCommandManager.LoadYHC("player/player_wpy.ehc"),
                     }
                 }
-            };
-
-            WeaponCommandsets = new Dictionary<Player.ID, Dictionary<AssetArmsCategoryID, string>>() 
-            {
-                [Player.ID.invalid] = new Dictionary<AssetArmsCategoryID, string>
-                {
-
-                        [AssetArmsCategoryID.A] = "p_com_wpa",
-                        [AssetArmsCategoryID.B] = "p_com_wpb",
-                        [AssetArmsCategoryID.C] = "p_com_wpc",
-                        [AssetArmsCategoryID.F] = "p_com_wpf",
-                        [AssetArmsCategoryID.D] = "p_com_wpd",
-                        [AssetArmsCategoryID.E] = "p_com_wpe",
-                        [AssetArmsCategoryID.H] = "p_com_wph",
-                        [AssetArmsCategoryID.N] = "p_com_wpn",
-                        [AssetArmsCategoryID.M] = "p_com_wpm",
-                        [AssetArmsCategoryID.V] = "p_com_wpv",
-                    
-                },
             };
 
             foreach (string str in File.ReadAllLines(Path.Combine(Mod.ModPath, "mdb.brawler/weapon_use_count.txt")))
@@ -132,6 +119,7 @@ namespace LikeABrawler2
         {
             NearestAsset = null;
             m_hasWeaponDoOnce = false;
+            m_lastHitCommand = new FighterCommandID();
         }
 
 
@@ -194,6 +182,15 @@ namespace LikeABrawler2
             }
             */
 
+            if (m_reduceCountCooldown >= 0)
+                m_reduceCountCooldown -= DragonEngine.deltaTime;
+
+            if(!BrawlerFighterInfo.Player.IsAttack)
+            {
+                m_lastHitCommand.set_ = 0;
+                m_lastHitCommand.cmd = 0;
+            }
+
             NearestAsset = AssetManager.FindNearestAssetFromAll(DragonEngine.GetHumanPlayer().GetPosCenter(), 2);
 
             if (!NearestAsset.IsValid())
@@ -216,6 +213,7 @@ namespace LikeABrawler2
                 if (!player.GetWeapon(AttachmentCombinationID.right_weapon).Unit.IsValid() && !player.GetWeapon(AttachmentCombinationID.left_weapon).Unit.IsValid())
                 {
                     if (!player.GetBrawlerInfo().CantAttackOverall())
+                    {
                         if (BattleManager.PadInfo.IsJustPush(BattleButtonID.action))
                         {
                             AssetArmsCategoryID cat = Asset.GetArmsCategory(NearestAsset.AssetID);
@@ -228,6 +226,25 @@ namespace LikeABrawler2
                             else
                                 PickupNearestWeapon();
                         }
+                        else if(BattleManager.PadInfo.IsJustPush(BattleButtonID.light))
+                        {
+                            //07.01.2025
+                            //Infinite Wealth breaks "Move to play in moveset" forcing me to hardcode this behavior
+                            ushort setID = BrawlerBattleManager.PlayerCharacter.HumanModeManager.CurrentMode.GetCommandID().set_;
+
+
+                            if(DBManager.CommandsetWepAttacks.ContainsKey(setID))
+                            {
+                                AssetArmsCategoryID cat = Asset.GetArmsCategory(NearestAsset.AssetID);
+
+                                if (DBManager.CommandsetWepAttacks[setID].ContainsKey(cat))
+                                {
+                                    ushort setID2 = (ushort)FighterCommandManager.FindSetID(DBManager.CommandsetWepAttacks[setID][cat]);
+                                    BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToAttackMode(new FighterCommandID(setID2, FighterCommandManager.GetCommandID(setID2, "PickupAttack")));
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -322,13 +339,26 @@ namespace LikeABrawler2
         //AuthNodeLABPlayerAssetUseReduce
         public static void OnHitWeapon()
         {
-            if (!PickedUpWeapon.IsValid())
+            if (!PickedUpWeapon.IsValid() || !BrawlerFighterInfo.Player.IsAttack)
+                return;
+
+            FighterCommandID currentCommand = BrawlerBattleManager.PlayerCharacter.HumanModeManager.CurrentMode.GetCommandID();
+
+            if ((currentCommand.cmd == m_lastHitCommand.cmd && currentCommand.set_ == m_lastHitCommand.set_) || m_reduceCountCooldown > 0)
                 return;
 
             PickedUpWeaponUseCount--;
 
             if (PickedUpWeaponUseCount <= 0)
+            {
                 PickedUpWeapon.Get().DestroyEntity();
+
+                new DETaskTime(0.1f, delegate { BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToEndReady(); });
+            }
+
+            m_lastHitCommand = currentCommand;
+
+            m_reduceCountCooldown = 0.1f;
         }
     }
 }

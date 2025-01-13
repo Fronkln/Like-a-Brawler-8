@@ -19,8 +19,12 @@ namespace LikeABrawler2
         [return: MarshalAs(UnmanagedType.U1)]
         private delegate bool HumanModeManagerIsInputSway(IntPtr humanModeManager);
 
+        internal delegate void HumanModeManagerToGuardBreak(IntPtr humanModeManager, IntPtr dam);
+
         private IntPtr m_humanModeDamageValidFunc;
         private IntPtr m_humanModeIsInputSwayFunc;
+
+        internal static HumanModeManagerToGuardBreak GuardBreak;
 
         public override void Init()
         {
@@ -28,6 +32,7 @@ namespace LikeABrawler2
 
             m_humanModeDamageValidFunc = CPP.PatternSearch("40 56 57 41 56 41 57 48 83 EC ? 48 89 CF");
             m_humanModeIsInputSwayFunc = CPP.PatternSearch("48 89 5C 24 08 57 48 83 EC ? 0F B6 FA 48 8B D9 E8 ? ? ? ? 84 C0 74 ?");
+            GuardBreak = (HumanModeManagerToGuardBreak)Marshal.GetDelegateForFunctionPointer(CPP.PatternSearch("48 89 5C 24 08 48 89 74 24 10 57 48 83 EC ? 48 8B F2 48 8B F9 B9 ? ? ? ? E8 ? ? ? ? 48 8B D8 48 89 44 24 40 48 85 C0 74 ? 4C 8B C6"), typeof(HumanModeManagerToGuardBreak));
         }
 
         protected override void SetActive()
@@ -93,7 +98,11 @@ namespace LikeABrawler2
                 else
                 {
                     BrawlerPlayer.OnGetHit(new BattleDamageInfoSafe(battleDamageInfo));
-                    return m_damageExecValidTrampoline(humanModeManager, battleDamageInfo);
+                    bool result = m_damageExecValidTrampoline(humanModeManager, battleDamageInfo);
+                   
+                    BrawlerPlayer.OnPostGetHit(new BattleDamageInfoSafe(battleDamageInfo));
+
+                    return result;
                 }
             }
 

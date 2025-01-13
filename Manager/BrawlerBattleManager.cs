@@ -1,4 +1,5 @@
 ﻿using DragonEngineLibrary;
+using ElvisCommand;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace LikeABrawler2
         public static Fighter[] AllFighters = new Fighter[0];
         public static Fighter[] AllEnemiesNearest = new Fighter[0];
         public static Fighter[] AllEnemies = new Fighter[0];
+        public static Fighter NearestEnemyBehindPlayer = new Fighter(IntPtr.Zero);
 
         public static bool Battling = false;
         public static bool IsEncounter { get; private set; }
@@ -24,6 +26,7 @@ namespace LikeABrawler2
         private static bool m_battleActionStartedDoOnce = false;
 
         public static bool DisableTargetingOnce = false;
+        public static bool DisableTargetingThisFrame = false;
 
         public static event Action OnBattleStartEvent = null;
         public static event Action OnBattleEndEvent = null;
@@ -123,6 +126,19 @@ namespace LikeABrawler2
             AllFighters = FighterManager.GetAllFighters();
             AllEnemies = AllFighters.Where(x => x.IsEnemy() && !x.IsDead()).ToArray();
             AllEnemiesNearest = AllEnemies.OrderBy(x => Vector3.Distance(PlayerFighter.Character.Transform.Position, x.Character.Transform.Position)).ToArray();
+
+            var enemiesBehindMe = AllEnemies.Where(x => PlayerCharacter.IsFacingEntity(x.Character)).OrderBy(x => Vector3.Distance(PlayerFighter.Character.Transform.Position, x.Character.Transform.Position));
+
+            if (enemiesBehindMe.Any())
+            {
+                NearestEnemyBehindPlayer = enemiesBehindMe.First();
+
+                if (Vector3.Distance(NearestEnemyBehindPlayer.Character.Transform.Position, PlayerCharacter.Transform.Position) >= 3.5f)
+                    NearestEnemyBehindPlayer = new Fighter();
+            }
+            else
+                NearestEnemyBehindPlayer = new Fighter();
+
 
             RPGCamera = BattleTurnManager.RPGCamera;
 

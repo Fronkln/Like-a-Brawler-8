@@ -20,7 +20,7 @@ namespace LikeABrawler2
                     opts.base_mtx.matrix.Position = new Vector3(130f, 0.80f, 144.90f);
                     opts.id = DBManager.GetTalkParam("y8bb1480_amn_binta");
                     opts.is_force_play = true;
-                    opts.Register(HActReplaceID.hu_player, BrawlerBattleManager.PlayerCharacter);
+                    opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
                     opts.Register(HActReplaceID.hu_enemy_00, Character);
                     HeatActionManager.RequestTalk(opts);
                     m_hactOnce = true;

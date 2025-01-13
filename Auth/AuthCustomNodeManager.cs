@@ -83,6 +83,19 @@ namespace LikeABrawler2
             RegisterPlayFunc(70017, AuthNodeLABSpecial.Play);
             RegisterNewNode(70018);
             RegisterPlayFunc(70018, AuthNodeTransitRange.Play);
+            RegisterNewNode(70019);
+            RegisterPlayFunc(70019, 
+                delegate 
+                { 
+                    BrawlerBattleManager.PlayerFighter.ThrowEquipAsset(false, true); 
+                });
+
+            RegisterNewNode(70020);
+
+            RegisterPlayFunc(70020, delegate
+            {
+                BrawlerBattleManager.DisableTargetingThisFrame = true;
+            });
 
             RegisterNewNode(0xC9);
             RegisterPlayFunc(0xC9, AuthNodeBattleTame.Play);

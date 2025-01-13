@@ -119,14 +119,17 @@ namespace LikeABrawler2
 
         public unsafe virtual void PreTakeDamage(IntPtr battleDamageInfo)
         {
-            //3.11.2024: THIS FUCKING SUCKS! THIS FUCKING SUCKS! THIS FUCKING
-
             BrawlerPlayer.CalculateTameDamage(battleDamageInfo);
 
-            if (!BrawlerPlayer.IsExtremeHeat)
-                return;
+            // if (!BrawlerPlayer.IsExtremeHeat)
+            //  return;
 
-            if(BrawlerPlayer.CurrentJob == RPGJobID.man_western)
+            //3.11.2024: THIS FUCKING SUCKS! THIS FUCKING SUCKS! THIS FUCKING
+            //07.01.2025: if you are reading this, the code below fixes gun damage for western job and yes it fucking sucks still
+            //you should add me on discord (jhrino) so we can have a tiny chat about how awful this is and i'll even thank you for looking at my code
+
+            AssetArmsCategoryID assetArmsCat = Asset.GetArmsCategory(BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get().AssetID);
+            if (assetArmsCat == AssetArmsCategoryID.Y)
             {
                 int attr = Marshal.ReadByte(battleDamageInfo + 0x64);
 
@@ -136,7 +139,6 @@ namespace LikeABrawler2
                     int damage = (int)(BrawlerBattleManager.PlayerFighter.GetStatus().AttackPower * 0.45f);
                     *(int*)(battleDamageInfo.ToInt64() + 0x120) = damage;
                     *(int*)(battleDamageInfo.ToInt64() + 0x124) = damage;
-                    DragonEngine.Log("PEW PEW PEW!");
                 }
 
 
@@ -144,13 +146,33 @@ namespace LikeABrawler2
 
         }
 
-        public void OnTakeDamage(BattleDamageInfoSafe dmg)
+        public unsafe void OnTakeDamage(BattleDamageInfoSafe dmg)
         {
             LastHitTime = 0;
             RecentHits++;
             RecentHitsWithoutAttack++;
             RecentHitsWithoutDefensiveMove++;
             OnTakeDamageEvent(dmg);
+
+            if(dmg.Attacker.UID == BrawlerBattleManager.PlayerCharacter.UID && dmg.Weapon.IsValid())
+            {
+                //player hit us with weapon
+                WeaponManager.OnHitWeapon();
+            }
+
+            uint attr = *(uint*)(dmg._ptr + 0x8C);
+
+            if ((attr & 32) != 0 || (attr & 0x10000000) != 0)
+            {
+                if (Character.HumanModeManager.IsGuarding())
+                    OnGuardBreak(dmg);
+            }
+        }
+
+        protected void OnGuardBreak(BattleDamageInfoSafe dmg)
+        {
+            HumanModePatches.GuardBreak.Invoke(Character.HumanModeManager.Pointer, dmg._ptr);
+            GuardTime = 0;
         }
 
         protected virtual void OnTakeDamageEvent(BattleDamageInfoSafe dmg)

@@ -62,11 +62,11 @@ namespace LikeABrawler2
                 }
         }
 
+
         protected override void OnSway()
         {
             base.OnSway();
-
-            m_swayAttack = new Random().Next(0, 101) <= 45;
+            m_swayAttack = new Random().Next(0, 101) <= SwayAttackChance && Character.IsFacingEntity(BrawlerBattleManager.PlayerCharacter) && DistToPlayer <= 4f;
         }
 
         protected override void OnPlayerStartAttackingEvent()

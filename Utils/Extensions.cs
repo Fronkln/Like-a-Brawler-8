@@ -16,6 +16,16 @@ namespace LikeABrawler2
             *flags = value;
         }
 
+        public unsafe static bool IsFromPocket(this ECAssetArms arms)
+        {
+            if (!arms.IsValid())
+                return false;
+
+            bool* flags = (bool*)(arms.Pointer + 0x74);
+
+            return *flags;
+        }
+
         public static bool IsFacingPosition(this EntityBase ent, Vector3 position, float dotOverride = -10)
         {
             float dotVal = (dotOverride > -10 ? dotOverride : 0.35f);

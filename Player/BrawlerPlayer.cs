@@ -46,6 +46,9 @@ namespace LikeABrawler2
         private delegate void FighterSetupWeapon(IntPtr fighter);
         private static FighterSetupWeapon SetupWeapon;
 
+        public static Fighter LastLockedInEnemy;
+        public static Fighter LastBehindEnemy;
+
         static BrawlerPlayer()
         {
             LoadContent();
@@ -254,7 +257,7 @@ namespace LikeABrawler2
             BrawlerPlayer.ToNormalMoveset();
         }
 
-        public static void Update()
+        public unsafe static void Update()
         {
             Fighter player = BrawlerBattleManager.PlayerFighter;
 
@@ -766,11 +769,25 @@ namespace LikeABrawler2
                 if (BrawlerBattleManager.DisableTargetingOnce)
                     return new Fighter(IntPtr.Zero);
 
+                if (BrawlerBattleManager.DisableTargetingThisFrame)
+                {
+                    BrawlerBattleManager.DisableTargetingThisFrame = false;
+                    return LastBehindEnemy; // new Fighter(IntPtr.Zero);
+                }
+
                 if (BrawlerBattleManager.AllEnemiesNearest.Length <= 0)
                     return new Fighter(IntPtr.Zero);
 
+                Fighter[] nearestEnemies = null;
 
-                Fighter[] nearestEnemies = BrawlerBattleManager.AllEnemiesNearest;
+
+                if (BrawlerBattleManager.PlayerCharacter.Pad.LeverWorldAng < 0 && BrawlerBattleManager.NearestEnemyBehindPlayer.IsValid())
+                {
+                    //DragonEngine.Log("you know how it is " + BrawlerBattleManager.PlayerCharacter.Pad.LeverWorldAng);
+                    return BrawlerBattleManager.NearestEnemyBehindPlayer;
+                }
+                else
+                    nearestEnemies = BrawlerBattleManager.AllEnemiesNearest;
 
                 float dot = -0.6f;
 
@@ -808,7 +825,18 @@ namespace LikeABrawler2
         public static void UpdateTargeting(Fighter playerFighter)
         {
             ECBattleTargetDecide targetDecide = playerFighter.Character.TargetDecide;
-            targetDecide.SetTarget(new FighterID() { Handle = GetLockOnTarget(playerFighter).Character.UID });
+
+            Fighter target = GetLockOnTarget(playerFighter);
+
+            bool disableTargetingThisFrame = BrawlerBattleManager.DisableTargetingOnce == true || BrawlerBattleManager.DisableTargetingThisFrame;
+
+            targetDecide.SetTarget(new FighterID() { Handle = target.Character.UID });
+
+            if(!disableTargetingThisFrame)
+            {
+                LastBehindEnemy = BrawlerBattleManager.NearestEnemyBehindPlayer;
+                LastLockedInEnemy = target;
+            }
         }
 
         public static bool TransitDamage(BattleDamageInfoSafe safeDmg)
@@ -831,6 +859,7 @@ namespace LikeABrawler2
 
         public unsafe static void OnGetHit(BattleDamageInfoSafe dmg)
         {
+            bool isGuard = *((bool*)(dmg._ptr.ToInt64() + 0x108));
             bool isJustGuard = *((bool*)(dmg._ptr.ToInt64() + 0x109));
 
             if (isJustGuard)
@@ -839,6 +868,17 @@ namespace LikeABrawler2
                 *(int*)(dmg._ptr.ToInt64() + 0x124) = 0;
 
                 OnPerfectGuard?.Invoke();
+            }
+            
+            if(isGuard && !isJustGuard)
+            {
+                uint attr = *(uint*)(dmg._ptr + 0x8C);
+
+                if ((attr & 32) != 0 || (attr & 0x10000000) != 0)
+                {
+                    if (BrawlerBattleManager.PlayerCharacter.HumanModeManager.IsGuarding())
+                        HumanModePatches.GuardBreak.Invoke(BrawlerBattleManager.PlayerCharacter.HumanModeManager.Pointer, dmg._ptr);
+                }
             }
 
             int maxHeat = Player.GetHeatMax(Player.ID.kasuga);
@@ -858,6 +898,32 @@ namespace LikeABrawler2
             {
                 EffectEventManager.PlayScreen(28);
                 DragonEngine.Log("YEOWCH! MORTAL ATTACK");
+            }
+        }
+
+        public unsafe static void OnPostGetHit(BattleDamageInfoSafe dmg)
+        {
+            if (dmg._ptr == null)
+                return;
+
+            bool isGuard = *((bool*)(dmg._ptr.ToInt64() + 0x108));
+            bool isJustGuard = *((bool*)(dmg._ptr.ToInt64() + 0x109));
+
+            if (isGuard && !isJustGuard)
+            {
+                uint attr = *(uint*)(dmg._ptr + 0x8C);
+
+                if ((attr & 32) != 0 || (attr & 0x10000000) != 0)
+                {
+                    if (BrawlerBattleManager.PlayerCharacter.HumanModeManager.IsGuarding())
+                    {
+                        HumanModePatches.GuardBreak.Invoke(BrawlerBattleManager.PlayerCharacter.HumanModeManager.Pointer, dmg._ptr);
+
+                        //new DETaskList(new DETaskNextFrame(delegate { HumanModePatches.GuardBreak.Invoke(BrawlerBattleManager.PlayerCharacter.HumanModeManager.Pointer, dmg._ptr); }));
+
+                        
+                    }
+                }
             }
         }
 

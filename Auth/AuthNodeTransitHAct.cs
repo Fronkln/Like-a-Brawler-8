@@ -17,7 +17,7 @@ namespace LikeABrawler2
             if (opts.id <= 0)
                 return;
 
-            opts.Register(HActReplaceID.hu_player, BrawlerBattleManager.PlayerCharacter);
+            opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
 
             if (BrawlerBattleManager.AllEnemiesNearest.Length > 0)
                 opts.Register(HActReplaceID.hu_enemy_00, BrawlerBattleManager.AllEnemiesNearest[0].Character);

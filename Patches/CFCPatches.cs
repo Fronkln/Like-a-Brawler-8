@@ -68,6 +68,8 @@ namespace LikeABrawler2
                     return CheckAIIsBoss(fighter, op, paramsPtr);
                 case 13:
                     return CheckAIPlayerDistance(fighter, op, paramsPtr);
+                case 14:
+                    return CheckEnemyBehindPlayer(fighter, op, paramsPtr);
             }
 
             return false;
@@ -328,6 +330,11 @@ namespace LikeABrawler2
             }
 
             return false;
+        }
+
+        private static bool CheckEnemyBehindPlayer(IntPtr fighterPtr, byte op, byte* paramsPtr)
+        {
+            return BrawlerBattleManager.NearestEnemyBehindPlayer.IsValid();
         }
     }
 }

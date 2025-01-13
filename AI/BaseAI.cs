@@ -14,6 +14,7 @@ namespace LikeABrawler2
 
         public BrawlerFighterInfo BrawlerInfo { get { return BrawlerFighterInfo.Get(Character.UID); } }
 
+        public float SwayAttackChance = SWAY_ATTACK_BASE_CHANCE;
         public float ComboExtendChance = COMBO_EXTEND_BASE_CHANCE;
         public bool MyTurn { get; private set; } = false;
         public float TimeSinceLastAttack { get; private set; } = 999;
@@ -30,6 +31,7 @@ namespace LikeABrawler2
         protected CharacterAttributes m_attributes;
 
         //Constants
+        protected const float SWAY_ATTACK_BASE_CHANCE = 45;
         protected const float COMBO_EXTEND_BASE_CHANCE = 45;
         protected const float HACT_COOLDOWN = 25f;
 

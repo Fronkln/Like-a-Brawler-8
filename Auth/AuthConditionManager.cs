@@ -29,6 +29,9 @@ namespace LikeABrawler2
             Register(133700009, ConditionFolderIsActiveBrawlerPlayer.CheckDisabled);
             Register(133700010, ConditionFolderNotHActOrWaiting.CheckDisabled);
             Register(133700011, ConditionFolderEnemiesPresent.CheckDisabled);
+            Register(133700012, ConditionFolderPocketWeapon.Check);
+            Register(133700013, ConditionFolderNotPocketWeapon.Check);
+            Register(133700014, ConditionFolderPlayerLevel.Check);
         }
 
 
