@@ -5,3 +5,4 @@ Realtime combat mod for Like a Dragon: Infinite Wealth
 
 This project uses **DBGen** to generate its DB files which can be found on **Utils Projects/DBGen**
 <br>Otherwise, the source code for its custom HAct CHP format  **ElvisCommand** can be found on **Utils Projects/ElvisCommand** <br>and its GUI Editor  **ElvisCommander** at **Utils Projects/ElvisCommander**
+![Image](https://github.com/Fronkln/Like-a-Brawler-8/blob/main/image1.jpg)<br>
