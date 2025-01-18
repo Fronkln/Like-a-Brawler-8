@@ -423,6 +423,15 @@ namespace LikeABrawler2
                 case HeatActionConditionType.PlayerPoint:
                     flag = Logic.CheckNumberLogicalOperator(PlayerPoint.GetPoint((PlayerPoint.ID)cond.Param1U32), cond.Param1U32, cond.LogicalOperator);
                     break;
+
+                case HeatActionConditionType.WeaponCanBeSnatched:
+                    if(!performerIsPlayer && ai != null && actor.IsEnemy())
+                    {
+                        flag = (ai as BaseEnemyAI).WeaponCanBeSnatched();
+                    }
+                    else
+                        flag = false;
+                    break;
             }
 
             switch (cond.LogicalOperator)

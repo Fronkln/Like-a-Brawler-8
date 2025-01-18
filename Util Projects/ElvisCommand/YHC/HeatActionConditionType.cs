@@ -48,6 +48,7 @@
         HumanMode = 43,
         StatusEffect = 44,
         Swaying = 45,
-        PlayerPoint = 46
+        PlayerPoint = 46,
+        WeaponCanBeSnatched = 47
     }
 }

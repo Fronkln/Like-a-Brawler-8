@@ -19,6 +19,11 @@ namespace LikeABrawler2
         private const int BOSS_PUNISH_FAR_PLAYER_BASE_CHANCE = 45;
         private const float BOSS_PUNISH_FAR_PLAYER_COOLDOWN = 7f;
 
+        /// <summary>
+        /// Was this enemy forced to have boss AI
+        /// </summary>
+        public bool IsForcedBoss = false;
+
         public override void Awake()
         {
             base.Awake();
@@ -93,6 +98,14 @@ namespace LikeABrawler2
         protected virtual void OnPunishFarPlayer()
         {
            
+        }
+
+        public override bool WeaponCanBeSnatched()
+        {
+            if (!IsForcedBoss)
+                return false;
+            
+            return Fighter.IsBrawlerCriticalHP();;
         }
     }
 }

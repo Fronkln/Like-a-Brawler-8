@@ -309,6 +309,16 @@ namespace LikeABrawler2
             if (assetId <= 0)
                 return;
 
+            ECAssetArms rightWep = BrawlerFighterInfo.Player.RightWeapon;
+            ECAssetArms leftWep = BrawlerFighterInfo.Player.RightWeapon;
+
+            if (rightWep.IsValid() && !rightWep.IsFromPocket())
+                BrawlerBattleManager.PlayerFighter.DropWeapon(new DropWeaponOption(AttachmentCombinationID.right_weapon, false));
+
+            if (leftWep.IsValid() && !leftWep.IsFromPocket())
+                BrawlerBattleManager.PlayerFighter.DropWeapon(new DropWeaponOption(AttachmentCombinationID.left_weapon, false));
+
+
             AssetArmsCategoryID category = Asset.GetArmsCategory(assetId);
             DragonEngine.Log("Equipping inventory weapon, category: " + category + " Asset ID: " +(uint) assetId);
 
@@ -432,6 +442,19 @@ namespace LikeABrawler2
                 p3.GetStatus().SetHPCurrent(p3.GetStatus().MaxHP);
             }
 
+            if(IsExtremeHeat)
+            {
+                if (CurrentJob != RPGJobID.kasuga_freeter && CurrentJob != RPGJobID.kiryu_01)
+                {
+                    ItemID wep = Party.GetEquipItemID(CurrentPlayer, PartyEquipSlotID.weapon);
+                    AssetID wepAssetID = Item.GetAssetID(wep);
+
+                    //something went wrong with weapons, lets fix it
+                    if (BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get().AssetID != wepAssetID)
+                        SetupWeapon(BrawlerBattleManager.PlayerFighter._ptr);
+                }
+            }
+
             EXModule.Update();
             UpdateTargeting(BrawlerBattleManager.PlayerFighter);
 
@@ -444,11 +467,25 @@ namespace LikeABrawler2
 
                 if (curJob == RPGJobID.kasuga_freeter || curJob == RPGJobID.kiryu_01)
                 {
-                    DragonEngine.Log("Player equips job weapon");
-                    ItemID weapon = Party.GetEquipItemID(CurrentPlayer, PartyEquipSlotID.weapon);
+                    if(BrawlerFighterInfo.Player.RightWeapon.IsValid() && BrawlerFighterInfo.Player.RightWeapon.IsFromPocket())
+                    {
+                        string skillName = $"player_wp{Asset.GetArmsCategory(BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get().AssetID).ToString().ToLowerInvariant()}_noutou";
+                        RPGSkillID noutouSkill = DBManager.GetSkill(skillName);
 
-                    if (weapon != 0)
-                        PullOutWeapon(weapon);
+                        if (noutouSkill == RPGSkillID.invalid)
+                            noutouSkill = DBManager.GetSkill("player_wpa_noutou");
+
+                        BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToEndReady();
+                        BattleTurnManager.ForceCounterCommand(BrawlerBattleManager.PlayerFighter, BrawlerBattleManager.AllEnemiesNearest[0], noutouSkill);
+                    }
+                    else
+                    {
+                        DragonEngine.Log("Player equips job weapon");
+                        ItemID weapon = Party.GetEquipItemID(CurrentPlayer, PartyEquipSlotID.weapon);
+
+                        if (weapon != 0)
+                            PullOutWeapon(weapon);
+                    }
                 }
 
             }
@@ -697,6 +734,8 @@ namespace LikeABrawler2
         {
             if (CurrentStyle == newStyle)
                 return;
+
+            BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToEndReady();
 
             PlayerStyle overrideStyle = newStyle;
 

@@ -90,12 +90,21 @@ namespace LikeABrawler2
                     BrawlerBattleManager.PlayerFighter.ThrowEquipAsset(false, true); 
                 });
 
+            //AuthNodeDisableTargeting
             RegisterNewNode(70020);
-
             RegisterPlayFunc(70020, delegate
             {
                 BrawlerBattleManager.DisableTargetingThisFrame = true;
             });
+
+            //AuthNodeNoutouBrawler
+            RegisterNewNode(70021);
+            RegisterPlayFunc(70021, 
+                delegate 
+                {
+                    BrawlerFighterInfo.Player.LeftWeapon.Unit.DestroyEntity();
+                    BrawlerFighterInfo.Player.RightWeapon.Unit.DestroyEntity();
+                });
 
             RegisterNewNode(0xC9);
             RegisterPlayFunc(0xC9, AuthNodeBattleTame.Play);

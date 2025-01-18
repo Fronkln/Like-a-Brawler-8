@@ -39,7 +39,7 @@ namespace LikeABrawler2
 
         private static void OnCanDoHeat()
         {
-            if (BrawlerPlayer.IsExtremeHeat)
+            if (BrawlerPlayer.IsExtremeHeat || BrawlerBattleManager.ActionBattleTime < 0.5f)
                 return;
 
             SoundManager.PlayCue(DBManager.GetSoundCuesheet("battle_common"), 15, 0);

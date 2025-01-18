@@ -117,6 +117,11 @@ namespace LikeABrawler2
             return !IsMyTurn() && TimeSinceLastAttack >= m_nonTurnAttackPatience && EnemyManager.Enemies.Where(x => x.Value.IsPerformingNonTurnAttack()).Count() < 2;
         }
 
+        public virtual bool WeaponCanBeSnatched()
+        {
+            return true;
+        }
+
         public unsafe virtual void PreTakeDamage(IntPtr battleDamageInfo)
         {
             BrawlerPlayer.CalculateTameDamage(battleDamageInfo);

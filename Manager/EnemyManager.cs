@@ -36,9 +36,7 @@ namespace LikeABrawler2
             {
                 Character chara = new EntityHandle<Character>(kv.Key);
 
-                if (!chara.IsValid())
-                    DragonEngine.Log("IM NOT VALID!! WAAAAAH " + kv.Key);
-                else
+                if (chara.IsValid())
                     kv.Value.Update();
             }
 
@@ -199,10 +197,11 @@ namespace LikeABrawler2
             }
 
             uint ctrlType = (uint)fighter.Character.Attributes.ctrl_type;
+            bool forcedBoss = BrawlerBattleManager.AllEnemies.Length <= 2;
 
             if (ai == null)
             {
-                if (BrawlerBattleManager.AllEnemies.Length <= 2 || (bossCtrlType || encounterBoss))
+                if (forcedBoss || (bossCtrlType || encounterBoss))
                 {
                     switch (ctrlType)
                     {
@@ -273,6 +272,9 @@ namespace LikeABrawler2
                         ai = new BaseEnemyAI();
                 }
             }
+
+            if (forcedBoss)
+                (ai as EnemyAIBoss).IsForcedBoss = forcedBoss;
 
             ai.Fighter = fighter;
             ai.Character = fighter.Character;

@@ -393,7 +393,7 @@ namespace LikeABrawler2
             List<TutorialGoal> goals = new List<TutorialGoal>();
 
             TutorialGoal extremeHeatTut = new TutorialGoal();
-            extremeHeatTut.TalkID = DBManager.GetTalkParam("y8b_tutorial_btl01_0300_01");
+            extremeHeatTut.SetTalkID(DBManager.GetTalkParam("y8b_tutorial_btl01_0300_01"));
             extremeHeatTut.CheckDelegate = delegate { return !HeatActionManager.AwaitingHAct && !HeatActionManager.IsHAct() && m_goalTime > 0.1f; };
 
             goals.Add(extremeHeatTut);

@@ -22,7 +22,7 @@ namespace LikeABrawler2
                     return;
 
                 //kiryu has less MP
-                m_exHeatDecay.m_tickRate = BrawlerPlayer.IsKiryu() ? 0.2f : 0.1f;
+                m_exHeatDecay.m_tickRate = 0.2f;
 
                 if(BrawlerBattleManager.CurrentPhase == BattleTurnManager.TurnPhase.Action)
                     if(Player.GetHeatNow(BrawlerPlayer.CurrentPlayer) > 0)

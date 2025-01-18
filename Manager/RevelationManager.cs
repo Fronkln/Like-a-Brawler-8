@@ -136,6 +136,7 @@ namespace LikeABrawler2
             opts.id = hactID;
             opts.is_force_play = true;
             opts.base_mtx.matrix = BrawlerBattleManager.PlayerCharacter.GetMatrix();
+            opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
             HeatActionManager.RequestTalk(opts);
 
             DragonEngine.Log("That's rad!");
