@@ -21,6 +21,8 @@ namespace LikeABrawler2
         private delegate void FighterSetupTurnBattleFighter(IntPtr fighter);
         private delegate void BattleTurnManagerNotifyUIDamage(IntPtr dat, IntPtr inf, IntPtr arg2, IntPtr arg3);
 
+        public static bool DontAllowExecThisFrame = false;
+
         public override void Init()
         {
             base.Init();
@@ -197,8 +199,28 @@ namespace LikeABrawler2
             //Return, and it wont update turn based combat including turns, important for special events like
             //mortal attacks
 
-            if (EnemyManager.IsAnyoneMortalAttacking() || MortalReversalManager.Procedure || RevelationManager.RevelationProcedure)
+            if(DontAllowExecThisFrame)
+            {
+                DontAllowExecThisFrame = false;
                 return;
+            }
+
+
+            if (HeatActionManager.IsY8BHact || EnemyManager.IsAnyoneMortalAttacking() || MortalReversalManager.Procedure || RevelationManager.RevelationProcedure)
+                return;
+
+            Character selectedFighter = BattleTurnManager.SelectedFighter;
+
+            if(selectedFighter.IsValid())
+            {
+                BaseEnemyAI enemyAI = EnemyManager.GetAI(selectedFighter.UID);
+
+                if(enemyAI != null)
+                {
+                    if (enemyAI.IsCounterAttacking() || enemyAI.IsPerformingNonTurnAttack() || enemyAI.Character.HumanModeManager.IsGuarding())
+                        return;
+                }
+            }
 
             _btlTurnManagerExecPhaseActionTrampoline(mng);
         }

@@ -24,7 +24,7 @@ namespace DBGen
 
         public static bool isDemo;
 
-        public static string gameOverride = "y6";
+        public static string gameOverride = "y8";
 
         static void Main(string[] args)
         {

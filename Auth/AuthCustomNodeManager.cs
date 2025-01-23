@@ -106,6 +106,23 @@ namespace LikeABrawler2
                     BrawlerFighterInfo.Player.RightWeapon.Unit.DestroyEntity();
                 });
 
+            //AuthNodeEnemySetupWeapon
+            //Super hacky, not proud of this
+            //Gotta find a way to access the current entity the node is playing on!
+            RegisterNewNode(70022);
+            RegisterPlayFunc(70022, delegate
+            {
+                foreach (Fighter enemy in BrawlerBattleManager.AllEnemies)
+                    enemy.WeaponManager().EquipDefault(enemy);
+            });
+
+            //AuthNodeFreezeTurnFlow
+            RegisterNewNode(70023);
+            RegisterPlayFunc(70023, delegate
+            {
+                BattleTurnManagerPatches.DontAllowExecThisFrame = true;
+            });
+
             RegisterNewNode(0xC9);
             RegisterPlayFunc(0xC9, AuthNodeBattleTame.Play);
             //RegisterPlayLastFunc(70010, AuthNodeLABCharacterDecision.Play);

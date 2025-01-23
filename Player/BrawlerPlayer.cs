@@ -43,8 +43,8 @@ namespace LikeABrawler2
         public static event Action OnPerfectGuard;
         public static event Action OnStartAttack;
 
-        private delegate void FighterSetupWeapon(IntPtr fighter);
-        private static FighterSetupWeapon SetupWeapon;
+        public delegate void FighterSetupWeapon(IntPtr fighter);
+        public static FighterSetupWeapon SetupWeapon;
 
         public static Fighter LastLockedInEnemy;
         public static Fighter LastBehindEnemy;

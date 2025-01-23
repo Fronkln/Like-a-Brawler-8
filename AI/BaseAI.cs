@@ -16,15 +16,19 @@ namespace LikeABrawler2
 
         public float SwayAttackChance = SWAY_ATTACK_BASE_CHANCE;
         public float ComboExtendChance = COMBO_EXTEND_BASE_CHANCE;
+        public float AltComboChance = ALT_COMBO_BASE_CHANCE;
+        public float GetupAttackChance = GETUP_ATTACK_BASE_CHANCE;
         public bool MyTurn { get; private set; } = false;
         public float TimeSinceLastAttack { get; private set; } = 999;
         public float TimeSinceMyTurn { get; protected set; } = 999;
 
         private bool m_attacking = false;
-        
+
         //AI FLAGS
         protected bool m_extendAttack = false;
+        protected bool m_altCombo = false;
         protected bool m_swayAttack = false;
+        protected bool m_getupAttack = false;
 
         protected float m_hactCd = 0;
 
@@ -33,10 +37,14 @@ namespace LikeABrawler2
         //Constants
         protected const float SWAY_ATTACK_BASE_CHANCE = 45;
         protected const float COMBO_EXTEND_BASE_CHANCE = 45;
+        protected const float ALT_COMBO_BASE_CHANCE = 45;
+        protected const float GETUP_ATTACK_BASE_CHANCE = 65;
         protected const float HACT_COOLDOWN = 25f;
 
         private bool m_performingNonTurnAttackDoOnce = false;
         protected float m_nonTurnAttackPatience = 5f;
+
+        protected bool m_downOnce = false;
 
         public virtual void Awake()
         {
@@ -107,27 +115,41 @@ namespace LikeABrawler2
             else
                 TimeSinceMyTurn = 0;
 
-            if(!m_attacking)
+            if (!m_attacking)
             {
                 TimeSinceLastAttack += DragonEngine.deltaTime;
 
-                if(BrawlerInfo.IsAttack)
+                if (BrawlerInfo.IsAttack)
                 {
                     m_attacking = true;
                     TimeSinceLastAttack = 0;
                     OnStartAttack();
-                }    
+                }
             }
             else
             {
-                if(!BrawlerInfo.IsAttack)
+                if (!BrawlerInfo.IsAttack)
                     m_attacking = false;
             }
 
-
-            if(!m_performingNonTurnAttackDoOnce)
+            if (!m_downOnce)
             {
-                if(IsPerformingNonTurnAttack())
+                if (BrawlerInfo.IsDown || BrawlerInfo.IsFaceDown)
+                {
+                    OnDown();
+                    m_downOnce = false;
+                }
+            }
+            else
+            {
+                if (!BrawlerInfo.IsDown && !BrawlerInfo.IsFaceDown)
+                    m_downOnce = false;
+            }
+
+
+            if (!m_performingNonTurnAttackDoOnce)
+            {
+                if (IsPerformingNonTurnAttack())
                 {
                     m_performingNonTurnAttackDoOnce = true;
                     OnPerformNonTurnAttack();
@@ -162,7 +184,7 @@ namespace LikeABrawler2
             uint attrib = Fighter.GetReactionType();
             return attrib == 54 || attrib == 6;
         }
-        
+
         public virtual void OnStartTurn()
         {
 
@@ -191,13 +213,27 @@ namespace LikeABrawler2
 
         private void OnStartAttack()
         {
-            m_extendAttack = new System.Random().Next(0, 101) <= ComboExtendChance;
+            System.Random rnd = new System.Random();
+
+
+            m_extendAttack = rnd.Next(0, 101) <= ComboExtendChance;
+            m_altCombo = rnd.Next(0, 101) <= AltComboChance;
             OnStartAttackEvent();
         }
 
         protected virtual void OnStartAttackEvent()
         {
 
+        }
+
+        private void OnDown()
+        {
+            OnDownEvent();
+        }
+
+        protected virtual void OnDownEvent()
+        {
+            m_getupAttack = new System.Random().Next(0, 101) <= GetupAttackChance;
         }
 
         public virtual bool CanDoNonTurnAttack()
@@ -221,11 +257,11 @@ namespace LikeABrawler2
         }
 
 
-        public bool CheckParam(BaseAIParams param)
+        public virtual bool CheckParam(BaseAIParams param)
         {
-            switch(param)
+            switch (param)
             {
-                default: 
+                default:
                     return false;
                 case BaseAIParams.ExtendCombo:
                     return m_extendAttack;
@@ -233,6 +269,10 @@ namespace LikeABrawler2
                     return m_swayAttack;
                 case BaseAIParams.CanDoNonTurnNearbyAttack:
                     return CanDoNonTurnAttack();
+                case BaseAIParams.AltCombo:
+                    return m_altCombo;
+                case BaseAIParams.GetupAttack:
+                    return m_getupAttack && !BrawlerBattleManager.IsHActOrWaiting;
             }
         }
     }

@@ -33,6 +33,11 @@ namespace LikeABrawler2
 
                     HeatActionManager.OnHActEndEvent += OnHActEnd;
                 }
+            
+            //we did a weapon attack and something prevented us from equipping back our crowbar!
+            if(!BrawlerInfo.IsAttack)
+                if(!Fighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.IsValid())
+                    Fighter.WeaponManager().EquipDefault(Fighter);
         }
 
         public override void CombatUpdate()
@@ -66,6 +71,17 @@ namespace LikeABrawler2
         {
             m_mortalSkill = DBManager.GetSkill("e_yamai_mortal_attack");
             return true;
+        }
+
+        public override bool CheckParam(BaseAIParams param)
+        {
+            switch(param)
+            {
+                case BaseAIParams.Scripted1:
+                    return true;
+            }
+
+            return base.CheckParam(param);
         }
     }
 }

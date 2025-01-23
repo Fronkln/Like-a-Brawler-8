@@ -26,7 +26,9 @@ namespace DBGen
             Console.WriteLine("------|OE PROPERTY TO DE BEP|-----");
 
             string[] dat = File.ReadAllLines(genFilePath);
-            string property = dat[0];
+            string[] split = dat[0].Split('|');
+            string property = split[0];
+            string game = split[1];
 
             if (!File.Exists(property))
             {
@@ -65,7 +67,7 @@ namespace DBGen
                     char quotationMark = '"';
                     string path1 = $"{quotationMark}{anim.FullName}{quotationMark}";
                     string path2 = $"{quotationMark}{Path.Combine(output2, entryDat[1] + ".gmt")}{quotationMark}";
-                    string args = $"-ig y0 -og yk2 -i {path1} -o {path2} -mtn";
+                    string args = $"-ig {game} -og yk2 -i {path1} -o {path2} -mtn";
 
                     Console.WriteLine(path1);
                     Console.WriteLine(path2);

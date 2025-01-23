@@ -285,7 +285,9 @@ namespace LikeABrawler2
 
         public bool IsMyTurn()
         {
-            return BattleTurnManager.SelectedFighter.Get().UID == Character.UID || BrawlerBattleManager.AllEnemies.Length == 1;
+            EntityHandle<Character> selectedFighter = BattleTurnManager.SelectedFighter;
+
+            return selectedFighter.IsValid() && selectedFighter.Get().UID == Character.UID || BrawlerBattleManager.AllEnemies.Length == 1;
         }
 
         public virtual EntityHandle<Character> OverrideMarkTarget(EntityHandle<Character> original)

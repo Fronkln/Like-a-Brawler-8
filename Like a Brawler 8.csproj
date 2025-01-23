@@ -260,6 +260,7 @@
     <Compile Include="Auth\AuthNodeTransitHAct.cs" />
     <Compile Include="Auth\AuthNodeTransitRpgSkill.cs" />
     <Compile Include="Auth\ConditionFolderEnemiesPresent.cs" />
+    <Compile Include="Auth\ConditionFolderIsActiveBrawlerPlayer.cs" />
     <Compile Include="Auth\ConditionFolderKiryuStyle.cs" />
     <Compile Include="Auth\ConditionFolderLABBattleOverByY8BHact.cs" />
     <Compile Include="Auth\ConditionFolderLABISDemo.cs" />
@@ -273,15 +274,13 @@
     <Compile Include="Auth\ConditionFolderPlayerJob.cs" />
     <Compile Include="Auth\ConditionFolderPlayerLevel.cs" />
     <Compile Include="Auth\ConditionFolderPocketWeapon.cs" />
+    <Compile Include="Battle\BrawlerSpecial.cs" />
     <Compile Include="BrawlerSaveData.cs" />
-    <Compile Include="BrawlerSpecial.cs" />
-    <Compile Include="ConditionFolderIsActiveBrawlerPlayer.cs" />
     <Compile Include="Debug.cs" />
-    <Compile Include="DebugBattleConsole.cs" />
-    <Compile Include="EnemyRebalanceEntry.cs" />
     <Compile Include="Enum\JobWeaponType.cs" />
     <Compile Include="Enum\PlayerStyle.cs" />
     <Compile Include="Enum\TutorialModifier.cs" />
+    <Compile Include="Input\InputState.cs" />
     <Compile Include="Manager\AuraManager.cs" />
     <Compile Include="Manager\ScreenEffectManager.cs" />
     <Compile Include="Manager\HActLifeGaugeManager.cs" />
@@ -310,7 +309,6 @@
     <Compile Include="Patches\BrawlerPatch.cs" />
     <Compile Include="Patches\BrawlerPatches.cs" />
     <Compile Include="Player\BrawlerPlayer.cs" />
-    <Compile Include="InputState.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Manager\BrawlerBattleManager.cs" />
     <Compile Include="Patches\CFCPatches.cs" />
@@ -324,6 +322,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Structs\AuraDefinition.cs" />
     <Compile Include="Structs\BrawlerFighterInfo.cs" />
+    <Compile Include="Structs\EnemyRebalanceEntry.cs" />
     <Compile Include="Structs\HeatActionInformation.cs" />
     <Compile Include="Structs\Ini.cs" />
     <Compile Include="IniSettings.cs" />
@@ -336,9 +335,9 @@
     <Compile Include="Task\DETaskNextFrame.cs" />
     <Compile Include="Task\DETaskTime.cs" />
     <Compile Include="Task\RepeatingTask.cs" />
-    <Compile Include="Utils.cs" />
     <Compile Include="Utils\Extensions.cs" />
     <Compile Include="Manager\WeaponManager.cs" />
+    <Compile Include="Utils\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Y7Internal.NET\DELibrary.NET\DELibrary.NET.csproj">
