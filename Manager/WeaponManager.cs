@@ -205,6 +205,12 @@ namespace LikeABrawler2
                 return;
             }
 
+            if(!BrawlerBattleManager.PlayerCharacter.IsFacingEntity(NearestAsset, 0))
+            {
+                NearestAsset = null;
+                return;
+            }
+
             Fighter player = BrawlerBattleManager.PlayerFighter;
 
 

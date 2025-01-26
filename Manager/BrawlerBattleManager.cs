@@ -386,6 +386,7 @@ namespace LikeABrawler2
                             opts.id = DBManager.GetTalkParam("eb1560_boss_yam_pc");
                             opts.is_force_play = true;
 
+                            opts.Register(HActReplaceID.hu_player1, PlayerCharacter);
                             opts.Register(HActReplaceID.hu_enemy_00, AllEnemiesNearest[0].CharacterUID);
 
                             HActManager.RequestHAct(opts);
@@ -444,6 +445,7 @@ namespace LikeABrawler2
                                 opts.id = DBManager.GetTalkParam("y8bb1780_ebn_party_decide");
                                 opts.is_force_play = true;
 
+                                opts.Register(HActReplaceID.hu_player1,PlayerCharacter);
                                 opts.Register(HActReplaceID.hu_npc_00, FighterManager.GetFighter(1).Character);
                                 opts.Register(HActReplaceID.hu_npc_01, FighterManager.GetFighter(2).Character);
                                 opts.Register(HActReplaceID.hu_npc_02, FighterManager.GetFighter(3).Character);

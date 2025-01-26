@@ -78,7 +78,7 @@ namespace LikeABrawler2
             switch(param)
             {
                 case BaseAIParams.Scripted1:
-                    return true;
+                    return !BrawlerBattleManager.IsHActOrWaiting;
             }
 
             return base.CheckParam(param);

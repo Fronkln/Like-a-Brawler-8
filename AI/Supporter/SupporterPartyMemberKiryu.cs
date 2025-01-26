@@ -6,7 +6,7 @@ namespace LikeABrawler2
     internal class SupporterPartyMemberKiryu : SupporterPartyMember
     {
 
-        private static bool AllowStyleChange = false;
+        private static bool AllowStyleChange = true;
 
         //change style a maximum of once per turn
         private bool m_styleChangeOnce = false;

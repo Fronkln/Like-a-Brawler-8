@@ -29,6 +29,7 @@ namespace LikeABrawler2
             base.Awake();
 
             EvasionModule.SetEvasionChance(20);
+            GetupAttackChance = 65;
         }
 
         public override bool IsBoss()

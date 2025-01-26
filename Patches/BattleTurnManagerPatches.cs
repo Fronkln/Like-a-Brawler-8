@@ -217,7 +217,7 @@ namespace LikeABrawler2
 
                 if(enemyAI != null)
                 {
-                    if (enemyAI.IsCounterAttacking() || enemyAI.IsPerformingNonTurnAttack() || enemyAI.Character.HumanModeManager.IsGuarding())
+                    if (enemyAI.BrawlerInfo.IsDown || enemyAI.BrawlerInfo.IsFaceDown || enemyAI.IsCounterAttacking() || enemyAI.IsPerformingNonTurnAttack() || enemyAI.Character.HumanModeManager.IsGuarding())
                         return;
                 }
             }

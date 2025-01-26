@@ -37,8 +37,8 @@ namespace LikeABrawler2
         //Constants
         protected const float SWAY_ATTACK_BASE_CHANCE = 45;
         protected const float COMBO_EXTEND_BASE_CHANCE = 45;
-        protected const float ALT_COMBO_BASE_CHANCE = 45;
-        protected const float GETUP_ATTACK_BASE_CHANCE = 65;
+        protected const float ALT_COMBO_BASE_CHANCE = 40;
+        protected const float GETUP_ATTACK_BASE_CHANCE = 35;
         protected const float HACT_COOLDOWN = 25f;
 
         private bool m_performingNonTurnAttackDoOnce = false;
