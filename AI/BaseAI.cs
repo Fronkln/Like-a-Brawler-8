@@ -14,10 +14,20 @@ namespace LikeABrawler2
 
         public BrawlerFighterInfo BrawlerInfo { get { return BrawlerFighterInfo.Get(Character.UID); } }
 
+
+        //Constants
+        protected const float SWAY_ATTACK_BASE_CHANCE = 45;
+        protected const float COMBO_EXTEND_BASE_CHANCE = 45;
+        protected const float ALT_COMBO_BASE_CHANCE = 40;
+        protected const float GETUP_ATTACK_BASE_CHANCE = 35;
+        protected const float IMMEDIATE_GETUP_BASE_CHANCE = 45;
+        protected const float HACT_COOLDOWN = 25f;
+
         public float SwayAttackChance = SWAY_ATTACK_BASE_CHANCE;
         public float ComboExtendChance = COMBO_EXTEND_BASE_CHANCE;
         public float AltComboChance = ALT_COMBO_BASE_CHANCE;
         public float GetupAttackChance = GETUP_ATTACK_BASE_CHANCE;
+        public float ImmediateGetupChance = IMMEDIATE_GETUP_BASE_CHANCE;
         public bool MyTurn { get; private set; } = false;
         public float TimeSinceLastAttack { get; private set; } = 999;
         public float TimeSinceMyTurn { get; protected set; } = 999;
@@ -33,13 +43,6 @@ namespace LikeABrawler2
         protected float m_hactCd = 0;
 
         protected CharacterAttributes m_attributes;
-
-        //Constants
-        protected const float SWAY_ATTACK_BASE_CHANCE = 45;
-        protected const float COMBO_EXTEND_BASE_CHANCE = 45;
-        protected const float ALT_COMBO_BASE_CHANCE = 40;
-        protected const float GETUP_ATTACK_BASE_CHANCE = 35;
-        protected const float HACT_COOLDOWN = 25f;
 
         private bool m_performingNonTurnAttackDoOnce = false;
         protected float m_nonTurnAttackPatience = 5f;
@@ -134,10 +137,13 @@ namespace LikeABrawler2
 
             if (!m_downOnce)
             {
-                if (BrawlerInfo.IsDown || BrawlerInfo.IsFaceDown)
+                if (!BrawlerInfo.IsGettingUp)
                 {
-                    OnDown();
-                    m_downOnce = false;
+                    if (BrawlerInfo.IsDown || BrawlerInfo.IsFaceDown)
+                    {
+                        OnDown();
+                        m_downOnce = false;
+                    }
                 }
             }
             else
@@ -234,6 +240,14 @@ namespace LikeABrawler2
         protected virtual void OnDownEvent()
         {
             m_getupAttack = new System.Random().Next(0, 101) <= GetupAttackChance;
+
+            if (!m_getupAttack)
+            {
+                bool immediateGetup = new System.Random().Next(0, 101) <= ImmediateGetupChance;
+
+                if(immediateGetup)
+                    Character.HumanModeManager.ToStandup(Character.HumanModeManager.GetStandupType());
+            }
         }
 
         public virtual bool CanDoNonTurnAttack()

@@ -385,13 +385,13 @@ namespace LikeABrawler2
             if(m_hasAntiSpamArmor || m_transitCounterAttack)
                 Fighter.GetStatus().SetSuperArmor(true, false);
 
-            if (m_getupHyperArmorDoOnce && !m_gettingUp)
+            if (m_getupHyperArmorDoOnce && (!m_gettingUp && !BrawlerInfo.IsDown))
             {
                 m_getupHyperArmorDoOnce = false;
                 Fighter.GetStatus().SetSuperArmor(false);
             }
 
-            if (m_gettingUp)
+            if (m_gettingUp || BrawlerInfo.DownTime >= 3.5f)
             {
                 m_getupHyperArmorDoOnce = true;
                 Fighter.GetStatus().SetSuperArmor(true);

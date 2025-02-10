@@ -127,14 +127,14 @@ namespace LikeABrawler2
             AllEnemies = AllFighters.Where(x => x.IsEnemy() && !x.IsDead()).ToArray();
             AllEnemiesNearest = AllEnemies.OrderBy(x => Vector3.Distance(PlayerFighter.Character.Transform.Position, x.Character.Transform.Position)).ToArray();
 
-            var enemiesBehindMe = AllEnemies.Where(x => PlayerCharacter.IsFacingEntity(x.Character)).OrderBy(x => Vector3.Distance(PlayerFighter.Character.Transform.Position, x.Character.Transform.Position));
+            var enemiesBehindMe = AllEnemies.Where(x => !PlayerCharacter.IsFacingEntity(x.Character)).OrderBy(x => Vector3.Distance(PlayerFighter.Character.Transform.Position, x.Character.Transform.Position));
 
             if (enemiesBehindMe.Any())
             {
                 NearestEnemyBehindPlayer = enemiesBehindMe.First();
 
-                if (Vector3.Distance(NearestEnemyBehindPlayer.Character.Transform.Position, PlayerCharacter.Transform.Position) >= 3.5f)
-                    NearestEnemyBehindPlayer = new Fighter();
+           //    if (Vector3.Distance(NearestEnemyBehindPlayer.Character.Transform.Position, PlayerCharacter.Transform.Position) >= 3.5f)
+                   // NearestEnemyBehindPlayer = new Fighter();
             }
             else
                 NearestEnemyBehindPlayer = new Fighter();
@@ -1078,6 +1078,14 @@ namespace LikeABrawler2
             {
                 m_givePlayerTurnOnce = false;
                 return PlayerFighter._ptr;
+            }
+
+            if(BrawlerBattleManager.NearestEnemyBehindPlayer.IsValid())
+            {
+                bool shouldGiveTurnToBehindEnemy = new Random().Next(0, 101) <= 20;
+                
+                if(shouldGiveTurnToBehindEnemy)
+                    return NearestEnemyBehindPlayer._ptr;
             }
 
             // if (SupporterManager.Supporters.Count > 0)

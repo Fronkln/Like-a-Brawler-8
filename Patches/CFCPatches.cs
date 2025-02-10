@@ -334,7 +334,8 @@ namespace LikeABrawler2
 
         private static bool CheckEnemyBehindPlayer(IntPtr fighterPtr, byte op, byte* paramsPtr)
         {
-            return BrawlerBattleManager.NearestEnemyBehindPlayer.IsValid();
+            return BrawlerBattleManager.NearestEnemyBehindPlayer.IsValid() && 
+                Vector3.Distance(BrawlerBattleManager.NearestEnemyBehindPlayer.Character.Transform.Position, BrawlerBattleManager.PlayerCharacter.Transform.Position) <= 3.5f;
         }
     }
 }

@@ -811,22 +811,31 @@ namespace LikeABrawler2
                 if (BrawlerBattleManager.DisableTargetingThisFrame)
                 {
                     BrawlerBattleManager.DisableTargetingThisFrame = false;
-                    return LastBehindEnemy; // new Fighter(IntPtr.Zero);
+                    return new Fighter(IntPtr.Zero);  //LastBehindEnemy; // new Fighter(IntPtr.Zero);
                 }
 
                 if (BrawlerBattleManager.AllEnemiesNearest.Length <= 0)
                     return new Fighter(IntPtr.Zero);
 
+
                 Fighter[] nearestEnemies = null;
 
 
-                if (BrawlerBattleManager.PlayerCharacter.Pad.LeverWorldAng < 0 && BrawlerBattleManager.NearestEnemyBehindPlayer.IsValid())
+                /*
+                if (BrawlerBattleManager.PlayerCharacter.Pad.LeverWorldAng < 0 
+                    && BrawlerBattleManager.NearestEnemyBehindPlayer.IsValid()
+                    && Vector3.Distance(BrawlerBattleManager.PlayerCharacter.Transform.Position, BrawlerBattleManager.NearestEnemyBehindPlayer.Character.Transform.Position) <= 3.5f)
                 {
-                    //DragonEngine.Log("you know how it is " + BrawlerBattleManager.PlayerCharacter.Pad.LeverWorldAng);
-                    return BrawlerBattleManager.NearestEnemyBehindPlayer;
+                        return BrawlerBattleManager.NearestEnemyBehindPlayer;
                 }
                 else
+               */
                     nearestEnemies = BrawlerBattleManager.AllEnemiesNearest;
+
+
+                if (LastLockedInEnemy.IsValid() && !LastLockedInEnemy.IsDead() && BrawlerFighterInfo.Player.IsAttack)
+                    return LastLockedInEnemy;
+
 
                 float dot = -0.6f;
 
@@ -876,6 +885,8 @@ namespace LikeABrawler2
                 LastBehindEnemy = BrawlerBattleManager.NearestEnemyBehindPlayer;
                 LastLockedInEnemy = target;
             }
+            else
+                targetDecide.SetTarget(new FighterID() { Handle = 0 });
         }
 
         public static bool TransitDamage(BattleDamageInfoSafe safeDmg)

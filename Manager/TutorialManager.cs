@@ -212,8 +212,10 @@ namespace LikeABrawler2
 
             List<TutorialGoal> goals = new List<TutorialGoal>();
 
+            string introductionTalk = Player.GetLevel(BrawlerPlayer.CurrentPlayer) <= 1 ? "y8b_tutorial_btl01_0100_01" : "y8b_tutorial_btl01_0100_01_ng";
+
             TutorialGoal hactGoalTest = new TutorialGoal();
-            hactGoalTest.SetTalkID(DBManager.GetTalkParam("y8b_tutorial_btl01_0100_01"));
+            hactGoalTest.SetTalkID(DBManager.GetTalkParam(introductionTalk));
             hactGoalTest.CheckDelegate = delegate { return !HeatActionManager.AwaitingHAct && !HeatActionManager.IsHAct() && m_goalTime > 0.1f; };
 
             TutorialGoal rushCombo = new TutorialGoal();
@@ -435,7 +437,7 @@ namespace LikeABrawler2
             TutorialGoal poundmate = new TutorialGoal();
             poundmate.SetInstructions(
                 "<color=batting_pitch_light_blue>Poundmates</color>" +
-                "\nHold <symbol=button_l1> + <symbol=button_shikaku> + <symbol=button_sankaku> to activate.");
+                "\nHold <symbol=button_l1> + <symbol=button_down> to activate.");
             poundmate.CheckDelegate = delegate
             {
                 return BrawlerBattleManager.IsDeliveryHelping;

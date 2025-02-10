@@ -26,7 +26,7 @@ namespace LikeABrawler2
         private static Dictionary<uint, EnemyRebalanceEntry> Rebalances = new Dictionary<uint, EnemyRebalanceEntry>();
         public static Dictionary<uint, Dictionary<AssetArmsCategoryID, string>> CommandsetWepAttacks = new Dictionary<uint, Dictionary<AssetArmsCategoryID, string>>();
 
-        public static ARMP BattleCommandSetTable = null;
+        //public static ARMP BattleCommandSetTable = null;
 
         public static bool Inited = false;
 
@@ -45,9 +45,6 @@ namespace LikeABrawler2
             m_rpgSkill = ReadCachedDBArmp("rpg_skill");
             m_soldierInfo = ReadCachedDBArmp("character_npc_soldier_personal_data");
             m_rpgEnemy = FlipCachedDBArmp(ReadCachedDBArmp("battle_rpg_enemy"));
-
-
-            BattleCommandSetTable = GetARMP(DB.GetBinaryPointer(1282));
 
             //BattleRpgEnemy = ReadCachedDBArmp("battle_rpg_enemy");
 
