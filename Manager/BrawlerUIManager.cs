@@ -10,7 +10,15 @@ namespace LikeABrawler2
         private static UIHandleBase m_hactPrompt;
         private static UIHandleBase m_wepPickup;
 
+        private const bool UseClassicGauge = false;
+
+        public static UIHandleBase RealtimeGauge;
         public static UIHandleBase GaugeRoot;
+
+        private static UIHandleBase m_realtimeGaugeHealth;
+        private static UIHandleBase m_realtimeGaugeHeat;
+
+        private static UIHandleBase m_playerGaugeRoot;
         private static UIHandleBase m_playerGauge;
         private static UIHandleBase m_playerGauge_NextLabel;
         private static UIHandleBase m_playerGauge_HealthGauge;
@@ -21,6 +29,7 @@ namespace LikeABrawler2
         public static UIHandleBase Minimap;
 
         private static bool m_uiCreated = false;
+        private static bool m_playerSpawnedDoOnce = false;
 
         public static void Init()
         {
@@ -46,6 +55,17 @@ namespace LikeABrawler2
 
         private static void ProcessPlayerGauge()
         {
+            if(!UseClassicGauge)
+            {
+                if (RealtimeGauge.Handle == 0)
+                {
+                    RealtimeGauge = UI.Play(394, 0);
+                    m_realtimeGaugeHealth = RealtimeGauge.GetChild(0).GetChild(0).GetChild(1);
+                    m_realtimeGaugeHeat = RealtimeGauge.GetChild(0).GetChild(0).GetChild(2);
+                    m_realtimeGaugeHeat.GetChild(3).SetVisible(false);
+                }
+            }
+
             m_playerGauge = GetPlayerGauge();
             m_playerGauge_NextLabel = m_playerGauge.GetChild(4);
             m_playerGauge_HealthGauge = m_playerGauge.GetChild(5);
@@ -115,13 +135,41 @@ namespace LikeABrawler2
 
             if (!BrawlerPlayer.IsOtherPlayer() || BrawlerPlayer.IsOtherPlayerLeader())
             {
+                uint numGauges = gaugesRoot.GetChildCount();
+                uint idx = 0;
+
+                
+                for(uint i = 0; i < 4; i++)
+                {
+                    EntityHandle<Character> charaHandle = NakamaManager.GetCharacterHandle(i);
+
+                    if (!charaHandle.IsValid())
+                        break;
+
+                    idx = i;
+                }
+                
+                /*
+                
+                if (numGauges > 4)
+                    idx = 3;
+                else
+                    idx = numGauges - 1;
+                */
+
+                gauge = gaugesRoot.GetChild((int)idx).GetChild(0).GetChild(0);
+                m_playerGaugeRoot = gaugesRoot.GetChild((int)idx);
+
+                /*
                 for (int i = 0; i < gaugesRoot.GetChildCount(); i++)
                 {
                     if (!gaugesRoot.GetChild(i).IsVisible())
                         break;
 
                     gauge = gaugesRoot.GetChild(i).GetChild(0).GetChild(0);
+                    m_playerGaugeRoot = gaugesRoot.GetChild(i);
                 }
+                */
             }
             else
             {
@@ -158,8 +206,16 @@ namespace LikeABrawler2
 
             if(BrawlerBattleManager.IsHAct)
                 GaugeRoot.SetVisible(false);
+            else
+            {
+                if(!UseClassicGauge)
+                {
+                    m_playerGaugeRoot.SetVisible(!BrawlerBattleManager.Battling);
+                    RealtimeGauge.SetVisible(BrawlerBattleManager.Battling && !BrawlerBattleManager.PlayerCharacter.IsDead() && BattleTurnManager.CurrentPhase > BattleTurnManager.TurnPhase.Start && !(BrawlerBattleManager.IsHAct && !HeatActionManager.IsY8BHact));
+                }
+            }
 
-            ProcessPlayerGauge();
+            //ProcessPlayerGauge();
             Minimap.SetVisible(!Debug.NoUI);
 
             if (BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action || BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Cleanup)
@@ -180,16 +236,25 @@ namespace LikeABrawler2
             if (BrawlerBattleManager.Battling)
             {
                 GaugeRoot.SetVisible(!Debug.NoUI);
-                m_playerGauge_HealthGauge.SetValue((float)playerHp / (float)Player.GetHPMax(BrawlerPlayer.CurrentPlayer));
-                m_playerGauge_HealthGaugeLabel.SetText(playerHp.ToString());
-                m_playerGauge_HeatGauge.SetValue((float)Player.GetHeatNow(BrawlerPlayer.CurrentPlayer) / (float)Player.GetHeatMax(BrawlerPlayer.CurrentPlayer));
-                m_playerGauge_HeatGaugeLabel.SetText(Player.GetHeatNow(BrawlerPlayer.CurrentPlayer).ToString());
-                m_playerGauge_NextLabel.SetVisible(false);
 
-                if(BrawlerPlayer.IsKiryu())
+                if (UseClassicGauge)
                 {
-                    //Kiryu style icon
-                    m_playerGauge.GetChild(0).SetVisible(false);
+                    m_playerGauge_HealthGauge.SetValue((float)playerHp / (float)Player.GetHPMax(BrawlerPlayer.CurrentPlayer));
+                    m_playerGauge_HealthGaugeLabel.SetText(playerHp.ToString());
+                    m_playerGauge_HeatGauge.SetValue((float)Player.GetHeatNow(BrawlerPlayer.CurrentPlayer) / (float)Player.GetHeatMax(BrawlerPlayer.CurrentPlayer));
+                    m_playerGauge_HeatGaugeLabel.SetText(Player.GetHeatNow(BrawlerPlayer.CurrentPlayer).ToString());
+                    m_playerGauge_NextLabel.SetVisible(false);
+
+                    if (BrawlerPlayer.IsKiryu())
+                    {
+                        //Kiryu style icon
+                        m_playerGauge.GetChild(0).SetVisible(false);
+                    }
+                }
+                else
+                {
+                    m_realtimeGaugeHealth.SetValue((float)playerHp / (float)Player.GetHPMax(BrawlerPlayer.CurrentPlayer));
+                    m_realtimeGaugeHeat.SetValue((float)Player.GetHeatNow(BrawlerPlayer.CurrentPlayer) / (float)Player.GetHeatMax(BrawlerPlayer.CurrentPlayer));
                 }
             }
 

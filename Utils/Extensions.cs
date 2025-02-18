@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 
 namespace LikeABrawler2
 {
@@ -54,6 +55,39 @@ namespace LikeABrawler2
                 return new BrawlerFighterInfo();
 
             return BrawlerFighterInfo.Infos[fighter.Character.UID];
+        }
+
+        public static Fighter TryGetPlayerFighter(this Character chara)
+        {
+            Fighter f1 = FighterManager.GetFighter(0);
+
+            if(f1.Character.UID != 0 && chara.UID == f1.Character.UID)
+            {
+                return f1;
+            }
+
+            Fighter f2 = FighterManager.GetFighter(1);
+
+            if (f2.Character.UID != 0 && chara.UID == f2.Character.UID)
+            {
+                return f2;
+            }
+
+            Fighter f3 = FighterManager.GetFighter(2);
+
+            if (f3.Character.UID != 0 && chara.UID == f3.Character.UID)
+            {
+                return f3;
+            }
+
+            Fighter f4 = FighterManager.GetFighter(4);
+
+            if (f4.Character.UID != 0 && chara.UID == f4.Character.UID)
+            {
+                return f4;
+            }
+
+            return new Fighter(IntPtr.Zero);
         }
 
         public static BaseAI TryGetAI(this Fighter fighter)

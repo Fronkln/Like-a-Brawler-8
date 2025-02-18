@@ -224,13 +224,14 @@ namespace LikeABrawler2
                         {
                             AssetArmsCategoryID cat = Asset.GetArmsCategory(NearestAsset.AssetID);
                             RPGSkillID pickupSkill = DBManager.GetSkill($"player_wp{cat.ToString().ToLowerInvariant()}_pickup_floor");
-
                             m_targetNearestAsset = NearestAsset;
 
                             if (pickupSkill != RPGSkillID.invalid)
                                 BattleTurnManager.ForceCounterCommand(player, BrawlerBattleManager.AllEnemies[0], pickupSkill);
                             else
-                                PickupNearestWeapon();
+                                throw new Exception("No pickup animation for Asset Category" + cat.ToString());
+                           // else
+                               // PickupNearestWeapon();
                         }
                         else if(BattleManager.PadInfo.IsJustPush(BattleButtonID.light))
                         {
