@@ -15,6 +15,7 @@ namespace LikeABrawler2
         public Fighter Performer = new Fighter();
         public HActRangeInfo RangeInfo; //Assigned if found
         public Dictionary<HeatActionActorType, Fighter> Map = new Dictionary<HeatActionActorType, Fighter>();
+        public bool ShowGauge = true;
 
         public Vector3 PosOverride;
 

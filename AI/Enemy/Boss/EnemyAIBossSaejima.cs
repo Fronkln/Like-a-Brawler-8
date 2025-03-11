@@ -15,6 +15,7 @@ namespace LikeABrawler2
             base.Awake();
 
             Instance = this;
+            CounterAttacks.Add(DBManager.GetSkill("boss_saejima_atk_c"));
         }
     }
 }

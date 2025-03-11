@@ -13,6 +13,7 @@ namespace LikeABrawler2
         {
             base.Awake();
             Instance = this;
+            HActList = YazawaCommandManager.LoadYHC("boss/majima.ehc");
         }
     }
 }

@@ -89,6 +89,7 @@ namespace LikeABrawler2
                 RevelationManager.Init();
                 TownsfolkManager.Init();
                 HActLifeGaugeManager.Init();
+                NativeFuncs.Init();
 
                 new Thread(InputThread).Start();
 
@@ -100,8 +101,6 @@ namespace LikeABrawler2
                     IniSettings.Write();
 
                 IniSettings.Read();
-
-                DragonEngine.Log(BattleTurnManager.Pointer().ToString("X") + " TEST");
                 DragonEngine.Log("Like A Brawler Init Complete");
             }
             catch(Exception ex)

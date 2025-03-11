@@ -285,7 +285,11 @@ namespace DBGen
                 }
                 catch
                 {
-                    newID = particlePUID.MainTable.GetEntry(ptcName).ID;
+                    ArmpEntry foundEntry = null;
+                    bool found = particlePUID.MainTable.TryGetEntry(ptcName, out foundEntry);
+
+                    if (found)
+                        newID = foundEntry.ID;
                 }
 
                 if (newID <= 0)

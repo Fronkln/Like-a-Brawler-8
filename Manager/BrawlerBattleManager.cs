@@ -93,7 +93,6 @@ namespace LikeABrawler2
 
         public unsafe static void Update()
         {
-
             Character character = null;
 
             if (PlayerFighter.IsValid())

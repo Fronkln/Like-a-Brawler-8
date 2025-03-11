@@ -206,7 +206,7 @@ namespace LikeABrawler2
             }
 
 
-            if (HeatActionManager.IsY8BHact || EnemyManager.IsAnyoneMortalAttacking() || MortalReversalManager.Procedure || RevelationManager.RevelationProcedure)
+            if ((HeatActionManager.IsY8BHact && GameVarManager.GetValueBool(GameVarID.is_hact)) || EnemyManager.IsAnyoneMortalAttacking() || MortalReversalManager.Procedure || RevelationManager.RevelationProcedure)
                 return;
 
             Character selectedFighter = BattleTurnManager.SelectedFighter;

@@ -18,6 +18,7 @@ namespace LikeABrawler2
         private static bool m_hactPlayingDoOnce = false;
         public static bool AwaitingHAct = false;
         public static bool IsY8BHact = false;
+        public static bool ShowEnemyGaugeDoOnce = false;
 
         public static event Action OnHActStartEvent = null;
         public static event Action OnHActEndEvent = null;
@@ -207,12 +208,13 @@ namespace LikeABrawler2
             m_hactCd = 0;
         }
 
-        public static bool RequestTalk(HActRequestOptions opts)
+        public static bool RequestTalk(HActRequestOptions opts, bool showGauge = true)
         {
             if (AwaitingHAct)
                 return false;
 
             IsY8BHact = true;
+            ShowEnemyGaugeDoOnce = showGauge;
             return HActManager.RequestHAct(opts);
         }
 
@@ -321,7 +323,7 @@ namespace LikeABrawler2
             }
 
             SoundManager.PlayCue((SoundCuesheetID)7, 10, 0);
-            RequestTalk(opts);
+            RequestTalk(opts, info.ShowGauge);
 
             m_hactCd = HACT_COOLDOWN;
         }
@@ -409,6 +411,26 @@ namespace LikeABrawler2
                         return AuthAssetReplaceID.we_enemy_04_r;
                     else
                         return AuthAssetReplaceID.we_enemy_04_l;
+                case HActReplaceID.hu_npc_00:
+                    if (right)
+                        return AuthAssetReplaceID.we_npc_00_r;
+                    else
+                        return AuthAssetReplaceID.we_npc_00_l;
+                case HActReplaceID.hu_npc_01:
+                    if (right)
+                        return AuthAssetReplaceID.we_npc_01_r;
+                    else
+                        return AuthAssetReplaceID.we_npc_01_l;
+                case HActReplaceID.hu_npc_02:
+                    if (right)
+                        return AuthAssetReplaceID.we_npc_02_r;
+                    else
+                        return AuthAssetReplaceID.we_npc_02_l;
+                case HActReplaceID.hu_npc_03:
+                    if (right)
+                        return AuthAssetReplaceID.we_npc_03_r;
+                    else
+                        return AuthAssetReplaceID.we_npc_03_l;
             }
 
             return AuthAssetReplaceID.invalid;

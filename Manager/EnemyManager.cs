@@ -10,6 +10,18 @@ namespace LikeABrawler2
         public static Dictionary<uint, BaseEnemyAI> Enemies = new Dictionary<uint, BaseEnemyAI>();
         public static BaseAI ForcedAttacker = null;
 
+        static EnemyManager()
+        {
+            BrawlerBattleManager.OnBattleEndEvent += OnBattleEnd;
+        }
+
+
+        public static void OnBattleEnd()
+        {
+            Enemies.Clear();
+            ForcedAttacker = null;
+        }
+
         public static void Update()
         {
             if (BrawlerBattleManager.AllEnemies.Length <= 0)
@@ -274,7 +286,12 @@ namespace LikeABrawler2
             }
 
             if (forcedBoss)
-                (ai as EnemyAIBoss).IsForcedBoss = forcedBoss;
+            {
+                var aiBoss = (ai as EnemyAIBoss);
+
+                if(aiBoss != null)
+                    aiBoss.IsForcedBoss = forcedBoss;
+            }
 
             ai.Fighter = fighter;
             ai.Character = fighter.Character;

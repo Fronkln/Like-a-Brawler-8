@@ -33,7 +33,7 @@ namespace LikeABrawler2
 
         public static void Init()
         {
-            BrawlerBattleManager.OnBattleStartEvent += OnBattleStart;
+            BrawlerBattleManager.OnActionStartEvent += OnBattleStart;
             BrawlerBattleManager.OnBattleEndEvent += OnBattleEnd;
 
             HeatActionManager.OnHActStartEvent += OnHActStart;
@@ -53,25 +53,35 @@ namespace LikeABrawler2
             DragonEngine.Log("Player Gauge: " + m_playerGauge);
         }
 
+        private static uint GetRealtimeGaugeID()
+        {
+            if (BrawlerPlayer.IsKasuga())
+                return 394;
+            else if (BrawlerPlayer.IsKiryu())
+                return 1171;
+            else
+                return 394; //temp;
+        }
+
         private static void ProcessPlayerGauge()
         {
-            if(!UseClassicGauge)
-            {
-                if (RealtimeGauge.Handle == 0)
-                {
-                    RealtimeGauge = UI.Play(394, 0);
-                    m_realtimeGaugeHealth = RealtimeGauge.GetChild(0).GetChild(0).GetChild(1);
-                    m_realtimeGaugeHeat = RealtimeGauge.GetChild(0).GetChild(0).GetChild(2);
-                    m_realtimeGaugeHeat.GetChild(3).SetVisible(false);
-                }
-            }
-
             m_playerGauge = GetPlayerGauge();
             m_playerGauge_NextLabel = m_playerGauge.GetChild(4);
             m_playerGauge_HealthGauge = m_playerGauge.GetChild(5);
             m_playerGauge_HealthGaugeLabel = m_playerGauge.GetChild(8);
             m_playerGauge_HeatGauge = m_playerGauge.GetChild(6);
             m_playerGauge_HeatGaugeLabel = m_playerGauge.GetChild(7);
+
+            if (!UseClassicGauge)
+            {
+                if (RealtimeGauge.Handle == 0)
+                {
+                    RealtimeGauge = UI.Play(GetRealtimeGaugeID(), 0);
+                    m_realtimeGaugeHealth = RealtimeGauge.GetChild(0).GetChild(0).GetChild(1);
+                    m_realtimeGaugeHeat = RealtimeGauge.GetChild(0).GetChild(0).GetChild(2);
+                    m_realtimeGaugeHeat.GetChild(3).SetVisible(false);
+                }
+            }
         }
 
         public static void DoSoloFight()
@@ -92,6 +102,12 @@ namespace LikeABrawler2
         private static void OnBattleEnd()
         {
             m_hactPrompt.SetVisible(false);
+            
+            if(RealtimeGauge.Handle != 0)
+            {
+                RealtimeGauge.Release();
+                RealtimeGauge.Handle = 0;
+            }
         }
 
 
@@ -138,17 +154,19 @@ namespace LikeABrawler2
                 uint numGauges = gaugesRoot.GetChildCount();
                 uint idx = 0;
 
-                
-                for(uint i = 0; i < 4; i++)
+                m_playerGaugeRoot = gaugesRoot.GetChild((int)idx);
+
+                int highestIndex = 0;
+
+                for(int i = 0; i < (int)Player.ID.num; i++)
                 {
-                    EntityHandle<Character> charaHandle = NakamaManager.GetCharacterHandle(i);
+                    int ideex = NakamaManager.FindIndex((Player.ID)i);
 
-                    if (!charaHandle.IsValid())
-                        break;
-
-                    idx = i;
+                    if (ideex > highestIndex)
+                        highestIndex = ideex;
                 }
-                
+
+                idx = (uint)highestIndex;
                 /*
                 
                 if (numGauges > 4)
@@ -159,17 +177,6 @@ namespace LikeABrawler2
 
                 gauge = gaugesRoot.GetChild((int)idx).GetChild(0).GetChild(0);
                 m_playerGaugeRoot = gaugesRoot.GetChild((int)idx);
-
-                /*
-                for (int i = 0; i < gaugesRoot.GetChildCount(); i++)
-                {
-                    if (!gaugesRoot.GetChild(i).IsVisible())
-                        break;
-
-                    gauge = gaugesRoot.GetChild(i).GetChild(0).GetChild(0);
-                    m_playerGaugeRoot = gaugesRoot.GetChild(i);
-                }
-                */
             }
             else
             {

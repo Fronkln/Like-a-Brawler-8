@@ -10,13 +10,15 @@ namespace LikeABrawler2
     internal class EnemyAIBossDaigo : EnemyAIBoss
     {
         public static EnemyAIBossDaigo Instance;
-        private bool Hact = false;
+        private float m_hactCooldown = 0;
 
         public override void Awake()
         {
             base.Awake();
 
             Instance = this;
+            HActList = YazawaCommandManager.LoadYHC("boss/daigo.ehc");
+            CounterAttacks.Add(DBManager.GetSkill("boss_daigo_counter_atk"));
         }
 
         public override void CombatUpdate()

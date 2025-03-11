@@ -16,6 +16,8 @@
         Scripted7 = 11,
         Scripted8 = 12,
         AltCombo = 13,
-        GetupAttack = 14
+        GetupAttack = 14,
+        PlayerDownedAttack = 15,
+        RecentlyMyTurn = 16
     }
 }

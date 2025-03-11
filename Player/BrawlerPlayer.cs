@@ -1001,7 +1001,7 @@ namespace LikeABrawler2
                 return;
 
             int damage = (*(int*)(battleDamageInfo.ToInt64() + 0x120));
-            damage = damage + (int)(damage * 0.15f); //15% damage boost increase
+            damage = damage + (int)(damage * 0.25f); //25% damage boost increase
             *(int*)(battleDamageInfo.ToInt64() + 0x120) = damage;
             *(int*)(battleDamageInfo.ToInt64() + 0x124) = damage;
 

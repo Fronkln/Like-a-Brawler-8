@@ -169,7 +169,7 @@ namespace LikeABrawler2
                     flag = actor.IsBrawlerCriticalHP();
                     break;
                 case HeatActionConditionType.CharacterLevel:
-                    flag = Logic.CheckNumberLogicalOperator(actor.GetStatus().Level, cond.Param1U32, cond.LogicalOperator);
+                    flag = Logic.CheckNumberLogicalOperator(Player.GetLevel(BrawlerPlayer.CurrentPlayer), cond.Param1U32, cond.LogicalOperator);
                     break;
                 case HeatActionConditionType.Job:
                     if (actor.IsPlayer())

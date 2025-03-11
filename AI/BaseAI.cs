@@ -30,6 +30,7 @@ namespace LikeABrawler2
         public float ImmediateGetupChance = IMMEDIATE_GETUP_BASE_CHANCE;
         public bool MyTurn { get; private set; } = false;
         public float TimeSinceLastAttack { get; private set; } = 999;
+        public float TimeSinceLastDownedAttack = 999;
         public float TimeSinceMyTurn { get; protected set; } = 999;
 
         private bool m_attacking = false;
@@ -100,8 +101,10 @@ namespace LikeABrawler2
 
         public virtual void CombatUpdate()
         {
+            float dt = DragonEngine.deltaTime;
+
             if (m_hactCd > 0)
-                m_hactCd -= DragonEngine.deltaTime;
+                m_hactCd -= dt;
 
             if (HActList != null && CanHAct() && m_hactCd <= 0 && !BrawlerBattleManager.IsHActOrWaiting)
                 HActUpdate();
@@ -114,13 +117,15 @@ namespace LikeABrawler2
             MyTurn = myTurnNow;
 
             if (!MyTurn)
-                TimeSinceMyTurn += DragonEngine.deltaTime;
+                TimeSinceMyTurn += dt;
             else
                 TimeSinceMyTurn = 0;
 
+            TimeSinceLastDownedAttack += dt;
+
             if (!m_attacking)
             {
-                TimeSinceLastAttack += DragonEngine.deltaTime;
+                TimeSinceLastAttack += dt;
 
                 if (BrawlerInfo.IsAttack)
                 {
@@ -175,6 +180,7 @@ namespace LikeABrawler2
             if (performableHact != null)
             {
                 performableHact.UseHeat = false;
+                performableHact.ShowGauge = false;
                 HeatActionManager.ExecHeatAction(performableHact);
                 m_hactCd = HACT_COOLDOWN;
             }
@@ -287,6 +293,14 @@ namespace LikeABrawler2
                     return m_altCombo;
                 case BaseAIParams.GetupAttack:
                     return m_getupAttack && !BrawlerBattleManager.IsHActOrWaiting;
+                case BaseAIParams.PlayerDownedAttack: // <---- transit condition. return true = expected attack
+                    bool resultda = TimeSinceLastDownedAttack > 3.5f;
+
+                    if (resultda)
+                        TimeSinceLastDownedAttack = 0;
+                    return resultda;
+                case BaseAIParams.RecentlyMyTurn:
+                    return TimeSinceMyTurn < 4.5f;
             }
         }
     }

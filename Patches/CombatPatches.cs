@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Security;
 using System.Runtime.InteropServices;
 using DragonEngineLibrary;
 using DragonEngineLibrary.Unsafe;
@@ -21,6 +22,7 @@ namespace LikeABrawler2
         private IntPtr m_yorokeFunc;
         private IntPtr m_ecbattleStatusCalculateHpFunc;
         private IntPtr m_fighterDisableRunFunc;
+        private IntPtr m_liveActionNodeFunc;
 
         private IntPtr m_transitKiryuGuardFunc;
         private HijackedFunction m_transitKiryuGuardHijack;
@@ -45,7 +47,11 @@ namespace LikeABrawler2
         private delegate bool TurnCommandDecideManagerHandleAutoMode(IntPtr thisPtr, IntPtr selectCommandInfo, long** fighterPtrPtr);
 
 
+        private delegate void LiveActionNodePlayFirst(IntPtr thisPtr);
+
         private delegate void ECBattleStatusInitializeHP(IntPtr status);
+
+
 
         public override void Init()
         {
@@ -66,6 +72,9 @@ namespace LikeABrawler2
             m_yorokeFunc = CPP.ReadCall(CPP.PatternSearch("E8 ? ? ? ? 48 8B 8E E8 07 00 00 8B 59 08"));
             m_battleTransformOnTrampoline = BrawlerPatches.HookEngine.CreateHook<FighterManagerPlayTransformEffect>(m_fighterTransformEffectFunc, ECRender_BattleTransformOn);
             m_ecbattleStatusCalculateHpFunc = CPP.PatternSearch("48 89 4C 24 08 55 53 56 57 41 54 41 55 41 57");
+            m_liveActionNodeFunc = CPP.PatternSearch("48 89 5C 24 18 56 48 83 EC ? 8B 51 3C");
+            m_liveActionPlayFunc = BrawlerPatches.HookEngine.CreateHook<LiveActionNodePlayFirst>(CPP.PatternSearch("48 89 5C 24 18 56 48 83 EC ? 8B 51 3C"), LiveActionPlayFirst);
+            m_liveActionPlayFunc2 = BrawlerPatches.HookEngine.CreateHook<LiveActionNodePlayFirst>(CPP.PatternSearch("40 56 57 48 83 EC ? 48 8B F1 8B FA"), LiveActionPlay);
 
             m_transitKiryuGuardFunc = CPP.PatternSearch("48 8B C4 48 89 58 10 48 89 70 18 48 89 78 20 55 41 54 41 55 41 56 41 57 48 8D A8 18 FF FF FF 48 81 EC ? ? ? ? C5 F8 29 70 C8 C5 F8 29 78 B8 C5 78 29 40 A8 C5 78 29 48 98 48 8B F1");
             
@@ -108,6 +117,8 @@ namespace LikeABrawler2
             BrawlerPatches.HookEngine.EnableHook(m_handleAutoModeTrampoline);
             BrawlerPatches.HookEngine.EnableHook(m_transitKiryuCounterTrampoline);
             BrawlerPatches.HookEngine.EnableHook(m_fighterDisableRunTrampoline);
+            BrawlerPatches.HookEngine.EnableHook(m_liveActionPlayFunc);
+            BrawlerPatches.HookEngine.EnableHook(m_liveActionPlayFunc2);
 
             CPP.PatchMemory(m_invisFighterJmp1+6, 0x99);
             CPP.PatchMemory(m_invisFighterJmp2, 0xEB);
@@ -139,6 +150,12 @@ namespace LikeABrawler2
 
             if (m_fighterDisableRunTrampoline != null)
                 BrawlerPatches.HookEngine.DisableHook(m_fighterDisableRunTrampoline);
+
+            if(m_liveActionPlayFunc != null)
+                BrawlerPatches.HookEngine.DisableHook(m_liveActionPlayFunc);
+
+            if (m_liveActionPlayFunc2 != null)
+                BrawlerPatches.HookEngine.DisableHook(m_liveActionPlayFunc2);
 
             CPP.PatchMemory(m_invisFighterJmp1+6, 0x20);
             CPP.PatchMemory(m_invisFighterJmp2, 0x74);
@@ -304,7 +321,7 @@ namespace LikeABrawler2
                 if (!fighter.IsMainPlayer())
                 {
                     int* autoMode = (int*)fighterPtrPtr + 2;
-                    *autoMode = 3;
+                    *autoMode = SupporterPartyMember.DecideAutoModeStrategy(fighter); //1;
                 }
             }
 
@@ -325,6 +342,30 @@ namespace LikeABrawler2
                 return false;
 
             return m_fighterDisableRunTrampoline(fighterPtr);
+        }
+
+        LiveActionNodePlayFirst m_liveActionPlayFunc;
+        private unsafe void LiveActionPlayFirst(IntPtr thisPtr)
+        {
+            AuthNode node = new AuthNode() { Pointer = thisPtr };
+            Character character = node.GetSelf().Get().GetCharacter();
+
+            if (character != BrawlerBattleManager.PlayerCharacter)
+                return;
+
+            m_liveActionPlayFunc(thisPtr);
+        }
+
+        LiveActionNodePlayFirst m_liveActionPlayFunc2;
+        private unsafe void LiveActionPlay(IntPtr thisPtr)
+        {
+            AuthNode node = new AuthNode() { Pointer = thisPtr };
+            Character character = node.GetSelf().Get().GetCharacter();
+
+            if (character != BrawlerBattleManager.PlayerCharacter)
+                return;
+
+            m_liveActionPlayFunc2(thisPtr);
         }
     }
 }

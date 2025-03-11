@@ -38,15 +38,22 @@ namespace LikeABrawler2
             //B (dual knives)
             if (m_RightArmsCategory == AssetArmsCategoryID.B)
             {
-                CounterAttacks.Add(DBManager.GetSkill("422 boss_sawashiro_x_atk_b"));
+                CounterAttacks.Add(DBManager.GetSkill("boss_sawashiro_x_atk_b"));
                 Mode = 2;
             }
 
             //E (katana)
             if (m_RightArmsCategory == AssetArmsCategoryID.E)
             {
-                CounterAttacks.Add(DBManager.GetSkill("422 boss_sawashiro_e_atk_a"));
+                CounterAttacks.Add(DBManager.GetSkill("boss_sawashiro_e_atk_a"));
                 Mode = 3;
+            }
+
+            //Unarmed
+            if(m_leftArmsCategory == AssetArmsCategoryID.invalid && m_RightArmsCategory == AssetArmsCategoryID.invalid)
+            {
+                CounterAttacks.Add(DBManager.GetSkill("boss_sawashiro_atk_a"));
+                Mode = 4;
             }
         }
 

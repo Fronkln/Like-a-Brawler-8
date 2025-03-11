@@ -70,6 +70,8 @@ namespace LikeABrawler2
                     return CheckAIPlayerDistance(fighter, op, paramsPtr);
                 case 14:
                     return CheckEnemyBehindPlayer(fighter, op, paramsPtr);
+                case 15:
+                    return CheckAwakeningStat(fighter, op, paramsPtr);
             }
 
             return false;
@@ -336,6 +338,11 @@ namespace LikeABrawler2
         {
             return BrawlerBattleManager.NearestEnemyBehindPlayer.IsValid() && 
                 Vector3.Distance(BrawlerBattleManager.NearestEnemyBehindPlayer.Character.Transform.Position, BrawlerBattleManager.PlayerCharacter.Transform.Position) <= 3.5f;
+        }
+
+        private static bool CheckAwakeningStat(IntPtr fighterPtr, byte op, byte* paramsPtr)
+        {
+            return false;
         }
     }
 }

@@ -144,29 +144,35 @@ namespace LikeABrawler2
 
             Fighter firstEnem = new Fighter();
 
-            foreach(var kv in HeatActionManager.PerformingHAct.Map)
+
+            if (HeatActionManager.ShowEnemyGaugeDoOnce)
             {
-                if(kv.Key.ToString().StartsWith("Enemy") && !kv.Value.IsPlayer())
+                foreach (var kv in HeatActionManager.PerformingHAct.Map)
                 {
-                    if(firstEnem._ptr == IntPtr.Zero)
-                        firstEnem = kv.Value;
+                    if (kv.Key.ToString().StartsWith("Enemy") && !kv.Value.IsPlayer())
+                    {
+                        if (firstEnem._ptr == IntPtr.Zero)
+                            firstEnem = kv.Value;
 
-                    GaugeInf inf = InitGauge();
-                    inf.Owner = kv.Value.Character;
+                        GaugeInf inf = InitGauge();
+                        inf.Owner = kv.Value.Character;
 
-                    var status = kv.Value.Character.GetBattleStatus();
-                    inf.MaxHP = status.MaxHP;
-                    inf.SetValue(status.CurrentHP);
+                        var status = kv.Value.Character.GetBattleStatus();
+                        inf.MaxHP = status.MaxHP;
+                        inf.SetValue(status.CurrentHP);
 
-                    var constructor = kv.Value.Character.GetConstructor();
-                    var agent = constructor.GetAgentComponent();
-                    var soldierInfo = constructor.SoldierInfo.Get();
+                        var constructor = kv.Value.Character.GetConstructor();
+                        var agent = constructor.GetAgentComponent();
+                        var soldierInfo = constructor.SoldierInfo.Get();
 
-                    string name = soldierInfo.Name;
-                    inf.m_nameRoot.SetText(name);
+                        string name = soldierInfo.Name;
+                        inf.m_nameRoot.SetText(name);
 
-                    m_gauges[kv.Value.Character.UID] = inf;
+                        m_gauges[kv.Value.Character.UID] = inf;
+                    }
                 }
+
+                HeatActionManager.ShowEnemyGaugeDoOnce = false;
             }
 
 

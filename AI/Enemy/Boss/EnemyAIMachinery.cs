@@ -2,7 +2,7 @@
 
 namespace LikeABrawler2
 {
-    internal class EnemyAIMachinery : BaseEnemyAI
+    internal class EnemyAIMachinery : EnemyAIBoss
     {
         public override void Update()
         {

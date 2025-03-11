@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace LikeABrawler2
 {
     public static class SpecialBattle
@@ -78,12 +75,12 @@ namespace LikeABrawler2
         }
 
         private static bool m_dreamSequenceStart = false;
-        private static bool m_dreamSequenceFighting = false;
+        public static bool m_dreamSequenceFighting = false;
         private static bool m_dreamSequenceFinish = false;
         private static bool m_warpedOnce = false;
         public static Fighter m_dreamSequenceEnemy = new Fighter();
         private static Vector3 m_dreamBattleStartPos;
-        private static void UpdateTriosFight()
+        private unsafe static void UpdateTriosFight()
         {
             EnemyAIBoss daigo = EnemyAIBossDaigo.Instance;
             EnemyAIBoss majima = EnemyAIBossMajima.Instance;
@@ -131,7 +128,10 @@ namespace LikeABrawler2
 
                     if (m_dreamSequenceFighting)
                     {
-                        if(!m_warpedOnce)
+                        bool* free_movement_mode = (bool*)(BrawlerBattleManager.PlayerCharacter.Pointer.ToInt64() + 0x11A3);
+                        *free_movement_mode = true;
+
+                        if (!m_warpedOnce)
                         {
                             if (Vector3.Distance(m_dreamBattleStartPos, BrawlerBattleManager.PlayerCharacter.Transform.Position) >= 50)
                             {

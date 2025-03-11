@@ -7,6 +7,34 @@ namespace LikeABrawler2
     internal class SupporterPartyMember : BaseSupporterAI
     {
         public Player.ID PlayerID;
+        public float LastTimeSinceSkillUsed = 99999;
+
+        public static int DecideAutoModeStrategy(Fighter partyMember)
+        {
+            SupporterPartyMember ai = (SupporterPartyMember)SupporterManager.GetAI(partyMember);
+
+            if (ai == null)
+                return 3;
+
+            if (ai.LastTimeSinceSkillUsed < IniSettings.PartyMemberSkillTime)
+                return 3;
+
+            Random rnd = new Random();
+
+            if (rnd.Next(0, 101) > IniSettings.PartyMemberSkillChance)
+                return 3;
+
+            int heat = Player.GetHeatNow(ai.PlayerID);
+            int maxHeat = Player.GetHeatMax(ai.PlayerID);
+
+            int requiredHeat = (int)(maxHeat * IniSettings.PartyMemberSkillMPReqRatio);
+
+            if (requiredHeat > heat)
+                return 3;
+
+            ai.LastTimeSinceSkillUsed = 0;
+            return 1;
+        }
 
         public override void Awake()
         {
@@ -73,10 +101,19 @@ namespace LikeABrawler2
                 case Player.ID.chitose:
                     if (specialSuit)
                         return (CharacterID)25113;
+                    else if (configID == 194) //waitress
+                        return (CharacterID)27230;
                     break;
             }
 
             return 0;
+        }
+
+        public override void CombatUpdate()
+        {
+            base.CombatUpdate();
+
+            LastTimeSinceSkillUsed += DragonEngine.deltaTime;
         }
     }
 }
