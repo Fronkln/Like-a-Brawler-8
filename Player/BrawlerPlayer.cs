@@ -423,10 +423,10 @@ namespace LikeABrawler2
                     BrawlerBattleManager.IsDeliveryHelping = true;
                     BrawlerBattleManager.OnForceDeliveryHelpON();
                     BrawlerBattleManager.ChangeToTurnBased();
+                    BattleTurnManager.OverrideAttackerSelection2(BrawlerBattleManager.DecideTurnAttacker);
                     BrawlerBattleManager.UsedDeliveryOnce = true;
                 }
             }
-
 
             if (GodMode)
             {
@@ -636,6 +636,10 @@ namespace LikeABrawler2
                         break;
                     case RPGJobID.man_western:
                         EquipJobWeapons(RPGJobID.man_western);
+                        break;
+                    case RPGJobID.kasuga_freeter:
+                        break;
+                    case RPGJobID.kiryu_01:
                         break;
 
                 }

@@ -67,9 +67,6 @@ namespace LikeABrawler2
 
         public static bool SoloBattleOnce = false;
 
-
-        private delegate void TestTest(IntPtr sMan, IntPtr handle, bool pause);
-
         public static void Init()
         {
             HeatActionManager.OnHActEndEvent += OnHActEnd;
@@ -538,6 +535,8 @@ namespace LikeABrawler2
             {
                 IsDeliveryHelping = false;
                 bool readyOnce = false;
+                bool over = false;
+
 
                 new DETask(
                     delegate
@@ -550,13 +549,24 @@ namespace LikeABrawler2
                         else
                         {
                             if (BattleTurnManager.CurrentActionStep == BattleTurnManager.ActionStep.Action)
-                                return true;
+                            {
+                                new DETaskTime(0.5f, delegate
+                                {
+                                    //HAct poundmate
+                                    if (GameVarManager.GetValueBool(GameVarID.is_hact))
+                                        new DETask(delegate { return !GameVarManager.GetValueBool(GameVarID.is_hact); }, delegate { over = true; });
+                                    else
+                                        over = true;
+                                });
+                            }
                         }
-                        return false;
+
+                        if(over)
+                            DragonEngine.Log("Forced delivery OVER");
+
+                        return over;
                     }, ForcedDeliveryHActEventEnd);
                 OnForceDeliveryHelpOFF();
-
-                DragonEngine.Log("Forced delivery OVER");
             }
         }
 
@@ -627,6 +637,8 @@ namespace LikeABrawler2
             if (supporterAttackerAI != null)
             {
                 //Process generic supporter turns fast
+
+                /*
                 if (CurrentActionStep == BattleTurnManager.ActionStep.Ready && CurrentActionStepTime > 2f)
                 {
                     if (supporterAttackerAI.CanAttackCancel())
@@ -635,7 +647,7 @@ namespace LikeABrawler2
                         BattleTurnManager.ChangeActionStep(BattleTurnManager.ActionStep.ActionFinalize);
                     }
                 }
-
+               */
                 if (CurrentActionStep == BattleTurnManager.ActionStep.Init)
                     BattleTurnManager.ChangeActionStep(BattleTurnManager.ActionStep.SelectCommand);
 
@@ -1068,7 +1080,7 @@ namespace LikeABrawler2
         {
         }
 
-        private static IntPtr DecideTurnAttacker(IntPtr turnMan, bool b1, bool b2)
+        public static IntPtr DecideTurnAttacker(IntPtr turnMan, bool b1, bool b2)
         {
             if (IsBriefTurnBased())
                 return PlayerFighter._ptr;

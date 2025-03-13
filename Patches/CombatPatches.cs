@@ -74,7 +74,7 @@ namespace LikeABrawler2
             m_ecbattleStatusCalculateHpFunc = CPP.PatternSearch("48 89 4C 24 08 55 53 56 57 41 54 41 55 41 57");
             m_liveActionNodeFunc = CPP.PatternSearch("48 89 5C 24 18 56 48 83 EC ? 8B 51 3C");
             m_liveActionPlayFunc = BrawlerPatches.HookEngine.CreateHook<LiveActionNodePlayFirst>(CPP.PatternSearch("48 89 5C 24 18 56 48 83 EC ? 8B 51 3C"), LiveActionPlayFirst);
-            m_liveActionPlayFunc2 = BrawlerPatches.HookEngine.CreateHook<LiveActionNodePlayFirst>(CPP.PatternSearch("40 56 57 48 83 EC ? 48 8B F1 8B FA"), LiveActionPlay);
+            //m_liveActionPlayFunc2 = BrawlerPatches.HookEngine.CreateHook<LiveActionNodePlayFirst>(CPP.PatternSearch("40 56 57 48 83 EC ? 48 8B F1 8B FA"), LiveActionPlay);
 
             m_transitKiryuGuardFunc = CPP.PatternSearch("48 8B C4 48 89 58 10 48 89 70 18 48 89 78 20 55 41 54 41 55 41 56 41 57 48 8D A8 18 FF FF FF 48 81 EC ? ? ? ? C5 F8 29 70 C8 C5 F8 29 78 B8 C5 78 29 40 A8 C5 78 29 48 98 48 8B F1");
             
@@ -118,7 +118,7 @@ namespace LikeABrawler2
             BrawlerPatches.HookEngine.EnableHook(m_transitKiryuCounterTrampoline);
             BrawlerPatches.HookEngine.EnableHook(m_fighterDisableRunTrampoline);
             BrawlerPatches.HookEngine.EnableHook(m_liveActionPlayFunc);
-            BrawlerPatches.HookEngine.EnableHook(m_liveActionPlayFunc2);
+            //BrawlerPatches.HookEngine.EnableHook(m_liveActionPlayFunc2);
 
             CPP.PatchMemory(m_invisFighterJmp1+6, 0x99);
             CPP.PatchMemory(m_invisFighterJmp2, 0xEB);
@@ -218,16 +218,21 @@ namespace LikeABrawler2
 
             if (!owner.IsPartyMember() && owner.UID != BrawlerBattleManager.PlayerCharacter.UID)
             {
-                uint soldierID = (uint)owner.Attributes.soldier_data_id;
-                EnemyRebalanceEntry rebalancedDat = DBManager.GetSoldierRebalance(soldierID);
+                //Dont rebalance for higher difficulties
+                if (NativeFuncs.BattleDifficultyFunc() <= 1)
+                {
 
-                if (rebalancedDat == null)
-                    return;
+                    uint soldierID = (uint)owner.Attributes.soldier_data_id;
+                    EnemyRebalanceEntry rebalancedDat = DBManager.GetSoldierRebalance(soldierID);
 
-                statusobj.SetHPMax(rebalancedDat.Health);
-                statusobj.SetHPCurrent(rebalancedDat.Health);
-                statusobj.AttackPower = rebalancedDat.Attack;
-                statusobj.DefensePower = rebalancedDat.Defense;
+                    if (rebalancedDat == null)
+                        return;
+
+                    statusobj.SetHPMax(rebalancedDat.Health);
+                    statusobj.SetHPCurrent(rebalancedDat.Health);
+                    statusobj.AttackPower = rebalancedDat.Attack;
+                    statusobj.DefensePower = rebalancedDat.Defense;
+                }
             }
         }
 

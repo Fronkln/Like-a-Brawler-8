@@ -59,7 +59,12 @@ namespace LikeABrawler2
         private static PauseManagerIsProhibit _pauseProhibitTrampoline;
         private static bool PauseManager_IsProhibit(IntPtr mng)
         {
-            if (Mod.IsTurnBased() || !BrawlerBattleManager.Battling || BrawlerBattleManager.CurrentPhase != BattleTurnManager.TurnPhase.Action || GameVarManager.GetValueBool(GameVarID.is_pause))
+            if (Mod.IsTurnBased() 
+                || BrawlerBattleManager.IsDeliveryHelping
+                || HeatActionManager.IsY8BHact
+                || !BrawlerBattleManager.Battling
+                || BrawlerBattleManager.CurrentPhase != BattleTurnManager.TurnPhase.Action
+                || GameVarManager.GetValueBool(GameVarID.is_pause))
                 return _pauseProhibitTrampoline(mng);
 
             return false;
