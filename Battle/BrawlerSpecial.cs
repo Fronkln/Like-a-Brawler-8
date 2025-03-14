@@ -12,7 +12,7 @@ namespace LikeABrawler2
     {  
         public static bool TransitDragonFear()
         {
-            if (BrawlerBattleManager.IsEncounter)
+            if (!BrawlerBattleManager.IsEncounter)
                 return false;
 
             if (BrawlerBattleManager.ActionBattleTime > 4.5f)
