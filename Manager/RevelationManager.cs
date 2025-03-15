@@ -180,9 +180,6 @@ namespace LikeABrawler2
 
         private static bool ShouldDoRevelationProcedure()
         {
-            if (!BrawlerBattleManager.PlayerCharacter.IsValid())
-                return false;
-
             if (BrawlerBattleManager.CurrentPhase != BattleTurnManager.TurnPhase.Action)
                 return false;
 

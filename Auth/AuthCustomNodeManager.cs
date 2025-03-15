@@ -102,8 +102,8 @@ namespace LikeABrawler2
             RegisterPlayFunc(70021, 
                 delegate 
                 {
-                    BrawlerFighterInfo.Player.LeftWeapon.Unit.DestroyEntity();
-                    BrawlerFighterInfo.Player.RightWeapon.Unit.DestroyEntity();
+                    BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get().DestroyEntity();
+                    BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.left_weapon).Unit.Get().DestroyEntity();
                 });
 
             //AuthNodeEnemySetupWeapon

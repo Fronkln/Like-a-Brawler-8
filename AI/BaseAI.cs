@@ -258,7 +258,7 @@ namespace LikeABrawler2
 
         public virtual bool CanDoNonTurnAttack()
         {
-            return !IsMyTurn() && TimeSinceLastAttack >= m_nonTurnAttackPatience;
+            return !BrawlerBattleManager.IsHAct && !IsMyTurn() && TimeSinceLastAttack >= m_nonTurnAttackPatience;
         }
 
         public bool IsPerformingNonTurnAttack()

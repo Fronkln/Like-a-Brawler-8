@@ -93,6 +93,8 @@ namespace LikeABrawler2
         private static BattleTurnManager_ChangePhase m_changeTurnPhase;
         private static void BattleTurnManager_ChangeTurnPhase(IntPtr battleTurnManager, BattleTurnManager.TurnPhase phase)
         {
+            //00000001423E52A5 (v1.20) rare crash null fighter
+
             DragonEngine.Log(phase);
 
             if (Mod.IsTurnBased())

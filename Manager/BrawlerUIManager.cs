@@ -55,6 +55,17 @@ namespace LikeABrawler2
 
         private static uint GetRealtimeGaugeID()
         {
+            uint characterID = (uint)BrawlerBattleManager.PlayerCharacter.Attributes.chara_id;
+
+            //Reborn Kiryu
+            if (characterID == 28267 ||
+                characterID == 26144 ||
+                characterID == 26143 ||
+                characterID == 17305 ||
+                characterID == 17304 ||
+                characterID == 17196)
+                return 1172;
+
             if (BrawlerPlayer.IsKasuga())
                 return 394;
             else if (BrawlerPlayer.IsKiryu())

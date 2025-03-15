@@ -15,17 +15,24 @@ namespace LikeABrawler2
             BrawlerBattleManager.OnBattleEndEvent += OnBattleEnd;
         }
 
-
-        public static void OnBattleEnd()
+        public static void Reset()
         {
             Enemies.Clear();
             ForcedAttacker = null;
         }
 
+        public static void OnBattleEnd()
+        {
+            Reset();
+        }
+
         public static void Update()
         {
             if (BrawlerBattleManager.AllEnemies.Length <= 0)
+            {
+                Reset();
                 return;
+            }
             
             if (BrawlerBattleManager.CurrentPhase == BattleTurnManager.TurnPhase.Start || BrawlerBattleManager.CurrentPhase == BattleTurnManager.TurnPhase.StartWait)
                 return;
@@ -298,7 +305,9 @@ namespace LikeABrawler2
 
 
             BrawlerFighterInfo inf = new BrawlerFighterInfo() { Fighter = fighter};
-            BrawlerFighterInfo.Infos.Add(ai.Character.UID, inf);
+
+            if (!BrawlerFighterInfo.Infos.ContainsKey(ai.Character.UID))
+                BrawlerFighterInfo.Infos.Add(ai.Character.UID, inf);
 
             ai.Awake();
 

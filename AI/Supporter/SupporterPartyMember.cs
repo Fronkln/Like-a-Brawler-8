@@ -11,15 +11,19 @@ namespace LikeABrawler2
 
         public static int DecideAutoModeStrategy(Fighter partyMember)
         {
-            SupporterPartyMember ai = (SupporterPartyMember)SupporterManager.GetAI(partyMember);
+            SupporterPartyMember ai = SupporterManager.GetAI(partyMember) as SupporterPartyMember;
+            Random rnd = new Random();
 
             if (ai == null)
-                return 3;
+            {
+                if (rnd.Next(0, 101) > IniSettings.PartyMemberSkillChance)
+                    return 3;
+
+                return 1;
+            }
 
             if (ai.LastTimeSinceSkillUsed < IniSettings.PartyMemberSkillTime)
                 return 3;
-
-            Random rnd = new Random();
 
             if (rnd.Next(0, 101) > IniSettings.PartyMemberSkillChance)
                 return 3;
@@ -61,7 +65,8 @@ namespace LikeABrawler2
 
 
             //Don't let em die
-            Fighter.GetStatus().HPLock = 1;
+            //14.03.2025 Update: Let 'em die let 'em die let em shrivel up and die
+            //Fighter.GetStatus().HPLock = 1;
         }
 
         public override bool IsPartyMember()

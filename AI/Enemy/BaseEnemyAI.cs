@@ -547,10 +547,20 @@ namespace LikeABrawler2
 
         protected virtual bool TransitPlayerRunAttackResponse()
         {
+            //14.03.2025: Despite my greatest efforts. uncommenting this code
+            //Adds like a fuckin 20% chance to crash your game when you start a new fight
+            /*
             if (IsMyTurn())
                 return false;
+            */
 
-            if (TimeSincePlayerRunTowardsMe < 1f && DistToPlayer < 4f)
+            if (TimeSincePlayerRunTowardsMe < 1f && DistToPlayer < 4f 
+                && !BrawlerInfo.IsAttack && 
+                !BrawlerInfo.IsGettingUp && 
+                !BrawlerInfo.IsSync && 
+                !BrawlerInfo.IsDown && 
+                !BrawlerInfo.IsFaceDown && 
+                !Character.HumanModeManager.IsDamage())
             {
                 return true;
 
