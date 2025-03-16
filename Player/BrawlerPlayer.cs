@@ -124,6 +124,12 @@ namespace LikeABrawler2
 
         public static bool CanExtremeHeat()
         {
+            if (BrawlerBattleManager.IsHAct || HeatActionManager.IsY8BHact)
+                return false;
+
+            if (BrawlerFighterInfo.Player.IsDown || BrawlerFighterInfo.Player.IsFaceDown)
+                return false;
+
             if (BrawlerFighterInfo.Player.IsSync)
                 return false;
 
@@ -255,6 +261,7 @@ namespace LikeABrawler2
             CurrentStyle = PlayerStyle.Default;
 
             BrawlerPlayer.ToNormalMoveset();
+            BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)FighterCommandManager.FindSetID("p_kiryu_legend"));
         }
 
         public unsafe static void Update()
@@ -275,12 +282,10 @@ namespace LikeABrawler2
             if (BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action)
                 CombatUpdate();
 
-            player.GetStatus().RemoveExEffect(1, true, true);
-            player.GetStatus().RemoveExEffect(2, true, true);
-            player.GetStatus().RemoveExEffect(3, true, true);
-            player.GetStatus().RemoveExEffect(4, true, true);
-            player.GetStatus().RemoveExEffect(5, true, true);
-            player.GetStatus().RemoveExEffect(12, true, true);
+            for(uint i = 1; i < 13; i++)
+                player.GetStatus().RemoveExEffect(i, true, true);
+
+            player.GetStatus().RemoveExEffect(266, true, true);
         }
 
         //OnAttackHit/OnAttackLand
@@ -395,7 +400,13 @@ namespace LikeABrawler2
 
         public static void ToNormalMoveset()
         {
-            BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, GetNormalMovesetForPlayer(CurrentPlayer));
+            BattleCommandSetID moveset = GetNormalMovesetForPlayer(CurrentPlayer);
+            BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, moveset);
+
+            if(!BrawlerBattleManager.PlayerFighter.IsValid())
+            {
+                BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(1, moveset);
+            }
 
             //Yakuza 8 limitation: we cannot get the equipped weapon for another job, it has to be another one
             if (DoesJobHaveWeapons(Player.GetCurrentJob(CurrentPlayer)))
@@ -762,7 +773,9 @@ namespace LikeABrawler2
                     styleAnim = DBManager.GetSkill("kiryu_to_legend");
                     styleCommandSet = FighterCommandManager.FindSetID("p_kiryu_legend_1988_brawler");
                     overrideStyle = PlayerStyle.Default;
-                    BrawlerBattleManager.PlaySpecialMusic(DBManager.GetSoundCuesheet("bbg_k"), 1);
+
+                    if(IniSettings.AllowResurgenceMusic)
+                        BrawlerBattleManager.PlaySpecialMusic(DBManager.GetSoundCuesheet("bbg_k"), 1);
 
                     //BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToAttackMode(new FighterCommandID((ushort)styleCommandSet, (ushort)FighterCommandManager.GetCommandID(styleCommandSet, "StyleStart")));
                     break;

@@ -119,8 +119,9 @@ namespace LikeABrawler2
                     continue;
 
                 BrawlerBattleManager.InputUpdate();
-
+#if DEBUG
                 Debug.InputUpdate();
+#endif
             }
         }
 

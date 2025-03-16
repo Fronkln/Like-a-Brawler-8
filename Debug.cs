@@ -46,11 +46,6 @@ namespace LikeABrawler2
                     DragonEngine.Log("Is turn based: " + Mod.IsTurnBased());
                 }
 
-                if (DragonEngine.IsKeyDown(VirtualKey.B))
-                {
-                    BrawlerUIManager.DoSoloFight();
-                }
-
                 //  Mod.ReloadContent();
 
                 if (DragonEngine.IsKeyDown(VirtualKey.G))

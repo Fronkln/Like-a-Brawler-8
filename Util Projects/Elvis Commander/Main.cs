@@ -318,6 +318,9 @@ namespace Yazawa_Commander
                     CreateInput("Player Point ID", condition.Condition.Param1U32.ToString(), delegate (string val) { condition.Condition.Param1U32 = uint.Parse(val); });
                     CreateInput("Value", condition.Condition.Param2U32.ToString(), delegate (string val) { condition.Condition.Param2U32 = uint.Parse(val); });
                     break;
+                case HeatActionConditionType.WeaponFlags:
+                    CreateInput("Weapon Subtype", condition.Condition.Param1U32.ToString(), delegate (string val) { condition.Condition.Param1U32 = uint.Parse(val); });
+                    break;
             }
 
         }

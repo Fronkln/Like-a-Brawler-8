@@ -28,403 +28,374 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
-            this.attacksTree = new System.Windows.Forms.TreeView();
-            this.icons = new System.Windows.Forms.ImageList(this.components);
-            this.appToolstrip = new System.Windows.Forms.ToolStrip();
-            this.fileTab = new System.Windows.Forms.ToolStripDropDownButton();
-            this.newYHCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addDropdown = new System.Windows.Forms.ToolStripDropDownButton();
-            this.attackYHCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.conditionsRootContext = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.addConditionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.flagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.distanceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.attackGroupContext = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.attackCFCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.attackRPGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.attackGMTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.attackQuickstepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.attackSyncToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.attackEmptyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.attackRangeCFCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.varPanel = new Elvis_Commander.DoubleBufferedTableLayoutPanel();
-            this.attackContext = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.conditionContext = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.moveUpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.moveDownToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.heatActionAttackContext = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.moveUpToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.moveDownToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.addActorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.heatActionActorContext = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.addToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.flagToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.heatActionConditionContext = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.moveUpToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-            this.moveDownToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-            this.appToolstrip.SuspendLayout();
-            this.conditionsRootContext.SuspendLayout();
-            this.attackGroupContext.SuspendLayout();
-            this.attackContext.SuspendLayout();
-            this.conditionContext.SuspendLayout();
-            this.heatActionAttackContext.SuspendLayout();
-            this.heatActionActorContext.SuspendLayout();
-            this.heatActionConditionContext.SuspendLayout();
-            this.SuspendLayout();
+            attacksTree = new TreeView();
+            icons = new ImageList(components);
+            appToolstrip = new ToolStrip();
+            fileTab = new ToolStripDropDownButton();
+            newYHCToolStripMenuItem = new ToolStripMenuItem();
+            saveToolStripMenuItem = new ToolStripMenuItem();
+            openToolStripMenuItem = new ToolStripMenuItem();
+            addDropdown = new ToolStripDropDownButton();
+            attackYHCToolStripMenuItem = new ToolStripMenuItem();
+            conditionsRootContext = new ContextMenuStrip(components);
+            addConditionToolStripMenuItem = new ToolStripMenuItem();
+            flagToolStripMenuItem = new ToolStripMenuItem();
+            distanceToolStripMenuItem = new ToolStripMenuItem();
+            attackGroupContext = new ContextMenuStrip(components);
+            addToolStripMenuItem = new ToolStripMenuItem();
+            attackCFCToolStripMenuItem = new ToolStripMenuItem();
+            attackRPGToolStripMenuItem = new ToolStripMenuItem();
+            attackGMTToolStripMenuItem = new ToolStripMenuItem();
+            attackQuickstepToolStripMenuItem = new ToolStripMenuItem();
+            attackSyncToolStripMenuItem = new ToolStripMenuItem();
+            attackEmptyToolStripMenuItem = new ToolStripMenuItem();
+            attackRangeCFCToolStripMenuItem = new ToolStripMenuItem();
+            varPanel = new Elvis_Commander.DoubleBufferedTableLayoutPanel();
+            attackContext = new ContextMenuStrip(components);
+            moveUpToolStripMenuItem = new ToolStripMenuItem();
+            moveDownToolStripMenuItem = new ToolStripMenuItem();
+            conditionContext = new ContextMenuStrip(components);
+            moveUpToolStripMenuItem1 = new ToolStripMenuItem();
+            moveDownToolStripMenuItem1 = new ToolStripMenuItem();
+            heatActionAttackContext = new ContextMenuStrip(components);
+            moveUpToolStripMenuItem2 = new ToolStripMenuItem();
+            moveDownToolStripMenuItem2 = new ToolStripMenuItem();
+            addActorToolStripMenuItem = new ToolStripMenuItem();
+            heatActionActorContext = new ContextMenuStrip(components);
+            addToolStripMenuItem1 = new ToolStripMenuItem();
+            flagToolStripMenuItem1 = new ToolStripMenuItem();
+            heatActionConditionContext = new ContextMenuStrip(components);
+            moveUpToolStripMenuItem3 = new ToolStripMenuItem();
+            moveDownToolStripMenuItem3 = new ToolStripMenuItem();
+            appToolstrip.SuspendLayout();
+            conditionsRootContext.SuspendLayout();
+            attackGroupContext.SuspendLayout();
+            attackContext.SuspendLayout();
+            conditionContext.SuspendLayout();
+            heatActionAttackContext.SuspendLayout();
+            heatActionActorContext.SuspendLayout();
+            heatActionConditionContext.SuspendLayout();
+            SuspendLayout();
             // 
             // attacksTree
             // 
-            this.attacksTree.ImageIndex = 0;
-            this.attacksTree.ImageList = this.icons;
-            this.attacksTree.Location = new System.Drawing.Point(15, 28);
-            this.attacksTree.Name = "attacksTree";
-            this.attacksTree.SelectedImageIndex = 0;
-            this.attacksTree.Size = new System.Drawing.Size(279, 410);
-            this.attacksTree.TabIndex = 0;
-            this.attacksTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.attacksTree_AfterSelect);
-            this.attacksTree.KeyDown += new System.Windows.Forms.KeyEventHandler(this.attacksTree_KeyDown);
-            this.attacksTree.MouseDown += new System.Windows.Forms.MouseEventHandler(this.attacksTree_MouseDown);
-            this.attacksTree.MouseUp += new System.Windows.Forms.MouseEventHandler(this.attacksTree_MouseUp);
+            attacksTree.ImageIndex = 0;
+            attacksTree.ImageList = icons;
+            attacksTree.Location = new Point(15, 28);
+            attacksTree.Name = "attacksTree";
+            attacksTree.SelectedImageIndex = 0;
+            attacksTree.Size = new Size(279, 410);
+            attacksTree.TabIndex = 0;
+            attacksTree.AfterSelect += attacksTree_AfterSelect;
+            attacksTree.KeyDown += attacksTree_KeyDown;
+            attacksTree.MouseDown += attacksTree_MouseDown;
+            attacksTree.MouseUp += attacksTree_MouseUp;
             // 
             // icons
             // 
-            this.icons.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-            this.icons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("icons.ImageStream")));
-            this.icons.TransparentColor = System.Drawing.Color.Transparent;
-            this.icons.Images.SetKeyName(0, "none.png");
-            this.icons.Images.SetKeyName(1, "square.png");
-            this.icons.Images.SetKeyName(2, "triangle.png");
-            this.icons.Images.SetKeyName(3, "cross.png");
-            this.icons.Images.SetKeyName(4, "circle.png");
-            this.icons.Images.SetKeyName(5, "attack.png");
-            this.icons.Images.SetKeyName(6, "condition.png");
-            this.icons.Images.SetKeyName(7, "condition2.png");
+            icons.ColorDepth = ColorDepth.Depth8Bit;
+            icons.ImageStream = (ImageListStreamer)resources.GetObject("icons.ImageStream");
+            icons.TransparentColor = Color.Transparent;
+            icons.Images.SetKeyName(0, "none.png");
+            icons.Images.SetKeyName(1, "square.png");
+            icons.Images.SetKeyName(2, "triangle.png");
+            icons.Images.SetKeyName(3, "cross.png");
+            icons.Images.SetKeyName(4, "circle.png");
+            icons.Images.SetKeyName(5, "attack.png");
+            icons.Images.SetKeyName(6, "condition.png");
+            icons.Images.SetKeyName(7, "condition2.png");
             // 
             // appToolstrip
             // 
-            this.appToolstrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileTab,
-            this.addDropdown});
-            this.appToolstrip.Location = new System.Drawing.Point(0, 0);
-            this.appToolstrip.Name = "appToolstrip";
-            this.appToolstrip.Size = new System.Drawing.Size(754, 25);
-            this.appToolstrip.TabIndex = 1;
-            this.appToolstrip.Text = "appToolstrip";
+            appToolstrip.Items.AddRange(new ToolStripItem[] { fileTab, addDropdown });
+            appToolstrip.Location = new Point(0, 0);
+            appToolstrip.Name = "appToolstrip";
+            appToolstrip.Size = new Size(754, 25);
+            appToolstrip.TabIndex = 1;
+            appToolstrip.Text = "appToolstrip";
             // 
             // fileTab
             // 
-            this.fileTab.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.fileTab.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newYHCToolStripMenuItem,
-            this.saveToolStripMenuItem,
-            this.openToolStripMenuItem});
-            this.fileTab.Image = ((System.Drawing.Image)(resources.GetObject("fileTab.Image")));
-            this.fileTab.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.fileTab.Name = "fileTab";
-            this.fileTab.Size = new System.Drawing.Size(38, 22);
-            this.fileTab.Text = "File";
+            fileTab.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            fileTab.DropDownItems.AddRange(new ToolStripItem[] { newYHCToolStripMenuItem, saveToolStripMenuItem, openToolStripMenuItem });
+            fileTab.Image = (Image)resources.GetObject("fileTab.Image");
+            fileTab.ImageTransparentColor = Color.Magenta;
+            fileTab.Name = "fileTab";
+            fileTab.Size = new Size(38, 22);
+            fileTab.Text = "File";
             // 
             // newYHCToolStripMenuItem
             // 
-            this.newYHCToolStripMenuItem.Name = "newYHCToolStripMenuItem";
-            this.newYHCToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.newYHCToolStripMenuItem.Text = "New EHC";
-            this.newYHCToolStripMenuItem.Click += new System.EventHandler(this.newYHCToolStripMenuItem_Click);
+            newYHCToolStripMenuItem.Name = "newYHCToolStripMenuItem";
+            newYHCToolStripMenuItem.Size = new Size(180, 22);
+            newYHCToolStripMenuItem.Text = "New EHC";
+            newYHCToolStripMenuItem.Click += newYHCToolStripMenuItem_Click;
             // 
             // saveToolStripMenuItem
             // 
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.saveToolStripMenuItem.Text = "Save";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            saveToolStripMenuItem.Size = new Size(180, 22);
+            saveToolStripMenuItem.Text = "Save";
+            saveToolStripMenuItem.Click += saveToolStripMenuItem_Click;
             // 
             // openToolStripMenuItem
             // 
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openToolStripMenuItem.Text = "Open";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            openToolStripMenuItem.Name = "openToolStripMenuItem";
+            openToolStripMenuItem.Size = new Size(180, 22);
+            openToolStripMenuItem.Text = "Open";
+            openToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
             // addDropdown
             // 
-            this.addDropdown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.addDropdown.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.attackYHCToolStripMenuItem});
-            this.addDropdown.Image = ((System.Drawing.Image)(resources.GetObject("addDropdown.Image")));
-            this.addDropdown.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.addDropdown.Name = "addDropdown";
-            this.addDropdown.Size = new System.Drawing.Size(42, 22);
-            this.addDropdown.Text = "Add";
+            addDropdown.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            addDropdown.DropDownItems.AddRange(new ToolStripItem[] { attackYHCToolStripMenuItem });
+            addDropdown.Image = (Image)resources.GetObject("addDropdown.Image");
+            addDropdown.ImageTransparentColor = Color.Magenta;
+            addDropdown.Name = "addDropdown";
+            addDropdown.Size = new Size(42, 22);
+            addDropdown.Text = "Add";
             // 
             // attackYHCToolStripMenuItem
             // 
-            this.attackYHCToolStripMenuItem.Name = "attackYHCToolStripMenuItem";
-            this.attackYHCToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.attackYHCToolStripMenuItem.Text = "Attack (EHC)";
-            this.attackYHCToolStripMenuItem.Click += new System.EventHandler(this.attackYHCToolStripMenuItem_Click);
+            attackYHCToolStripMenuItem.Name = "attackYHCToolStripMenuItem";
+            attackYHCToolStripMenuItem.Size = new Size(142, 22);
+            attackYHCToolStripMenuItem.Text = "Attack (EHC)";
+            attackYHCToolStripMenuItem.Click += attackYHCToolStripMenuItem_Click;
             // 
             // conditionsRootContext
             // 
-            this.conditionsRootContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addConditionToolStripMenuItem});
-            this.conditionsRootContext.Name = "attackContextMenu";
-            this.conditionsRootContext.Size = new System.Drawing.Size(97, 26);
+            conditionsRootContext.Items.AddRange(new ToolStripItem[] { addConditionToolStripMenuItem });
+            conditionsRootContext.Name = "attackContextMenu";
+            conditionsRootContext.Size = new Size(97, 26);
             // 
             // addConditionToolStripMenuItem
             // 
-            this.addConditionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.flagToolStripMenuItem,
-            this.distanceToolStripMenuItem});
-            this.addConditionToolStripMenuItem.Name = "addConditionToolStripMenuItem";
-            this.addConditionToolStripMenuItem.Size = new System.Drawing.Size(96, 22);
-            this.addConditionToolStripMenuItem.Text = "Add";
+            addConditionToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { flagToolStripMenuItem, distanceToolStripMenuItem });
+            addConditionToolStripMenuItem.Name = "addConditionToolStripMenuItem";
+            addConditionToolStripMenuItem.Size = new Size(96, 22);
+            addConditionToolStripMenuItem.Text = "Add";
             // 
             // flagToolStripMenuItem
             // 
-            this.flagToolStripMenuItem.Name = "flagToolStripMenuItem";
-            this.flagToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
-            this.flagToolStripMenuItem.Text = "Flag";
-            this.flagToolStripMenuItem.Click += new System.EventHandler(this.flagToolStripMenuItem_Click);
+            flagToolStripMenuItem.Name = "flagToolStripMenuItem";
+            flagToolStripMenuItem.Size = new Size(119, 22);
+            flagToolStripMenuItem.Text = "Flag";
+            flagToolStripMenuItem.Click += flagToolStripMenuItem_Click;
             // 
             // distanceToolStripMenuItem
             // 
-            this.distanceToolStripMenuItem.Name = "distanceToolStripMenuItem";
-            this.distanceToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
-            this.distanceToolStripMenuItem.Text = "Distance";
+            distanceToolStripMenuItem.Name = "distanceToolStripMenuItem";
+            distanceToolStripMenuItem.Size = new Size(119, 22);
+            distanceToolStripMenuItem.Text = "Distance";
             // 
             // attackGroupContext
             // 
-            this.attackGroupContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addToolStripMenuItem});
-            this.attackGroupContext.Name = "attackGroupContext";
-            this.attackGroupContext.Size = new System.Drawing.Size(97, 26);
+            attackGroupContext.Items.AddRange(new ToolStripItem[] { addToolStripMenuItem });
+            attackGroupContext.Name = "attackGroupContext";
+            attackGroupContext.Size = new Size(97, 26);
             // 
             // addToolStripMenuItem
             // 
-            this.addToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.attackCFCToolStripMenuItem,
-            this.attackRPGToolStripMenuItem,
-            this.attackGMTToolStripMenuItem,
-            this.attackQuickstepToolStripMenuItem,
-            this.attackSyncToolStripMenuItem,
-            this.attackEmptyToolStripMenuItem,
-            this.attackRangeCFCToolStripMenuItem});
-            this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-            this.addToolStripMenuItem.Size = new System.Drawing.Size(96, 22);
-            this.addToolStripMenuItem.Text = "Add";
+            addToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { attackCFCToolStripMenuItem, attackRPGToolStripMenuItem, attackGMTToolStripMenuItem, attackQuickstepToolStripMenuItem, attackSyncToolStripMenuItem, attackEmptyToolStripMenuItem, attackRangeCFCToolStripMenuItem });
+            addToolStripMenuItem.Name = "addToolStripMenuItem";
+            addToolStripMenuItem.Size = new Size(96, 22);
+            addToolStripMenuItem.Text = "Add";
             // 
             // attackCFCToolStripMenuItem
             // 
-            this.attackCFCToolStripMenuItem.Name = "attackCFCToolStripMenuItem";
-            this.attackCFCToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.attackCFCToolStripMenuItem.Text = "Attack (CFC)";
-            this.attackCFCToolStripMenuItem.Click += new System.EventHandler(this.attackCFCToolStripMenuItem_Click);
+            attackCFCToolStripMenuItem.Name = "attackCFCToolStripMenuItem";
+            attackCFCToolStripMenuItem.Size = new Size(177, 22);
+            attackCFCToolStripMenuItem.Text = "Attack (CFC)";
+            attackCFCToolStripMenuItem.Click += attackCFCToolStripMenuItem_Click;
             // 
             // attackRPGToolStripMenuItem
             // 
-            this.attackRPGToolStripMenuItem.Name = "attackRPGToolStripMenuItem";
-            this.attackRPGToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.attackRPGToolStripMenuItem.Text = "Attack (RPG)";
-            this.attackRPGToolStripMenuItem.Click += new System.EventHandler(this.attackRPGToolStripMenuItem_Click);
+            attackRPGToolStripMenuItem.Name = "attackRPGToolStripMenuItem";
+            attackRPGToolStripMenuItem.Size = new Size(177, 22);
+            attackRPGToolStripMenuItem.Text = "Attack (RPG)";
+            attackRPGToolStripMenuItem.Click += attackRPGToolStripMenuItem_Click;
             // 
             // attackGMTToolStripMenuItem
             // 
-            this.attackGMTToolStripMenuItem.Name = "attackGMTToolStripMenuItem";
-            this.attackGMTToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.attackGMTToolStripMenuItem.Text = "Attack (GMT)";
-            this.attackGMTToolStripMenuItem.Click += new System.EventHandler(this.attackGMTToolStripMenuItem_Click);
+            attackGMTToolStripMenuItem.Name = "attackGMTToolStripMenuItem";
+            attackGMTToolStripMenuItem.Size = new Size(177, 22);
+            attackGMTToolStripMenuItem.Text = "Attack (GMT)";
+            attackGMTToolStripMenuItem.Click += attackGMTToolStripMenuItem_Click;
             // 
             // attackQuickstepToolStripMenuItem
             // 
-            this.attackQuickstepToolStripMenuItem.Name = "attackQuickstepToolStripMenuItem";
-            this.attackQuickstepToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.attackQuickstepToolStripMenuItem.Text = "Attack (Quickstep)";
-            this.attackQuickstepToolStripMenuItem.Click += new System.EventHandler(this.attackQuickstepToolStripMenuItem_Click);
+            attackQuickstepToolStripMenuItem.Name = "attackQuickstepToolStripMenuItem";
+            attackQuickstepToolStripMenuItem.Size = new Size(177, 22);
+            attackQuickstepToolStripMenuItem.Text = "Attack (Quickstep)";
+            attackQuickstepToolStripMenuItem.Click += attackQuickstepToolStripMenuItem_Click;
             // 
             // attackSyncToolStripMenuItem
             // 
-            this.attackSyncToolStripMenuItem.Name = "attackSyncToolStripMenuItem";
-            this.attackSyncToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.attackSyncToolStripMenuItem.Text = "Attack (Sync)";
-            this.attackSyncToolStripMenuItem.Click += new System.EventHandler(this.attackSyncToolStripMenuItem_Click);
+            attackSyncToolStripMenuItem.Name = "attackSyncToolStripMenuItem";
+            attackSyncToolStripMenuItem.Size = new Size(177, 22);
+            attackSyncToolStripMenuItem.Text = "Attack (Sync)";
+            attackSyncToolStripMenuItem.Click += attackSyncToolStripMenuItem_Click;
             // 
             // attackEmptyToolStripMenuItem
             // 
-            this.attackEmptyToolStripMenuItem.Name = "attackEmptyToolStripMenuItem";
-            this.attackEmptyToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.attackEmptyToolStripMenuItem.Text = "Attack (Empty)";
-            this.attackEmptyToolStripMenuItem.Click += new System.EventHandler(this.attackEmptyToolStripMenuItem_Click);
+            attackEmptyToolStripMenuItem.Name = "attackEmptyToolStripMenuItem";
+            attackEmptyToolStripMenuItem.Size = new Size(177, 22);
+            attackEmptyToolStripMenuItem.Text = "Attack (Empty)";
+            attackEmptyToolStripMenuItem.Click += attackEmptyToolStripMenuItem_Click;
             // 
             // attackRangeCFCToolStripMenuItem
             // 
-            this.attackRangeCFCToolStripMenuItem.Name = "attackRangeCFCToolStripMenuItem";
-            this.attackRangeCFCToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.attackRangeCFCToolStripMenuItem.Text = "Attack (Range CFC)";
-            this.attackRangeCFCToolStripMenuItem.Click += new System.EventHandler(this.attackRangeCFCToolStripMenuItem_Click);
+            attackRangeCFCToolStripMenuItem.Name = "attackRangeCFCToolStripMenuItem";
+            attackRangeCFCToolStripMenuItem.Size = new Size(177, 22);
+            attackRangeCFCToolStripMenuItem.Text = "Attack (Range CFC)";
+            attackRangeCFCToolStripMenuItem.Click += attackRangeCFCToolStripMenuItem_Click;
             // 
             // varPanel
             // 
-            this.varPanel.AutoScroll = true;
-            this.varPanel.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.InsetDouble;
-            this.varPanel.ColumnCount = 2;
-            this.varPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 240F));
-            this.varPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 317F));
-            this.varPanel.Location = new System.Drawing.Point(300, 31);
-            this.varPanel.Name = "varPanel";
-            this.varPanel.RowCount = 3;
-            this.varPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.varPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.varPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.varPanel.Size = new System.Drawing.Size(442, 407);
-            this.varPanel.TabIndex = 2;
+            varPanel.AutoScroll = true;
+            varPanel.CellBorderStyle = TableLayoutPanelCellBorderStyle.InsetDouble;
+            varPanel.ColumnCount = 2;
+            varPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 240F));
+            varPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 317F));
+            varPanel.Location = new Point(300, 31);
+            varPanel.Name = "varPanel";
+            varPanel.RowCount = 3;
+            varPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            varPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            varPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            varPanel.Size = new Size(442, 407);
+            varPanel.TabIndex = 2;
             // 
             // attackContext
             // 
-            this.attackContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.moveUpToolStripMenuItem,
-            this.moveDownToolStripMenuItem});
-            this.attackContext.Name = "attackContext";
-            this.attackContext.Size = new System.Drawing.Size(139, 48);
+            attackContext.Items.AddRange(new ToolStripItem[] { moveUpToolStripMenuItem, moveDownToolStripMenuItem });
+            attackContext.Name = "attackContext";
+            attackContext.Size = new Size(139, 48);
             // 
             // moveUpToolStripMenuItem
             // 
-            this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
-            this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-            this.moveUpToolStripMenuItem.Text = "Move Up";
-            this.moveUpToolStripMenuItem.Click += new System.EventHandler(this.moveUpToolStripMenuItem_Click);
+            moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
+            moveUpToolStripMenuItem.Size = new Size(138, 22);
+            moveUpToolStripMenuItem.Text = "Move Up";
+            moveUpToolStripMenuItem.Click += moveUpToolStripMenuItem_Click;
             // 
             // moveDownToolStripMenuItem
             // 
-            this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
-            this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-            this.moveDownToolStripMenuItem.Text = "Move Down";
-            this.moveDownToolStripMenuItem.Click += new System.EventHandler(this.moveDownToolStripMenuItem_Click);
+            moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
+            moveDownToolStripMenuItem.Size = new Size(138, 22);
+            moveDownToolStripMenuItem.Text = "Move Down";
+            moveDownToolStripMenuItem.Click += moveDownToolStripMenuItem_Click;
             // 
             // conditionContext
             // 
-            this.conditionContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.moveUpToolStripMenuItem1,
-            this.moveDownToolStripMenuItem1});
-            this.conditionContext.Name = "conditionContext";
-            this.conditionContext.Size = new System.Drawing.Size(139, 48);
+            conditionContext.Items.AddRange(new ToolStripItem[] { moveUpToolStripMenuItem1, moveDownToolStripMenuItem1 });
+            conditionContext.Name = "conditionContext";
+            conditionContext.Size = new Size(139, 48);
             // 
             // moveUpToolStripMenuItem1
             // 
-            this.moveUpToolStripMenuItem1.Name = "moveUpToolStripMenuItem1";
-            this.moveUpToolStripMenuItem1.Size = new System.Drawing.Size(138, 22);
-            this.moveUpToolStripMenuItem1.Text = "Move Up";
-            this.moveUpToolStripMenuItem1.Click += new System.EventHandler(this.moveUpToolStripMenuItem1_Click);
+            moveUpToolStripMenuItem1.Name = "moveUpToolStripMenuItem1";
+            moveUpToolStripMenuItem1.Size = new Size(138, 22);
+            moveUpToolStripMenuItem1.Text = "Move Up";
+            moveUpToolStripMenuItem1.Click += moveUpToolStripMenuItem1_Click;
             // 
             // moveDownToolStripMenuItem1
             // 
-            this.moveDownToolStripMenuItem1.Name = "moveDownToolStripMenuItem1";
-            this.moveDownToolStripMenuItem1.Size = new System.Drawing.Size(138, 22);
-            this.moveDownToolStripMenuItem1.Text = "Move Down";
-            this.moveDownToolStripMenuItem1.Click += new System.EventHandler(this.moveDownToolStripMenuItem1_Click);
+            moveDownToolStripMenuItem1.Name = "moveDownToolStripMenuItem1";
+            moveDownToolStripMenuItem1.Size = new Size(138, 22);
+            moveDownToolStripMenuItem1.Text = "Move Down";
+            moveDownToolStripMenuItem1.Click += moveDownToolStripMenuItem1_Click;
             // 
             // heatActionAttackContext
             // 
-            this.heatActionAttackContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.moveUpToolStripMenuItem2,
-            this.moveDownToolStripMenuItem2,
-            this.addActorToolStripMenuItem});
-            this.heatActionAttackContext.Name = "heatActionAttackContext";
-            this.heatActionAttackContext.Size = new System.Drawing.Size(139, 70);
+            heatActionAttackContext.Items.AddRange(new ToolStripItem[] { moveUpToolStripMenuItem2, moveDownToolStripMenuItem2, addActorToolStripMenuItem });
+            heatActionAttackContext.Name = "heatActionAttackContext";
+            heatActionAttackContext.Size = new Size(139, 70);
             // 
             // moveUpToolStripMenuItem2
             // 
-            this.moveUpToolStripMenuItem2.Name = "moveUpToolStripMenuItem2";
-            this.moveUpToolStripMenuItem2.Size = new System.Drawing.Size(138, 22);
-            this.moveUpToolStripMenuItem2.Text = "Move Up";
-            this.moveUpToolStripMenuItem2.Click += new System.EventHandler(this.moveUpToolStripMenuItem2_Click);
+            moveUpToolStripMenuItem2.Name = "moveUpToolStripMenuItem2";
+            moveUpToolStripMenuItem2.Size = new Size(138, 22);
+            moveUpToolStripMenuItem2.Text = "Move Up";
+            moveUpToolStripMenuItem2.Click += moveUpToolStripMenuItem2_Click;
             // 
             // moveDownToolStripMenuItem2
             // 
-            this.moveDownToolStripMenuItem2.Name = "moveDownToolStripMenuItem2";
-            this.moveDownToolStripMenuItem2.Size = new System.Drawing.Size(138, 22);
-            this.moveDownToolStripMenuItem2.Text = "Move Down";
-            this.moveDownToolStripMenuItem2.Click += new System.EventHandler(this.moveDownToolStripMenuItem2_Click);
+            moveDownToolStripMenuItem2.Name = "moveDownToolStripMenuItem2";
+            moveDownToolStripMenuItem2.Size = new Size(138, 22);
+            moveDownToolStripMenuItem2.Text = "Move Down";
+            moveDownToolStripMenuItem2.Click += moveDownToolStripMenuItem2_Click;
             // 
             // addActorToolStripMenuItem
             // 
-            this.addActorToolStripMenuItem.Name = "addActorToolStripMenuItem";
-            this.addActorToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-            this.addActorToolStripMenuItem.Text = "Add Actor";
-            this.addActorToolStripMenuItem.Click += new System.EventHandler(this.addActorToolStripMenuItem_Click);
+            addActorToolStripMenuItem.Name = "addActorToolStripMenuItem";
+            addActorToolStripMenuItem.Size = new Size(138, 22);
+            addActorToolStripMenuItem.Text = "Add Actor";
+            addActorToolStripMenuItem.Click += addActorToolStripMenuItem_Click;
             // 
             // heatActionActorContext
             // 
-            this.heatActionActorContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addToolStripMenuItem1});
-            this.heatActionActorContext.Name = "heatActionActorContext";
-            this.heatActionActorContext.Size = new System.Drawing.Size(97, 26);
+            heatActionActorContext.Items.AddRange(new ToolStripItem[] { addToolStripMenuItem1 });
+            heatActionActorContext.Name = "heatActionActorContext";
+            heatActionActorContext.Size = new Size(97, 26);
             // 
             // addToolStripMenuItem1
             // 
-            this.addToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.flagToolStripMenuItem1});
-            this.addToolStripMenuItem1.Name = "addToolStripMenuItem1";
-            this.addToolStripMenuItem1.Size = new System.Drawing.Size(96, 22);
-            this.addToolStripMenuItem1.Text = "Add";
+            addToolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { flagToolStripMenuItem1 });
+            addToolStripMenuItem1.Name = "addToolStripMenuItem1";
+            addToolStripMenuItem1.Size = new Size(96, 22);
+            addToolStripMenuItem1.Text = "Add";
             // 
             // flagToolStripMenuItem1
             // 
-            this.flagToolStripMenuItem1.Name = "flagToolStripMenuItem1";
-            this.flagToolStripMenuItem1.Size = new System.Drawing.Size(127, 22);
-            this.flagToolStripMenuItem1.Text = "Condition";
-            this.flagToolStripMenuItem1.Click += new System.EventHandler(this.flagToolStripMenuItem1_Click);
+            flagToolStripMenuItem1.Name = "flagToolStripMenuItem1";
+            flagToolStripMenuItem1.Size = new Size(127, 22);
+            flagToolStripMenuItem1.Text = "Condition";
+            flagToolStripMenuItem1.Click += flagToolStripMenuItem1_Click;
             // 
             // heatActionConditionContext
             // 
-            this.heatActionConditionContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.moveUpToolStripMenuItem3,
-            this.moveDownToolStripMenuItem3});
-            this.heatActionConditionContext.Name = "heatActionCondition";
-            this.heatActionConditionContext.Size = new System.Drawing.Size(139, 48);
+            heatActionConditionContext.Items.AddRange(new ToolStripItem[] { moveUpToolStripMenuItem3, moveDownToolStripMenuItem3 });
+            heatActionConditionContext.Name = "heatActionCondition";
+            heatActionConditionContext.Size = new Size(139, 48);
             // 
             // moveUpToolStripMenuItem3
             // 
-            this.moveUpToolStripMenuItem3.Name = "moveUpToolStripMenuItem3";
-            this.moveUpToolStripMenuItem3.Size = new System.Drawing.Size(138, 22);
-            this.moveUpToolStripMenuItem3.Text = "Move Up";
-            this.moveUpToolStripMenuItem3.Click += new System.EventHandler(this.moveUpToolStripMenuItem3_Click);
+            moveUpToolStripMenuItem3.Name = "moveUpToolStripMenuItem3";
+            moveUpToolStripMenuItem3.Size = new Size(138, 22);
+            moveUpToolStripMenuItem3.Text = "Move Up";
+            moveUpToolStripMenuItem3.Click += moveUpToolStripMenuItem3_Click;
             // 
             // moveDownToolStripMenuItem3
             // 
-            this.moveDownToolStripMenuItem3.Name = "moveDownToolStripMenuItem3";
-            this.moveDownToolStripMenuItem3.Size = new System.Drawing.Size(138, 22);
-            this.moveDownToolStripMenuItem3.Text = "Move Down";
-            this.moveDownToolStripMenuItem3.Click += new System.EventHandler(this.moveDownToolStripMenuItem3_Click);
+            moveDownToolStripMenuItem3.Name = "moveDownToolStripMenuItem3";
+            moveDownToolStripMenuItem3.Size = new Size(138, 22);
+            moveDownToolStripMenuItem3.Text = "Move Down";
+            moveDownToolStripMenuItem3.Click += moveDownToolStripMenuItem3_Click;
             // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(754, 450);
-            this.Controls.Add(this.varPanel);
-            this.Controls.Add(this.appToolstrip);
-            this.Controls.Add(this.attacksTree);
-            this.Name = "Main";
-            this.Text = "Yazawa Commander";
-            this.appToolstrip.ResumeLayout(false);
-            this.appToolstrip.PerformLayout();
-            this.conditionsRootContext.ResumeLayout(false);
-            this.attackGroupContext.ResumeLayout(false);
-            this.attackContext.ResumeLayout(false);
-            this.conditionContext.ResumeLayout(false);
-            this.heatActionAttackContext.ResumeLayout(false);
-            this.heatActionActorContext.ResumeLayout(false);
-            this.heatActionConditionContext.ResumeLayout(false);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(754, 450);
+            Controls.Add(varPanel);
+            Controls.Add(appToolstrip);
+            Controls.Add(attacksTree);
+            Name = "Main";
+            Text = "Elvis Commander";
+            appToolstrip.ResumeLayout(false);
+            appToolstrip.PerformLayout();
+            conditionsRootContext.ResumeLayout(false);
+            attackGroupContext.ResumeLayout(false);
+            attackContext.ResumeLayout(false);
+            conditionContext.ResumeLayout(false);
+            heatActionAttackContext.ResumeLayout(false);
+            heatActionActorContext.ResumeLayout(false);
+            heatActionConditionContext.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

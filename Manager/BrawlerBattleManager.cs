@@ -147,7 +147,7 @@ namespace LikeABrawler2
                 if (idx >= 0)
                     PlayerFighter = FighterManager.GetFighter((uint)idx);
                 else
-                    PlayerFighter = new Fighter();
+                    PlayerFighter = FighterManager.GetFighter(0);
             }
 
             //TODO: Improve this battle start detection
@@ -798,8 +798,10 @@ namespace LikeABrawler2
         {
             SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("act_kiryu"));
             SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("y8b_common"));
+            SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("y8b_common_sfx"));
 
-            SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("bbg_k"));
+            if (BrawlerPlayer.IsDragon())
+                SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("bbg_k"));
 
             if(BrawlerPlayer.IsKasuga())
                 SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("style_freeter"));
@@ -1041,6 +1043,7 @@ namespace LikeABrawler2
 
             SupporterManager.OnBattleEnd();
             BrawlerPlayer.OnBattleEnd();
+            StopSpecialMusic(); //lets ensure
             OnForceDeliveryHelpOFF();
             UsedDeliveryOnce = false;
 

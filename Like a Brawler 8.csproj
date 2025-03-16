@@ -358,7 +358,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(TargetDir)$(ProjectName).dll"  "C:\Program Files (x86)\Steam\steamapps\common\LikeADragon8\runtime\media\mods\Like A Brawler 8\$(ProjectName).dll"
-copy /Y "C:\Users\orhan_vfigibb\source\repos\Y7Internal.NET\DELibrary.NET\$(OutDir)DELibrary.NET.exe"  "C:\Program Files (x86)\Steam\steamapps\common\LikeADragon8\runtime\media\mods\DE Library\DELibrary.NET.dll"</PostBuildEvent>
+copy /Y "C:\Users\orhan_vfigibb\source\repos\Y7Internal.NET\DELibrary.NET\$(OutDir)DELibrary.NET.exe"  "C:\Program Files (x86)\Steam\steamapps\common\LikeADragon8\runtime\media\srmm-libs\62d185f2-0d10-42d0-955c-67bf5f757994\DE Library\DELibrary.NET.dll"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="packages\Fody.6.5.5\build\Fody.targets" Condition="Exists('packages\Fody.6.5.5\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

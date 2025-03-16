@@ -342,8 +342,8 @@ namespace LikeABrawler2
             if (fighter != BrawlerBattleManager.PlayerFighter)
                 return m_fighterDisableRunTrampoline(fighterPtr);
 
-            //Let beast run with weapons
-            if (BrawlerPlayer.CurrentStyle == PlayerStyle.Beast)
+            //Let beast and OEDOD run with weapons
+            if (BrawlerPlayer.CurrentStyle == PlayerStyle.Beast || BrawlerPlayer.CurrentStyle == PlayerStyle.Legend)
                 return false;
 
             return m_fighterDisableRunTrampoline(fighterPtr);

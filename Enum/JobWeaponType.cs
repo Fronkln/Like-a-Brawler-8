@@ -15,6 +15,7 @@ namespace LikeABrawler2
         Knife,
         Kali,
         Sword,
-        Knuckles
+        Knuckles,
+        Whip
     }
 }

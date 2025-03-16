@@ -432,6 +432,18 @@ namespace LikeABrawler2
                     else
                         flag = false;
                     break;
+
+                case HeatActionConditionType.WeaponFlags:
+                    ItemID equipItem = Party.GetEquipItemID(BrawlerPlayer.CurrentPlayer, PartyEquipSlotID.weapon);
+                    AssetID equipAssetID = Item.GetAssetID(equipItem);
+
+                    Weapon playerWep = BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon);
+
+                    if (playerWep.Unit.Get().AssetID != equipAssetID)
+                        return false;
+
+                    flag = WeaponManager.GetTypeForJobWeapon(equipItem) == (JobWeaponType)cond.Param1U32;
+                    break;
             }
 
             switch (cond.LogicalOperator)

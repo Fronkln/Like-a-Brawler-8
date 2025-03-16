@@ -10,7 +10,7 @@ namespace LikeABrawler2
         private static UIHandleBase m_hactPrompt;
         private static UIHandleBase m_wepPickup;
 
-        private const bool UseClassicGauge = false;
+        public static bool UseClassicGauge = false;
 
         public static UIHandleBase RealtimeGauge;
         public static UIHandleBase GaugeRoot;
@@ -57,6 +57,12 @@ namespace LikeABrawler2
         {
             uint characterID = (uint)BrawlerBattleManager.PlayerCharacter.Attributes.chara_id;
 
+            //Kasuga (normal)
+            if(characterID == 8865 || characterID == 15591 || characterID == 15286 || characterID == 19934)
+            {
+                return 1173;
+            }
+
             //Reborn Kiryu
             if (characterID == 28267 ||
                 characterID == 26144 ||
@@ -83,7 +89,7 @@ namespace LikeABrawler2
             m_playerGauge_HeatGauge = m_playerGauge.GetChild(6);
             m_playerGauge_HeatGaugeLabel = m_playerGauge.GetChild(7);
 
-            if (!UseClassicGauge)
+            if (!UseClassicGauge && (!BrawlerPlayer.IsOtherPlayer()))
             {
                 if (RealtimeGauge.Handle == 0)
                 {
@@ -162,31 +168,18 @@ namespace LikeABrawler2
 
             if (!BrawlerPlayer.IsOtherPlayer() || BrawlerPlayer.IsOtherPlayerLeader())
             {
-                uint numGauges = gaugesRoot.GetChildCount();
-                uint idx = 0;
+                int idx = 0;
 
-                m_playerGaugeRoot = gaugesRoot.GetChild((int)idx);
-
-                int highestIndex = 0;
-
-                for(int i = 0; i < (int)Player.ID.num; i++)
+                for (int i = 0; i < gaugesRoot.GetChildCount(); i++)
                 {
-                    int ideex = NakamaManager.FindIndex((Player.ID)i);
+                    if (!gaugesRoot.GetChild(i).IsVisible())
+                        break;
 
-                    if (ideex > highestIndex)
-                        highestIndex = ideex;
+                    gauge = gaugesRoot.GetChild(i).GetChild(0).GetChild(0);
+                    idx = i;
                 }
 
-                idx = (uint)highestIndex;
-                /*
-                
-                if (numGauges > 4)
-                    idx = 3;
-                else
-                    idx = numGauges - 1;
-                */
 
-                gauge = gaugesRoot.GetChild((int)idx).GetChild(0).GetChild(0);
                 m_playerGaugeRoot = gaugesRoot.GetChild((int)idx);
             }
             else
@@ -226,7 +219,7 @@ namespace LikeABrawler2
                 GaugeRoot.SetVisible(false);
             else
             {
-                if(!UseClassicGauge)
+                if(!UseClassicGauge && (!BrawlerPlayer.IsOtherPlayer()))
                 {
                     m_playerGaugeRoot.SetVisible(!BrawlerBattleManager.Battling);
                     RealtimeGauge.SetVisible(BrawlerBattleManager.Battling && !BrawlerBattleManager.PlayerCharacter.IsDead() && BattleTurnManager.CurrentPhase > BattleTurnManager.TurnPhase.Start && !(BrawlerBattleManager.IsHAct && !HeatActionManager.IsY8BHact));
@@ -255,7 +248,7 @@ namespace LikeABrawler2
             {
                 GaugeRoot.SetVisible(!Debug.NoUI);
 
-                if (UseClassicGauge)
+                if (UseClassicGauge || (BrawlerPlayer.IsOtherPlayer()))
                 {
                     m_playerGauge_HealthGauge.SetValue((float)playerHp / (float)Player.GetHPMax(BrawlerPlayer.CurrentPlayer));
                     m_playerGauge_HealthGaugeLabel.SetText(playerHp.ToString());

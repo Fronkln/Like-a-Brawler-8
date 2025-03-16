@@ -136,9 +136,9 @@ namespace LikeABrawler2
             switch (type)
             {
                 case "kasuga":
-                    if (split.Length > 4)
-                        return JobWeaponType.Bat;
-                    break;
+                    return JobWeaponType.Bat;
+                case "nightqueen":
+                    return JobWeaponType.Whip;
             }
 
             return JobWeaponType.Unknown;
