@@ -65,7 +65,7 @@
       <HintPath>packages\Costura.Fody.5.7.0\lib\netstandard1.0\Costura.dll</HintPath>
     </Reference>
     <Reference Include="LibARMP">
-      <HintPath>DllDependency\LibARMP.dll</HintPath>
+      <HintPath>Dependencies\LibARMP.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=1.3.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.IO.RecyclableMemoryStream.1.3.6\lib\net46\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
@@ -340,10 +340,9 @@
     <Compile Include="Utils\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Y7Internal.NET\DELibrary.NET\DELibrary.NET.csproj">
+    <ProjectReference Include="Dependencies\DELib\DELibrary.NET\DELibrary.NET.csproj">
       <Project>{9900112c-25d6-427d-846a-a90e31cf8fe3}</Project>
       <Name>DELibrary.NET</Name>
-      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="Util Projects\ElvisCommand\ElvisCommand.csproj">
       <Project>{db20a2ca-cffe-4298-9872-269b91b0df9d}</Project>

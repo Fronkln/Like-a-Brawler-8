@@ -1,0 +1,3 @@
+[submodule "Dependencies/DELib"]
+	path = Dependencies/DELib
+	url = https://github.com/Fronkln/Dragon-Engine-.NET
