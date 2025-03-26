@@ -743,7 +743,8 @@ namespace LikeABrawler2
             BrawlerPlayer.PreBattleCommandset = PlayerCharacter.Attributes.command_set_id;
 
             //Ichiban animations are too silly on others.
-            PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)DBManager.GetCommandSet("p_kiryu_legend"));
+            if(BrawlerPlayer.IsOtherPlayer())
+                PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)DBManager.GetCommandSet("p_kiryu_legend"));
 
             if (BrawlerPlayer.IsKasuga())
             {
