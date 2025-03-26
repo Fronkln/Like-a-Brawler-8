@@ -267,7 +267,7 @@ namespace LikeABrawler2
             {
                 if (ownerCharacter.UID == BrawlerBattleManager.PlayerCharacter.UID)
                 {
-                    if (!BrawlerBattleManager.AllowPlayerTransformThisFight)
+                    if (!BrawlerBattleManager.AllowPlayerTransformThisFight && !BrawlerPlayer.IsOtherPlayer())
                         return IntPtr.Zero;
                 }
                 else

@@ -73,7 +73,17 @@ namespace LikeABrawler2
                 case 15:
                     return CheckAwakeningStat(fighter, op, paramsPtr);
                 case 16:
-                    return CheckIsDragon(fighter, op, paramsPtr); 
+                    return CheckIsDragon(fighter, op, paramsPtr);
+                case 17:
+                    return true;
+                case 18: //ShouldEnterJobCommandset
+                    if (BrawlerPlayer.IsOtherPlayer())
+                        return true;
+                    else return BrawlerPlayer.IsExtremeHeat;
+                case 19: //ShouldExitJobCommandset
+                    if (BrawlerPlayer.IsOtherPlayer())
+                        return false;
+                    else return !BrawlerPlayer.IsExtremeHeat;
             }
 
             return false;
@@ -155,7 +165,7 @@ namespace LikeABrawler2
 
         private static bool CheckKiryuStyle(IntPtr fighter, byte op, byte* paramsPtr)
         {
-            if (!BrawlerPlayer.IsKiryu())
+            if (!BrawlerPlayer.IsDragon())
                 return false;
 
             byte style = *(paramsPtr + 1);

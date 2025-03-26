@@ -144,7 +144,7 @@ namespace LikeABrawler2
                                     
                                     new DETask(delegate
                                     {
-                                        return !BrawlerBattleManager.IsHActOrWaiting && m_dreamSequenceEnemy.IsHPBelowRatio(0.3f) & !m_dreamSequenceEnemy.Character.HumanModeManager.IsDamage();
+                                        return !BrawlerBattleManager.IsHActOrWaiting && m_dreamSequenceEnemy.IsHPBelowRatio(0.3f);
                                     }, delegate
                                     {
                                         HActRequestOptions opts = new HActRequestOptions();
@@ -177,7 +177,7 @@ namespace LikeABrawler2
 
                                     new DETask(delegate
                                     {
-                                        return !BrawlerBattleManager.IsHActOrWaiting && m_dreamSequenceEnemy.IsHPBelowRatio(0.3f) & !m_dreamSequenceEnemy.Character.HumanModeManager.IsDamage();
+                                        return !BrawlerBattleManager.IsHActOrWaiting && m_dreamSequenceEnemy.IsHPBelowRatio(0.3f);
                                     }, delegate
                                     {
                                         HActRequestOptions opts = new HActRequestOptions();
@@ -208,7 +208,7 @@ namespace LikeABrawler2
 
                                     new DETask(delegate
                                     {
-                                        return !BrawlerBattleManager.IsHActOrWaiting && m_dreamSequenceEnemy.IsHPBelowRatio(0.3f) & !m_dreamSequenceEnemy.Character.HumanModeManager.IsDamage();
+                                        return !BrawlerBattleManager.IsHActOrWaiting && m_dreamSequenceEnemy.IsHPBelowRatio(0.3f);
                                     }, delegate
                                     {
                                         HActRequestOptions opts = new HActRequestOptions();

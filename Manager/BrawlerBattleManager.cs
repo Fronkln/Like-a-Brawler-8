@@ -119,7 +119,7 @@ namespace LikeABrawler2
 #endif
 
             TutorialManager.Update();
-            ScreenEffectManager.Update(); 
+            ScreenEffectManager.Update();
 
             AllFighters = FighterManager.GetAllFighters();
             AllEnemies = AllFighters.Where(x => x.IsEnemy() && !x.IsDead()).ToArray();
@@ -131,8 +131,8 @@ namespace LikeABrawler2
             {
                 NearestEnemyBehindPlayer = enemiesBehindMe.First();
 
-           //    if (Vector3.Distance(NearestEnemyBehindPlayer.Character.Transform.Position, PlayerCharacter.Transform.Position) >= 3.5f)
-                   // NearestEnemyBehindPlayer = new Fighter();
+                //    if (Vector3.Distance(NearestEnemyBehindPlayer.Character.Transform.Position, PlayerCharacter.Transform.Position) >= 3.5f)
+                // NearestEnemyBehindPlayer = new Fighter();
             }
             else
                 NearestEnemyBehindPlayer = new Fighter();
@@ -140,7 +140,7 @@ namespace LikeABrawler2
 
             RPGCamera = BattleTurnManager.RPGCamera;
 
-            if(!Battling)
+            if (!Battling)
                 PlayerFighter = FighterManager.GetPlayer();
             else
             {
@@ -274,7 +274,7 @@ namespace LikeABrawler2
 
         public unsafe static void OnPlayerExitEXHeat()
         {
-            if(SoundManager.GetBGMSeID(1) != m_bgmID)
+            if (SoundManager.GetBGMSeID(1) != m_bgmID)
             {
                 //SoundManager.PlayBGM(m_bgmID, m_bgmTime);
             }
@@ -306,7 +306,7 @@ namespace LikeABrawler2
 
             EntityHandle<CameraBase> cam = PlayerCharacter.GetSceneEntity<CameraBase>(SceneEntity.camera_free);
 
-            if(cam.IsValid())
+            if (cam.IsValid())
             {
                 IntPtr camPtr = cam.Get().Pointer;
                 uint* camTarget = (uint*)(camPtr + 692);
@@ -363,7 +363,7 @@ namespace LikeABrawler2
 
         private static void ProcSpecialBattle()
         {
-            switch(BattleConfigID)
+            switch (BattleConfigID)
             {
                 /*
                 //Yami 2nd fight
@@ -377,8 +377,8 @@ namespace LikeABrawler2
                 */
                 //Yamai first fight
                 case 8:
-                    new DETask(delegate { return !IsHActOrWaiting && ActionBattleTime > 3.5f && AllEnemies.Length <= 3; }, 
-                        delegate 
+                    new DETask(delegate { return !IsHActOrWaiting && ActionBattleTime > 3.5f && AllEnemies.Length <= 3; },
+                        delegate
                         {
                             HActRequestOptions opts = new HActRequestOptions();
                             opts.id = DBManager.GetTalkParam("eb1560_boss_yam_pc");
@@ -442,7 +442,7 @@ namespace LikeABrawler2
                                 opts.id = DBManager.GetTalkParam("y8bb1780_ebn_party_decide");
                                 opts.is_force_play = true;
 
-                                opts.Register(HActReplaceID.hu_player1,PlayerCharacter);
+                                opts.Register(HActReplaceID.hu_player1, PlayerCharacter);
                                 opts.Register(HActReplaceID.hu_npc_00, FighterManager.GetFighter(1).Character);
                                 opts.Register(HActReplaceID.hu_npc_01, FighterManager.GetFighter(2).Character);
                                 opts.Register(HActReplaceID.hu_npc_02, FighterManager.GetFighter(3).Character);
@@ -458,7 +458,7 @@ namespace LikeABrawler2
                                         return !HeatActionManager.IsHAct();
                                     }, null);
                                 });
-                                
+
                             }
                         });
                     });
@@ -562,7 +562,7 @@ namespace LikeABrawler2
                             }
                         }
 
-                        if(over)
+                        if (over)
                             DragonEngine.Log("Forced delivery OVER");
 
                         return over;
@@ -687,7 +687,7 @@ namespace LikeABrawler2
 
         public static void ChangeToRealtime()
         {
-            if(Battling)
+            if (Battling)
                 BrawlerPatches.Enable();
 
             BattleTurnManager.OverrideAttackerSelection2(DecideTurnAttacker);
@@ -699,7 +699,7 @@ namespace LikeABrawler2
                     SkipTurn();
 
                     BrawlerPlayer.ToNormalMoveset();
-                   // PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, BrawlerPlayer.GetCommandSetForJob(BrawlerPlayer.CurrentPlayer, Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer)));
+                    // PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, BrawlerPlayer.GetCommandSetForJob(BrawlerPlayer.CurrentPlayer, Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer)));
                 }
             }
 
@@ -743,8 +743,8 @@ namespace LikeABrawler2
             BrawlerPlayer.PreBattleCommandset = PlayerCharacter.Attributes.command_set_id;
 
             //Ichiban animations are too silly on others.
-            if(BrawlerPlayer.IsOtherPlayer())
-                PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)DBManager.GetCommandSet("p_kiryu_legend"));
+            if (BrawlerPlayer.IsOtherPlayer())
+                PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(1, (BattleCommandSetID)DBManager.GetCommandSet("p_kiryu_legend"));
 
             if (BrawlerPlayer.IsKasuga())
             {
@@ -810,10 +810,10 @@ namespace LikeABrawler2
             if (BrawlerPlayer.IsDragon())
                 SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("bbg_k"));
 
-            if(BrawlerPlayer.IsKasuga())
+            if (BrawlerPlayer.IsKasuga())
                 SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("style_freeter"));
 
-            if(BrawlerPlayer.IsDragon())
+            if (BrawlerPlayer.IsDragon())
                 SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("style_oedragon"));
 
             EffectEventManager.LoadScreen(28); //Judge_fatalblow
@@ -852,9 +852,9 @@ namespace LikeABrawler2
 
         public static void OnForceDeliveryHelpON()
         {
-            DragonEngineLibrary.Unsafe.CPP.PatchMemory(m_forceDeliveryAddr, 
-                new byte[] { 
-                    0xB8, 0x02, 0x0, 0x0, 0x0, 
+            DragonEngineLibrary.Unsafe.CPP.PatchMemory(m_forceDeliveryAddr,
+                new byte[] {
+                    0xB8, 0x02, 0x0, 0x0, 0x0,
                     0x90, 0x90, 0x90, 0x90, 0x90 });
         }
 
@@ -907,7 +907,7 @@ namespace LikeABrawler2
             m_battleActionStartedDoOnce = true;
             ConvertAllies();
 
-            if(PlayerCharacter.HumanModeManager.CurrentMode.ModeName == "BattleStartAction")
+            if (PlayerCharacter.HumanModeManager.CurrentMode.ModeName == "BattleStartAction")
             {
                 PlayerCharacter.HumanModeManager.ToEndReady();
             }
@@ -1101,11 +1101,11 @@ namespace LikeABrawler2
                 return PlayerFighter._ptr;
             }
 
-            if(BrawlerBattleManager.NearestEnemyBehindPlayer.IsValid())
+            if (BrawlerBattleManager.NearestEnemyBehindPlayer.IsValid())
             {
                 bool shouldGiveTurnToBehindEnemy = new Random().Next(0, 101) <= 20;
-                
-                if(shouldGiveTurnToBehindEnemy)
+
+                if (shouldGiveTurnToBehindEnemy)
                     return NearestEnemyBehindPlayer._ptr;
             }
 
@@ -1120,7 +1120,7 @@ namespace LikeABrawler2
                 return fighter._ptr;
             }
 
-            if(EnemyManager.ForcedAttacker != null && EnemyManager.ForcedAttacker.Character.IsValid())
+            if (EnemyManager.ForcedAttacker != null && EnemyManager.ForcedAttacker.Character.IsValid())
             {
                 Fighter fighter = EnemyManager.ForcedAttacker.Fighter;
                 EnemyManager.ForcedAttacker = null;

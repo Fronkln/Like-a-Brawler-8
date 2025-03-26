@@ -251,6 +251,8 @@ namespace LikeABrawler2
 
             if(!IsOtherPlayer())
                 ToNormalMoveset();
+            else
+                SetupWeapon(BrawlerBattleManager.PlayerFighter._ptr);
 
             if (IsKiryu() || Player.GetCurrentJob(CurrentPlayer) == RPGJobID.kiryu_01)
                 CurrentStyle = PlayerStyle.Default;
