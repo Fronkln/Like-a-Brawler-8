@@ -49,6 +49,8 @@
         StatusEffect = 44,
         Swaying = 45,
         PlayerPoint = 46,
-        WeaponCanBeSnatched = 47
+        WeaponCanBeSnatched = 47,
+        PlayerID = 48,
+        PlayerStyle = 49
     }
 }

@@ -278,7 +278,6 @@
     <Compile Include="BrawlerSaveData.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="Enum\JobWeaponType.cs" />
-    <Compile Include="Enum\PlayerStyle.cs" />
     <Compile Include="Enum\TutorialModifier.cs" />
     <Compile Include="Input\InputState.cs" />
     <Compile Include="Manager\AuraManager.cs" />

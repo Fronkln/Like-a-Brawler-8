@@ -48,6 +48,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Logic.cs" />
     <Compile Include="NearestAssetFlagType.cs" />
+    <Compile Include="PlayerStyle.cs" />
     <Compile Include="YFC\Attack.cs" />
     <Compile Include="YFC\AttackCFC.cs" />
     <Compile Include="YFC\AttackCFCRange.cs" />

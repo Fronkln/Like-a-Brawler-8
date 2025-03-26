@@ -16,9 +16,6 @@ namespace LikeABrawler2
 
         public static void GameUpdate()
         {
-            if (DragonEngine.IsKeyHeld(VirtualKey.LeftShift))
-            {
-            }
         }
         public static void InputUpdate()
         {

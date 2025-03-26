@@ -193,12 +193,12 @@ namespace LikeABrawler2
                 int hitLimit = 0;
 
                 if (IsBeingJuggled())
-                    hitLimit = 12;
+                    hitLimit = 10;
                 else
                     hitLimit = 6;
 
                 //Hyperarmor for goonies
-                if (hitLimit> 6)
+                if (RecentHits > hitLimit)
                     if (!m_hasAntiSpamArmor && m_antiSpamArmorCooldown <= 0)
                     {
                         m_antiSpamArmorCooldown = 20f;

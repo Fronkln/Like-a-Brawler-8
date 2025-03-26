@@ -559,7 +559,7 @@ namespace LikeABrawler2
             TutorialGoal tigerDrop = new TutorialGoal();
             tigerDrop.SetInstructions(
                 "<color=batting_pitch_light_blue>Komaki Tiger Drop</color>" +
-                "\n<symbol=button_r1> + <symbol=button_sankaku> before enemy attack lands");
+                "\n<symbol=button_r1> + <symbol=button_sankaku> before enemy attack lands (can be performed in Legend as well)");
             tigerDrop.CheckDelegate = delegate { return BrawlerBattleManager.PlayerCharacter.HumanModeManager.GetCommandName() == "Counter" || m_goalTime >= 30; };
             tigerDrop.TimeToComplete = 30;
             tigerDrop.Modifier = TutorialModifier.DontAllowPlayerDamage | TutorialModifier.DontAllowEnemyDamage | TutorialModifier.FullHeat | TutorialModifier.DontAllowStyleChange;

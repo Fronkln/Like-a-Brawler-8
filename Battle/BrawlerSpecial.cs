@@ -19,18 +19,21 @@ namespace LikeABrawler2
                 return false;
 
             Random rnd = new Random();
-
-            foreach(Fighter fighter in BrawlerBattleManager.AllEnemies)
+            if (rnd.Next(0, 101) <= 45)
             {
 
-                BaseEnemyAI ai = EnemyManager.GetAI(fighter.Character.UID);
-                if (ai == null)
-                    continue;
+                foreach (Fighter fighter in BrawlerBattleManager.AllEnemies)
+                {
 
-                ai.ApplyFear(rnd.Next(4.5f, 8f));
+                    BaseEnemyAI ai = EnemyManager.GetAI(fighter.Character.UID);
+                    if (ai == null)
+                        continue;
+
+                    ai.ApplyFear(rnd.Next(4.5f, 8f));
+                }
+
+                BrawlerBattleManager.SkipTurn();
             }
-
-            BrawlerBattleManager.SkipTurn();
 
             return true;
         }

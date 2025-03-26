@@ -1,3 +1,4 @@
+using System.Media;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
@@ -320,6 +321,14 @@ namespace Yazawa_Commander
                     break;
                 case HeatActionConditionType.WeaponFlags:
                     CreateInput("Weapon Subtype", condition.Condition.Param1U32.ToString(), delegate (string val) { condition.Condition.Param1U32 = uint.Parse(val); });
+                    break;
+                case HeatActionConditionType.PlayerID:
+                    CreateInput("PlayerID", condition.Condition.Param1U32.ToString(), delegate (string val) { condition.Condition.Param1U32 = uint.Parse(val); });
+                    break;
+                case HeatActionConditionType.PlayerStyle:
+                    PlayerStyle[] styleEnum = Enum.GetValues<PlayerStyle>();
+                    int idx2 = Array.IndexOf(styleEnum, (PlayerStyle)condition.Condition.Param1I32, 0, styleEnum.Length);
+                    CreateComboBox("Style", idx2, Enum.GetNames<PlayerStyle>(), delegate (int idx) { condition.Condition.Param1I32 = (int)Enum.GetValues<SupporterFlags>().ElementAt(idx); condition.Update(); });
                     break;
             }
 

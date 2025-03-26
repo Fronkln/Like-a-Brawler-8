@@ -19,6 +19,8 @@ namespace LikeABrawler2
         public static Fighter[] AllEnemies = new Fighter[0];
         public static Fighter NearestEnemyBehindPlayer = new Fighter(IntPtr.Zero);
 
+        public static event Action OnPlayerSpawnEvent = null;
+
         public static bool Battling = false;
         public static bool IsEncounter { get; private set; }
         public static uint BattleConfigID { get; private set; }
@@ -414,7 +416,6 @@ namespace LikeABrawler2
                     break;
 
                 //Poundmates Introduction
-                //TODO IMPORTANT: Give player 200 USD for this fight because our tutorial makes the poundmate paid for some reason.
                 case 147:
                     new DETask(delegate { return BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action; }, delegate
                     {
@@ -739,6 +740,10 @@ namespace LikeABrawler2
             DragonEngine.Log("Player spawned, address: " + PlayerCharacter.Pointer.ToString("X"));
 
             BrawlerPlayer.CurrentPlayer = PlayerCharacter.Attributes.player_id;
+            BrawlerPlayer.PreBattleCommandset = PlayerCharacter.Attributes.command_set_id;
+
+            //Ichiban animations are too silly on others.
+            PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)DBManager.GetCommandSet("p_kiryu_legend"));
 
             if (BrawlerPlayer.IsKasuga())
             {
@@ -755,6 +760,7 @@ namespace LikeABrawler2
                     ChangeToTurnBased();
             }
 
+            OnPlayerSpawnEvent?.Invoke();
             RevelationManager.OnPlayerSpawn();
         }
 

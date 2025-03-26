@@ -240,12 +240,13 @@ namespace LikeABrawler2
         private static TransitHijackedKiryuGuard m_transitKiryuCounterTrampoline;
         private static void TransitKiryuCounter()
         {
-            if (BrawlerPlayer.CurrentStyle != PlayerStyle.Default && BrawlerPlayer.CurrentStyle != PlayerStyle.Legend)
+            if (BrawlerPlayer.CurrentStyle != PlayerStyle.Default && BrawlerPlayer.CurrentStyle != PlayerStyle.Dragon)
+                return;
+
+            if (BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.IsValid())
                 return;
 
             BattleTurnManager.ForceCounterCommand(BrawlerBattleManager.PlayerFighter, BrawlerBattleManager.AllEnemiesNearest[0], (RPGSkillID)1386);
-
-            DragonEngine.Log("transit counter");
         }
 
 
@@ -342,8 +343,11 @@ namespace LikeABrawler2
             if (fighter != BrawlerBattleManager.PlayerFighter)
                 return m_fighterDisableRunTrampoline(fighterPtr);
 
-            //Let beast and OEDOD run with weapons
-            if (BrawlerPlayer.CurrentStyle == PlayerStyle.Beast || BrawlerPlayer.CurrentStyle == PlayerStyle.Legend)
+            //Let EX Heat Ichiban, Beast and OEDOD to run with weapons
+            if (BrawlerPlayer.CurrentJob == RPGJobID.kasuga_freeter && BrawlerPlayer.IsExtremeHeat)
+                return false;
+
+            if (BrawlerPlayer.CurrentStyle == PlayerStyle.Beast || BrawlerPlayer.CurrentStyle == PlayerStyle.Dragon)
                 return false;
 
             return m_fighterDisableRunTrampoline(fighterPtr);

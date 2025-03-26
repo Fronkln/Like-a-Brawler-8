@@ -18,6 +18,8 @@ namespace LikeABrawler2
         public static PlayerStyle CurrentStyle = PlayerStyle.NotApplicable;
         public static RPGJobID CurrentJob { get { return Player.GetCurrentJob(CurrentPlayer); } }
 
+        public static BattleCommandSetID PreBattleCommandset;
+
         public static CharacterAttributes OriginalPlayerAttributes;
 
         public static Dictionary<StageID, EHC> StageEHC = new Dictionary<StageID, EHC>();
@@ -221,7 +223,7 @@ namespace LikeABrawler2
 
                     case PlayerStyle.Default:
                         return DODHActs[0];
-                    case PlayerStyle.Legend:
+                    case PlayerStyle.Dragon:
                         return DODHActs[0];
                     case PlayerStyle.Rush:
                         return DODHActs[1];
@@ -246,7 +248,9 @@ namespace LikeABrawler2
             Character player = BrawlerBattleManager.PlayerCharacter;
 
             IsExtremeHeat = false;
-            ToNormalMoveset();
+
+            if(!IsOtherPlayer())
+                ToNormalMoveset();
 
             if (IsKiryu() || Player.GetCurrentJob(CurrentPlayer) == RPGJobID.kiryu_01)
                 CurrentStyle = PlayerStyle.Default;
@@ -261,7 +265,6 @@ namespace LikeABrawler2
             CurrentStyle = PlayerStyle.Default;
 
             BrawlerPlayer.ToNormalMoveset();
-            BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)FighterCommandManager.FindSetID("p_kiryu_legend"));
         }
 
         public unsafe static void Update()
@@ -282,7 +285,7 @@ namespace LikeABrawler2
             if (BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action)
                 CombatUpdate();
 
-            for(uint i = 1; i < 13; i++)
+            for (uint i = 1; i < 13; i++)
                 player.GetStatus().RemoveExEffect(i, true, true);
 
             player.GetStatus().RemoveExEffect(266, true, true);
@@ -325,7 +328,7 @@ namespace LikeABrawler2
 
 
             AssetArmsCategoryID category = Asset.GetArmsCategory(assetId);
-            DragonEngine.Log("Equipping inventory weapon, category: " + category + " Asset ID: " +(uint) assetId);
+            DragonEngine.Log("Equipping inventory weapon, category: " + category + " Asset ID: " + (uint)assetId);
 
             switch (category)
             {
@@ -344,7 +347,7 @@ namespace LikeABrawler2
 
             PocketWeapon = BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit;
 
-            if(PocketWeapon.IsValid())
+            if (PocketWeapon.IsValid())
                 PocketWeapon.Get().Arms.SetFromPocket(true);
 
             BattleTurnManager.ForceCounterCommand(BrawlerBattleManager.PlayerFighter, BrawlerBattleManager.AllEnemies[0], DBManager.GetSkill($"player_wp{category.ToString().ToLowerInvariant()}_battou"));
@@ -356,6 +359,8 @@ namespace LikeABrawler2
             {
                 default:
                     return RPG.GetJobCommandSetID(playerID, id);
+                case RPGJobID.chitose_01:
+                    return (BattleCommandSetID)DBManager.GetCommandSet("p_chitose_01");
                 case RPGJobID.kasuga_freeter:
                     return (BattleCommandSetID)DBManager.GetCommandSet("p_kasuga_brawler");
                 case RPGJobID.kasuga_braver:
@@ -388,11 +393,11 @@ namespace LikeABrawler2
                 case Player.ID.nanba:
                     return (BattleCommandSetID)DBManager.GetCommandSet("p_nanba_job_01");
                 case Player.ID.chitose:
-                    return (BattleCommandSetID)DBManager.GetCommandSet("p_chitose_job_01");
+                    return (BattleCommandSetID)DBManager.GetCommandSet("p_chitose_01");
                 case Player.ID.chou:
                     return (BattleCommandSetID)DBManager.GetCommandSet("p_chou_job_01");
                 case Player.ID.tomizawa:
-                    return (BattleCommandSetID)DBManager.GetCommandSet("p_tomizawa_job_01");
+                    return (BattleCommandSetID)DBManager.GetCommandSet("p_tomizawa_01");
                 case Player.ID.jyungi:
                     return (BattleCommandSetID)DBManager.GetCommandSet("p_jyungi_job_01");
             }
@@ -401,9 +406,16 @@ namespace LikeABrawler2
         public static void ToNormalMoveset()
         {
             BattleCommandSetID moveset = GetNormalMovesetForPlayer(CurrentPlayer);
+
+            //else they will be stuck on their job motinoset for some reason
+            if (IsOtherPlayer() && !BrawlerBattleManager.PlayerFighter.IsValid())
+            {
+                moveset = (BattleCommandSetID)DBManager.GetCommandSet("p_kiryu_legend");
+            }
+
             BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, moveset);
 
-            if(!BrawlerBattleManager.PlayerFighter.IsValid())
+            if (!BrawlerBattleManager.PlayerFighter.IsValid())
             {
                 BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(1, moveset);
             }
@@ -412,7 +424,11 @@ namespace LikeABrawler2
             if (DoesJobHaveWeapons(Player.GetCurrentJob(CurrentPlayer)))
                 if (IsOtherPlayer())
                     if (BrawlerBattleManager.PlayerFighter.IsValid())
+                    {
                         SetupWeapon(BrawlerBattleManager.PlayerFighter._ptr);
+                        BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get().Arms.SetFromPocket(true);
+                        BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.left_weapon).Unit.Get().Arms.SetFromPocket(true);
+                    }
 
             //otherwise, dont do shit, if this is a party member that is the main playable character right now for some reason
             //its modder's responsibility to edit the player cfc.
@@ -453,7 +469,7 @@ namespace LikeABrawler2
                 p3.GetStatus().SetHPCurrent(p3.GetStatus().MaxHP);
             }
 
-            if(IsExtremeHeat)
+            if (IsExtremeHeat)
             {
                 if (CurrentJob != RPGJobID.kasuga_freeter && CurrentJob != RPGJobID.kiryu_01)
                 {
@@ -462,8 +478,29 @@ namespace LikeABrawler2
 
                     //something went wrong with weapons, lets fix it
                     if (BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get().AssetID != wepAssetID)
-                        SetupWeapon(BrawlerBattleManager.PlayerFighter._ptr);
+                        SetupJobWeapons();
                 }
+            }
+            else
+            {
+                if (IsOtherPlayer())
+                {
+                    if (CurrentJob != RPGJobID.kasuga_freeter && CurrentJob != RPGJobID.kiryu_01)
+                    {
+                        ItemID wep = Party.GetEquipItemID(CurrentPlayer, PartyEquipSlotID.weapon);
+                        AssetID wepAssetID = Item.GetAssetID(wep);
+
+                        Weapon leftWeapon = BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.left_weapon);
+                        Weapon rightWeapon = BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon);
+
+                        //something went wrong with weapons, lets fix it
+                        //have to check left weapon too, or else adachi will break
+                        if (DoesJobHaveWeapons(Player.GetCurrentJob(CurrentPlayer)))
+                            if (leftWeapon.Unit.Get().AssetID == AssetID.invalid && rightWeapon.Unit.Get().AssetID == AssetID.invalid)
+                                SetupJobWeapons();
+                    }
+                }
+
             }
 
             EXModule.Update();
@@ -478,7 +515,7 @@ namespace LikeABrawler2
 
                 if (curJob == RPGJobID.kasuga_freeter || curJob == RPGJobID.kiryu_01)
                 {
-                    if(BrawlerFighterInfo.Player.RightWeapon.IsValid() && BrawlerFighterInfo.Player.RightWeapon.IsFromPocket())
+                    if (BrawlerFighterInfo.Player.RightWeapon.IsValid() && BrawlerFighterInfo.Player.RightWeapon.IsFromPocket())
                     {
                         string skillName = $"player_wp{Asset.GetArmsCategory(BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get().AssetID).ToString().ToLowerInvariant()}_noutou";
                         RPGSkillID noutouSkill = DBManager.GetSkill(skillName);
@@ -626,6 +663,27 @@ namespace LikeABrawler2
                 if (HeatActionManager.CanHAct())
                     HeatActionManager.ExecHeatAction(HeatActionManager.PerformableHact);
         }
+        
+        private static void SetupJobWeapons()
+        {
+            switch (Player.GetCurrentJob(CurrentPlayer))
+            {
+                default:
+                    SetupWeapon(BrawlerBattleManager.PlayerFighter._ptr);
+                    break;
+                case RPGJobID.man_western:
+                    EquipJobWeapons(RPGJobID.man_western);
+                    break;
+                case RPGJobID.kasuga_freeter:
+                    break;
+                case RPGJobID.kiryu_01:
+                    break;
+
+            }
+
+            BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get().Arms.SetFromPocket(true);
+            BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.left_weapon).Unit.Get().Arms.SetFromPocket(true);
+        }
 
 
         public static void OnExtremeHeatModeON()
@@ -640,24 +698,7 @@ namespace LikeABrawler2
                 BrawlerBattleManager.PlayerFighter.Character.GetRender().BattleTransformationOn();
                 //EquipJobWeapons(Player.GetCurrentJob(playerChara.Attributes.player_id));
 
-                switch (Player.GetCurrentJob(CurrentPlayer))
-                {
-                    default:
-                        SetupWeapon(BrawlerBattleManager.PlayerFighter._ptr);
-                        break;
-                    case RPGJobID.man_western:
-                        EquipJobWeapons(RPGJobID.man_western);
-                        break;
-                    case RPGJobID.kasuga_freeter:
-                        break;
-                    case RPGJobID.kiryu_01:
-                        break;
-
-                }
-
-                BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get().Arms.SetFromPocket(true);
-                BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.left_weapon).Unit.Get().Arms.SetFromPocket(true);
-
+                SetupJobWeapons();
 
                 //Commandset hackery to allow other players to use someone elses jobs
                 //Example: Saeko on adachi
@@ -705,7 +746,7 @@ namespace LikeABrawler2
                 playerChara.Components.EffectEvent.Get().PlayEventOverride(EffectEventCharaID.YZ_Chara_Cange01);
             }
             else
-                OnStyleSwitch(PlayerStyle.Legend);
+                OnStyleSwitch(PlayerStyle.Dragon);
         }
 
         public static void OnExtremeHeatModeOFF()
@@ -769,12 +810,12 @@ namespace LikeABrawler2
                     styleCommandSet = FighterCommandManager.FindSetID("p_kiryu_legend_brawler");
                     break;
 
-                case PlayerStyle.Legend:
+                case PlayerStyle.Dragon:
                     styleAnim = DBManager.GetSkill("kiryu_to_legend");
                     styleCommandSet = FighterCommandManager.FindSetID("p_kiryu_legend_1988_brawler");
                     overrideStyle = PlayerStyle.Default;
 
-                    if(IniSettings.AllowResurgenceMusic)
+                    if (IniSettings.AllowResurgenceMusic)
                         BrawlerBattleManager.PlaySpecialMusic(DBManager.GetSoundCuesheet("bbg_k"), 1);
 
                     //BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToAttackMode(new FighterCommandID((ushort)styleCommandSet, (ushort)FighterCommandManager.GetCommandID(styleCommandSet, "StyleStart")));
@@ -799,7 +840,7 @@ namespace LikeABrawler2
                     break;
             }
 
-            if (IsExtremeHeat && newStyle != PlayerStyle.Legend)
+            if (IsExtremeHeat && newStyle != PlayerStyle.Dragon)
                 OnExtremeHeatModeOFF();
 
             if (!quick)
@@ -847,7 +888,7 @@ namespace LikeABrawler2
                 }
                 else
                */
-                    nearestEnemies = BrawlerBattleManager.AllEnemiesNearest;
+                nearestEnemies = BrawlerBattleManager.AllEnemiesNearest;
 
 
                 if (LastLockedInEnemy.IsValid() && !LastLockedInEnemy.IsDead() && BrawlerFighterInfo.Player.IsAttack)
@@ -897,7 +938,7 @@ namespace LikeABrawler2
 
             targetDecide.SetTarget(new FighterID() { Handle = target.Character.UID });
 
-            if(!disableTargetingThisFrame)
+            if (!disableTargetingThisFrame)
             {
                 LastBehindEnemy = BrawlerBattleManager.NearestEnemyBehindPlayer;
                 LastLockedInEnemy = target;
@@ -936,8 +977,8 @@ namespace LikeABrawler2
 
                 OnPerfectGuard?.Invoke();
             }
-            
-            if(isGuard && !isJustGuard)
+
+            if (isGuard && !isJustGuard)
             {
                 uint attr = *(uint*)(dmg._ptr + 0x8C);
 
@@ -988,7 +1029,7 @@ namespace LikeABrawler2
 
                         //new DETaskList(new DETaskNextFrame(delegate { HumanModePatches.GuardBreak.Invoke(BrawlerBattleManager.PlayerCharacter.HumanModeManager.Pointer, dmg._ptr); }));
 
-                        
+
                     }
                 }
             }

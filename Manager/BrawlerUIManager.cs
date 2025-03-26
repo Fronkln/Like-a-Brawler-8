@@ -53,9 +53,28 @@ namespace LikeABrawler2
             DragonEngine.Log("Player Gauge: " + m_playerGauge);
         }
 
+        private static void OnPlayerSpawn()
+        {
+            //Player UI Preload, otherwise may freeze combat for 3-5 seconds the first time!
+
+            if (!UseClassicGauge && ShouldCreateRealtimeGauge())
+            {
+                CreateRealtimeGauge();
+                DestroyRealtimeGauge();
+
+                DragonEngine.Log("Realtime UI Preload complete.");
+            }
+        }
+
         private static uint GetRealtimeGaugeID()
         {
             uint characterID = (uint)BrawlerBattleManager.PlayerCharacter.Attributes.chara_id;
+
+            //Kasuga (worker)
+            if(characterID == 26149 || characterID == 23390 || characterID == 23389 || characterID == 11455)
+            {
+                return 1174;
+            }
 
             //Kasuga (normal)
             if(characterID == 8865 || characterID == 15591 || characterID == 15286 || characterID == 19934)
@@ -64,7 +83,8 @@ namespace LikeABrawler2
             }
 
             //Reborn Kiryu
-            if (characterID == 28267 ||
+            if (characterID == 11456 ||
+                characterID == 28267 ||
                 characterID == 26144 ||
                 characterID == 26143 ||
                 characterID == 17305 ||
@@ -80,6 +100,32 @@ namespace LikeABrawler2
                 return 394; //temp;
         }
 
+        private static bool ShouldCreateRealtimeGauge()
+        {
+            return !UseClassicGauge && !BrawlerPlayer.IsOtherPlayer();
+        }
+
+        private static void CreateRealtimeGauge()
+        {
+            RealtimeGauge = UI.Play(GetRealtimeGaugeID(), 0);
+            m_realtimeGaugeHealth = RealtimeGauge.GetChild(0).GetChild(0).GetChild(1);
+            m_realtimeGaugeHeat = RealtimeGauge.GetChild(0).GetChild(0).GetChild(2);
+            m_realtimeGaugeHeat.GetChild(3).SetVisible(false);
+
+            //We just don't have UI textures for other characters.
+            if(BrawlerPlayer.IsOtherPlayer())
+                RealtimeGauge.GetChild(0).GetChild(0).GetChild(3).SetVisible(false);
+        }
+        
+        private static void DestroyRealtimeGauge()
+        {
+            if(RealtimeGauge.Handle != 0)
+            {
+                RealtimeGauge.Release();
+                RealtimeGauge.Handle = 0;
+            }
+        }
+
         private static void ProcessPlayerGauge()
         {
             m_playerGauge = GetPlayerGauge();
@@ -89,15 +135,10 @@ namespace LikeABrawler2
             m_playerGauge_HeatGauge = m_playerGauge.GetChild(6);
             m_playerGauge_HeatGaugeLabel = m_playerGauge.GetChild(7);
 
-            if (!UseClassicGauge && (!BrawlerPlayer.IsOtherPlayer()))
+            if (ShouldCreateRealtimeGauge())
             {
                 if (RealtimeGauge.Handle == 0)
-                {
-                    RealtimeGauge = UI.Play(GetRealtimeGaugeID(), 0);
-                    m_realtimeGaugeHealth = RealtimeGauge.GetChild(0).GetChild(0).GetChild(1);
-                    m_realtimeGaugeHeat = RealtimeGauge.GetChild(0).GetChild(0).GetChild(2);
-                    m_realtimeGaugeHeat.GetChild(3).SetVisible(false);
-                }
+                    CreateRealtimeGauge();
             }
         }
 
@@ -119,12 +160,7 @@ namespace LikeABrawler2
         private static void OnBattleEnd()
         {
             m_hactPrompt.SetVisible(false);
-            
-            if(RealtimeGauge.Handle != 0)
-            {
-                RealtimeGauge.Release();
-                RealtimeGauge.Handle = 0;
-            }
+            DestroyRealtimeGauge();
         }
 
 
@@ -214,6 +250,9 @@ namespace LikeABrawler2
 
             if (!Mod.IsRealtime())
                 return;
+
+            if (ShouldCreateRealtimeGauge() && BrawlerBattleManager.PlayerCharacter.IsValid() && RealtimeGauge.Handle == 0)
+                CreateRealtimeGauge();
 
             if(BrawlerBattleManager.IsHAct)
                 GaugeRoot.SetVisible(false);

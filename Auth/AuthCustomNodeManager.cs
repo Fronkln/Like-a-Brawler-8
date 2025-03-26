@@ -11,23 +11,23 @@ namespace LikeABrawler2
         private delegate void PlayDeleg(IntPtr thisObj, uint tick, IntPtr mtx, IntPtr parent);
         private static List<PlayDeleg> _playDelegates = new List<PlayDeleg>();
 
-        [DllImport("mods/EX Auth/EXAuth.asi", EntryPoint = "InitializeASI", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("EXAuth.asi", EntryPoint = "InitializeASI", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool _Init();
 
-        [DllImport("mods/EX Auth/EXAuth.asi", EntryPoint = "RegisterNewNode", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("EXAuth.asi", EntryPoint = "RegisterNewNode", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool _RegisterNewNode(uint id);
 
-        [DllImport("mods/EX Auth/EXAuth.asi", EntryPoint = "RegisterPlayFunc", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("EXAuth.asi", EntryPoint = "RegisterPlayFunc", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool _RegisterPlayFunc(uint id, IntPtr func);
 
-        [DllImport("mods/EX Auth/EXAuth.asi", EntryPoint = "RegisterPlayFirstFunc", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("EXAuth.asi", EntryPoint = "RegisterPlayFirstFunc", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool _RegisterPlayFirstFunc(uint id, IntPtr func);
 
-        [DllImport("mods/EX Auth/EXAuth.asi", EntryPoint = "RegisterPlayLastFunc", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("EXAuth.asi", EntryPoint = "RegisterPlayLastFunc", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool _RegisterPlayLastFunc(uint id, IntPtr func);
 

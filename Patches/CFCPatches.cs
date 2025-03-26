@@ -72,6 +72,8 @@ namespace LikeABrawler2
                     return CheckEnemyBehindPlayer(fighter, op, paramsPtr);
                 case 15:
                     return CheckAwakeningStat(fighter, op, paramsPtr);
+                case 16:
+                    return CheckIsDragon(fighter, op, paramsPtr); 
             }
 
             return false;
@@ -343,6 +345,20 @@ namespace LikeABrawler2
         private static bool CheckAwakeningStat(IntPtr fighterPtr, byte op, byte* paramsPtr)
         {
             return false;
+        }
+
+        private static bool CheckIsDragon(IntPtr fighterPtr, byte op, byte* paramsPtr)
+        {
+            switch (op)
+            {
+                default:
+                    return true;
+
+                case 0:
+                    return BrawlerPlayer.IsDragon();
+                case 3:
+                    return !BrawlerPlayer.IsDragon();
+            }
         }
     }
 }

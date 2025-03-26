@@ -10,8 +10,9 @@ namespace LikeABrawler2
         private delegate bool ConditionDeleg(IntPtr dat, IntPtr node);
         private static List<ConditionDeleg> _condDelegates = new List<ConditionDeleg>();
 
-        //TODO: EXTENSIONS/EX AUTH CONDITION WAS BROKEN FOR DEVILLEON! NOT GOOD!
-        [DllImport("mods/EX Auth Condition/EX Auth Condition.asi", EntryPoint = "EX_AUTH_COND_REGISTER_CONDITION", CallingConvention = CallingConvention.Cdecl)]
+        //TODO: EXTENSIONS/
+        //CONDITION WAS BROKEN FOR DEVILLEON! NOT GOOD!
+        [DllImport("EX Auth Condition.asi", EntryPoint = "EX_AUTH_COND_REGISTER_CONDITION", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool _RegisterPrivate(uint id, IntPtr func);
 

@@ -444,6 +444,12 @@ namespace LikeABrawler2
 
                     flag = WeaponManager.GetTypeForJobWeapon(equipItem) == (JobWeaponType)cond.Param1U32;
                     break;
+
+                case HeatActionConditionType.PlayerID:
+                    return BrawlerPlayer.CurrentPlayer == (Player.ID)cond.Param1U32;
+
+                case HeatActionConditionType.PlayerStyle:
+                    return BrawlerPlayer.CurrentStyle == (PlayerStyle)cond.Param1U32;
             }
 
             switch (cond.LogicalOperator)

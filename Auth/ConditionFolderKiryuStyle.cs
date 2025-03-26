@@ -13,6 +13,12 @@ namespace LikeABrawler2
             uint idVal = *id;
             uint currentStyle = (uint)BrawlerPlayer.CurrentStyle;
 
+            if(!BrawlerPlayer.IsDragon())
+            {
+                if (BrawlerPlayer.IsExtremeHeat && idVal == 1)
+                    return true;
+            }
+
             return currentStyle != idVal;
         }
     }

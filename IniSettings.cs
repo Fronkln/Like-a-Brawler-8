@@ -49,5 +49,15 @@ namespace LikeABrawler2
             ini.WriteValue("PartyMemberSkillTime", "Party", PartyMemberSkillTime.ToString(CultureInfo.InvariantCulture));
             ini.Save();
         }
+
+        public static bool IsPlayerRealtime()
+        {
+            if (BrawlerPlayer.IsKasuga())
+                return IsIchibanRealtime == 1;
+            else if (BrawlerPlayer.IsKiryu())
+                return IsKiryuRealtime == 1;
+
+            else return IsIchibanRealtime == 1;
+        }
     }
 }
