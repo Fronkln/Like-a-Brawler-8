@@ -1,7 +1,7 @@
 # Like a Brawler 8
 Realtime combat mod for Like a Dragon: Infinite Wealth
-<br>The mod has not been released yet. This repository will not work on its own
-<br>Exists solely as a reference for the moment being
+<br>Uses DELib, EX Auth and EX Auth Condition as library dependencies
+<br>Full assets including developer files can be found [here](https://github.com/Fronkln/Like-A-Brawler-8-Content)
 
 This project uses **DBGen** to generate its DB files which can be found on **Utils Projects/DBGen**
 <br>Otherwise, the source code for its custom HAct CHP format  **ElvisCommand** can be found on **Utils Projects/ElvisCommand** <br>and its GUI Editor  **ElvisCommander** at **Utils Projects/ElvisCommander**
