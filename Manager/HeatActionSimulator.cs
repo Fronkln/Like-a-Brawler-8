@@ -173,7 +173,20 @@ namespace LikeABrawler2
                     break;
                 case HeatActionConditionType.Job:
                     if (actor.IsPlayer())
-                        flag = Logic.CheckNumberLogicalOperator((uint)Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer), cond.Param1U32, cond.LogicalOperator);
+                    {
+                        RPGJobID job = Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer);
+
+                        if(!BrawlerPlayer.IsOtherPlayer() && !BrawlerPlayer.IsExtremeHeat)
+                        {
+                            if (BrawlerPlayer.IsKasuga())
+                                job = RPGJobID.kasuga_freeter;
+                            else
+                                job = RPGJobID.kiryu_01;
+                        }
+
+                        flag = Logic.CheckNumberLogicalOperator((uint)job, cond.Param1U32, cond.LogicalOperator);
+                    }
+
                     break;
                 case HeatActionConditionType.JobLevel:
                     if (actor.IsPlayer())

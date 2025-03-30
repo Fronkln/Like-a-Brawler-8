@@ -124,10 +124,14 @@ namespace LikeABrawler2
                 if (BrawlerPlayer.StageEHC.ContainsKey(stageID))
                     newPerformableHact = Iterate(BrawlerPlayer.StageEHC[stageID]);
 
-                if (newPerformableHact == null && (BrawlerPlayer.IsExtremeHeat || BrawlerPlayer.IsOtherPlayer()))
-                    if (BrawlerPlayer.JobEHC.ContainsKey(job))
-                        newPerformableHact = Iterate(BrawlerPlayer.JobEHC[job]);
-
+                if(newPerformableHact == null)
+                {
+                    if(BrawlerPlayer.IsExtremeHeat || BrawlerPlayer.IsOtherPlayer())
+                    {
+                        if (BrawlerPlayer.JobEHC.ContainsKey(job))
+                            newPerformableHact = Iterate(BrawlerPlayer.JobEHC[job]);
+                    }
+                }
                 if (newPerformableHact == null)
                     newPerformableHact = Iterate(BrawlerPlayer.PlayerSharedHActs);
 
