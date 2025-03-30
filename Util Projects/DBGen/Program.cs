@@ -34,6 +34,8 @@ namespace DBGen
             if(args.Length > 1)
                 gameOverride = args[1];
 
+            TalkParamModule.ComplexMode = !args.Contains("simple");
+
             string curDir = Directory.GetCurrentDirectory();
             string dbDir = Directory.GetDirectories(curDir).FirstOrDefault(x => x.Contains("db"));
 

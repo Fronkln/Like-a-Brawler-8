@@ -22,7 +22,7 @@ namespace DBGen
                 return;
 #endif
 
-            string rootDir = Path.Combine(Program.refPath, "command_set");
+            string rootDir = Path.Combine("db_gen.puid", "command_set");
             string listFile = Path.Combine(rootDir, "list.txt");
 
             ARMP battleCommandSet = Program.GetInputTable("battle_command_set");

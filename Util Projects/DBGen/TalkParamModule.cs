@@ -196,6 +196,9 @@ namespace DBGen
             if (!File.Exists(cmnPath))
                 return;
 
+            if (!ComplexMode)
+                return;
+
             CMN hact = CMN.Read(cmnPath, CMN.GetGameFromString(Program.gameOverride));
             
             if (AdjustSound(hact, str))

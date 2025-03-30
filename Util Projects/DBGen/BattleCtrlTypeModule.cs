@@ -16,7 +16,7 @@ namespace DBGen
     {
         public static void Procedure()
         {
-            string rootDir = Path.Combine(Program.refPath, "ctrltype");
+            string rootDir = Path.Combine("db_gen.puid", "ctrltype");
             string listFile = Path.Combine(rootDir, "list.txt");
 
             if (!Directory.Exists(rootDir))
