@@ -170,8 +170,11 @@ namespace LikeABrawler2
         private static void BattleTurnManager_UINotifyDamage(IntPtr inf, IntPtr dat, IntPtr arg2, IntPtr arg3)
         {
 
-            if(inf == IntPtr.Zero)
+            if (inf == IntPtr.Zero)
+            {
                 _btlTurnManagerDmgUINotifyDmgTrampoline(inf, dat, arg2, arg3);
+                return;
+            }
 
             bool isPlayer = Marshal.ReadByte(inf + 0xD) != 0;
 

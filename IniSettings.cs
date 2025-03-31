@@ -7,7 +7,7 @@ namespace LikeABrawler2
     internal static class IniSettings
     {
         public static bool ShowPlayerDamage = true;
-        public static bool ShowEnemyDamage = false;
+        public static bool ShowEnemyDamage = true;
         public static int IsIchibanRealtime = 1;
         public static int IsKiryuRealtime = 1;
         public static float PartyMemberSkillMPReqRatio = 0.5f;

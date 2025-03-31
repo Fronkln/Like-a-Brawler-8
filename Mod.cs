@@ -73,6 +73,8 @@ namespace LikeABrawler2
                 Assembly assmb = Assembly.GetExecutingAssembly();
                 ModPath = Path.GetDirectoryName(assmb.Location);
 
+                IniSettings.Read();
+
                 DBManager.Init();
 
                 AuthCustomNodeManager.Init();
@@ -100,7 +102,6 @@ namespace LikeABrawler2
                 if (!File.Exists(IniSettings.IniPath()))
                     IniSettings.Write();
 
-                IniSettings.Read();
                 DragonEngine.Log("Like A Brawler Init Complete");
             }
             catch(Exception ex)

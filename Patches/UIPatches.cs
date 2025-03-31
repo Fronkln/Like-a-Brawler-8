@@ -38,6 +38,10 @@ namespace LikeABrawler2
             {
                 BrawlerPatches.HookEngine.EnableHook(m_showDamageNumberTrampoline);
             }
+            else
+            {
+                BrawlerPatches.HookEngine.DisableHook(m_showDamageNumberTrampoline);
+            }
 
         }
 

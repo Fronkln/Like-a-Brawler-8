@@ -23,6 +23,7 @@ namespace LikeABrawler2
         private IntPtr m_ecbattleStatusCalculateHpFunc;
         private IntPtr m_fighterDisableRunFunc;
         private IntPtr m_liveActionNodeFunc;
+        private IntPtr m_someFighterFuncAddr;
 
         private IntPtr m_transitKiryuGuardFunc;
         private HijackedFunction m_transitKiryuGuardHijack;
@@ -51,6 +52,8 @@ namespace LikeABrawler2
 
         private delegate void ECBattleStatusInitializeHP(IntPtr status);
 
+
+        private delegate void SomeFighterFunctionDel(IntPtr thisPtr, long someValue);
 
 
         public override void Init()
@@ -87,6 +90,8 @@ namespace LikeABrawler2
                 m_ecbattleStatusInitializeHpTrampoline = BrawlerPatches.HookEngine.CreateHook<ECBattleStatusInitializeHP>(m_ecbattleStatusCalculateHpFunc, ECBattleStatus_InitializeHP);
                 BrawlerPatches.HookEngine.EnableHook(m_ecbattleStatusInitializeHpTrampoline);
             }
+
+            m_someFighterFuncAddr = CPP.PatternSearch("40 53 48 83 EC ? 48 8B D9 48 8B CA E8 ? ? ? ? 84 C0");
         }
 
         protected override void SetActive()
@@ -111,6 +116,9 @@ namespace LikeABrawler2
             if (m_fighterDisableRunTrampoline == null)
                 m_fighterDisableRunTrampoline = BrawlerPatches.HookEngine.CreateHook<FighterDisableRun>(m_fighterDisableRunFunc, Fighter_DisableRun);
 
+            if(m_someFighterFunc == null)
+                m_someFighterFunc =  BrawlerPatches.HookEngine.CreateHook<SomeFighterFunctionDel>(m_someFighterFuncAddr, SomeFighterFunction);
+
             BrawlerPatches.HookEngine.EnableHook(m_battleTransformOnTrampoline);
             BrawlerPatches.HookEngine.EnableHook(m_canDamSyncTrampoline);
             BrawlerPatches.HookEngine.EnableHook(m_ecBattleStatusSetMarkFighterTrampoline);
@@ -118,6 +126,7 @@ namespace LikeABrawler2
             BrawlerPatches.HookEngine.EnableHook(m_transitKiryuCounterTrampoline);
             BrawlerPatches.HookEngine.EnableHook(m_fighterDisableRunTrampoline);
             BrawlerPatches.HookEngine.EnableHook(m_liveActionPlayFunc);
+            BrawlerPatches.HookEngine.EnableHook(m_someFighterFunc);
             //BrawlerPatches.HookEngine.EnableHook(m_liveActionPlayFunc2);
 
             CPP.PatchMemory(m_invisFighterJmp1+6, 0x99);
@@ -156,6 +165,9 @@ namespace LikeABrawler2
 
             if (m_liveActionPlayFunc2 != null)
                 BrawlerPatches.HookEngine.DisableHook(m_liveActionPlayFunc2);
+
+            if (m_someFighterFunc != null)
+                BrawlerPatches.HookEngine.DisableHook(m_someFighterFunc);
 
             CPP.PatchMemory(m_invisFighterJmp1+6, 0x20);
             CPP.PatchMemory(m_invisFighterJmp2, 0x74);
@@ -375,6 +387,15 @@ namespace LikeABrawler2
                 return;
 
             m_liveActionPlayFunc2(thisPtr);
+        }
+
+        SomeFighterFunctionDel m_someFighterFunc;
+        private unsafe void SomeFighterFunction(IntPtr thisPtr, long someValue)
+        {
+            if (thisPtr == IntPtr.Zero || someValue == 0)
+                return;
+
+            m_someFighterFunc.Invoke(thisPtr, someValue);
         }
     }
 }
