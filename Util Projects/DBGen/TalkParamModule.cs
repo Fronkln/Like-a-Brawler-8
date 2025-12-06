@@ -16,7 +16,8 @@ namespace DBGen
 
         public static void Procedure()
         {
-            //false in Y6, only adjusts
+
+                //false in Y6, only adjusts
             bool canAdd = true;
             bool isRepackGame = false;
 
@@ -27,8 +28,7 @@ namespace DBGen
 
             Console.WriteLine("------|TALK PARAM GEN|-----");
 
-
-            string genFilePath = "hact_src/hact_gen.txt";
+            string genFilePath = "hact_yazawa/hact_gen.txt";
 
             if (File.Exists(genFilePath))
                 isRepackGame = true;
@@ -36,7 +36,7 @@ namespace DBGen
             string hactSrcDir = "";
 
             if (isRepackGame)
-                hactSrcDir = "hact_src";
+                hactSrcDir = "hact_yazawa";
             else
             {
                 if (Program.NoCodename)
@@ -44,6 +44,10 @@ namespace DBGen
                 else
                     hactSrcDir = "hact." + Program.project;
             }
+
+
+            if (!Directory.Exists(hactSrcDir))
+                return;
 
             List<string> genFileDat = null;
 
@@ -56,24 +60,9 @@ namespace DBGen
                 genFileDat = File.ReadAllLines(genFilePath).ToList();
             }
 
-
-            if (isRepackGame)
-            {
-                if (Directory.Exists("hact_unpacked"))
-                    new DirectoryInfo("hact_unpacked").Delete(true);
-
-                Directory.CreateDirectory("hact_unpacked");
-            }
-
             foreach (string hactDir in Directory.GetDirectories(hactSrcDir))
             {
                 string dirName = new DirectoryInfo(hactDir).Name;
-
-                if (isRepackGame)
-                {
-                    Directory.CreateDirectory("hact_unpacked/" + dirName);
-                    File.Copy(Path.Combine(Program.refPath, "hact_builder.bat"), Path.Combine(hactDir, "build.bat"), true);
-                }
 
                 if (canAdd)
                 {
@@ -149,7 +138,14 @@ namespace DBGen
                         ArmpEntry talkEntry = talkParamBin.MainTable.AddEntry(str);
                         try
                         {
-                            talkEntry.SetValueFromColumn("path", "hact_elvis/" + str);
+                            string path = "hact";
+
+                            if (!Program.NoCodename)
+                                path += "_" + Program.project;
+
+                            path += "/";
+
+                            talkEntry.SetValueFromColumn("path", path + str);
                             talkEntry.SetValueFromColumn("type", byte.Parse(File.ReadAllText(metaDataPath)));
                         }
                         catch
@@ -199,7 +195,7 @@ namespace DBGen
             if (!ComplexMode)
                 return;
 
-            CMN hact = CMN.Read(cmnPath, CMN.GetGameFromString(Program.gameOverride));
+            CMN hact = CMN.Read(cmnPath, Program.Game);
             
             if (AdjustSound(hact, str))
                 dirty = true;

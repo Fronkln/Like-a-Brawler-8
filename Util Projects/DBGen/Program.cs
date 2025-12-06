@@ -17,6 +17,8 @@ namespace DBGen
         public static string refInput = Path.Combine(Environment.CurrentDirectory, refPath, "_input");
         public static string project = "elvis";
 
+        public static Game Game = Game.LADIW;
+
         public static bool NoCodename = false;
 
         public static string dbPath;
@@ -24,15 +26,17 @@ namespace DBGen
 
         public static bool isDemo;
 
-        public static string gameOverride = "y8";
-
         static void Main(string[] args)
         {
             if (args.Length > 0)
                 lang = args[0];
 
-            if(args.Length > 1)
-                gameOverride = args[1];
+            if(File.Exists("dbgen_settings.ini"))
+            {
+                Ini settings = new Ini("dbgen_settings.ini");
+
+                Game = Enum.Parse<Game>(settings.GetValue("Game", "", "y8"), true);
+            }
 
             TalkParamModule.ComplexMode = !args.Contains("simple");
 
@@ -112,13 +116,13 @@ namespace DBGen
                 Console.WriteLine();
             }
 
-                //Particle must get special treatment due to hact adjusting
+                //Particle must get special treatment due to hact adjusting, commented as a result
                 //PUIDModule.Procedure("particle", "particle", "*.pib");
             PUIDModule.Procedure("motion_gmt", "motion/gmt", "*.gmt");
             PUIDModule.Procedure("motion_bep", "motion/bep", "*.bep");
             PUIDModule.Procedure("behavior_set", "motion/behavior", "*.mbv");
             PUIDModule.Procedure("ui_texture", $"ui.{codeName}.en", "*.dds"); //always taking EN as basis
-
+            PUIDModule.Procedure("effect_event_screen", "effect/event/screen", null);
 
             if (Directory.Exists(refInput))
             {
@@ -155,6 +159,8 @@ namespace DBGen
                 BattleRPGEnemyModule.Procedure();
                 Console.WriteLine();
                 SoldierInfoModule.Procedure();
+                Console.WriteLine();
+                PartyTalkModule.Procedure();
             }
 
             Console.WriteLine($"\nDBGen completed in: {watch.Elapsed}");

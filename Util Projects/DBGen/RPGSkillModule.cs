@@ -13,6 +13,7 @@ namespace DBGen
 {
     public static class RPGSkillModule
     {
+        private static bool m_added = false;
         public static void Procedure()
         {
             Console.WriteLine("------|RPG SKILL GEN|-----");
@@ -52,6 +53,8 @@ namespace DBGen
                     skillEntry = rpgSkill.MainTable.AddEntry(str);
                 else
                     skillEntry = rpgSkill.MainTable.GetEntry(entry.OverrideName);
+
+                m_added = true;
 
                 bool replaceMode = !string.IsNullOrEmpty(entry.OverrideName);
 
@@ -93,7 +96,10 @@ namespace DBGen
             }
 
             File.WriteAllLines(Path.Combine(Program.dbPath, "rpg_skill.db_index"), Program.CacheARMP(rpgSkill));
-            ArmpFileWriter.WriteARMPToFile(rpgSkill, Path.Combine(Program.dbPath, "rpg_skill.bin"));
+            
+            
+            if(m_added)
+                ArmpFileWriter.WriteARMPToFile(rpgSkill, Path.Combine(Program.dbPath, "rpg_skill.bin"));
 
             Console.WriteLine("------|RPG SKILL GEN COMPLETE|-----");
         }

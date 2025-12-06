@@ -16,7 +16,7 @@ namespace DBGen
         {
             Console.WriteLine("------|RPG ENEMY ARTS GEN|-----");
 
-            string rootDir = Path.Combine(Program.refPath, "enemy");
+            string rootDir = Path.Combine(Program.refPath, "arts");
             string listFile = Path.Combine(rootDir, "list.txt");
 
             ARMP rpgEnemyArtsData = Program.GetInputTable("rpg_enemy_arts_data");
@@ -54,8 +54,13 @@ namespace DBGen
                 List<RPGEnemyArtsEntry> attacksDat = new List<RPGEnemyArtsEntry>();
                 List<ArmpEntry> attacksEntryMain = new List<ArmpEntry>();
 
-                ArmpEntry enemyEntry = rpgEnemyArtsData.MainTable.SubTable.AddEntry(new DirectoryInfo(str2).Name);
-                rpgEnemyArtsType.MainTable.AddEntry(enemyEntry.Name);
+                ArmpEntry enemyEntry = null;
+
+                if (!rpgEnemyArtsData.MainTable.SubTable.TryGetEntry(str, out enemyEntry))
+                {
+                    enemyEntry = rpgEnemyArtsData.MainTable.SubTable.AddEntry(str);
+                    rpgEnemyArtsType.MainTable.AddEntry(enemyEntry.Name);
+                }
 
                 List<ArmpEntry> entries = rpgEnemyArtsData.MainTable.SubTable.GetAllEntries();
 
@@ -97,7 +102,9 @@ namespace DBGen
             }
 
             ArmpFileWriter.WriteARMPToFile(rpgEnemyArtsData, Path.Combine(Program.dbPath, "rpg_enemy_arts_data.bin"));
-            ArmpFileWriter.WriteARMPToFile(rpgEnemyArtsType, Path.Combine(Program.dbPath, "rpg_enemy_arts_type.bin"));
+
+            if (rpgEnemyArtsType != null)
+                ArmpFileWriter.WriteARMPToFile(rpgEnemyArtsType, Path.Combine(Program.dbPath, "rpg_enemy_arts_type.bin"));
 
             Console.WriteLine("------|RPG ENEMY ARTS GEN COMPLETE|-----");
         }

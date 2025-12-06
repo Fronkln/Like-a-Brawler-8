@@ -59,7 +59,7 @@ namespace DBGen
 
                 string gmtName = entryDat[0] + ".gmt";
 
-                BEP converted = OEToDEProperty.ConvertPropertyEntryToDE(property, entryDat[0], Game.YK1, Game.LADIW);
+                BEP converted = OEToDEProperty.ConvertPropertyEntryToDE(property, entryDat[0], Game.YK1, Program.Game);
                 FileInfo anim = files.FirstOrDefault(x => x.Name == gmtName);
 
                 if (anim != null)
@@ -76,7 +76,7 @@ namespace DBGen
                 }
 
                 if(converted != null)
-                    BEP.Write(converted, exportPath, Game.LADIW);
+                    BEP.Write(converted, exportPath, Program.Game);
 
                 Console.WriteLine("Converted " + entryDat[0]);
             }

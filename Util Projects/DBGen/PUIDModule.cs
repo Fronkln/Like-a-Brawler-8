@@ -39,12 +39,27 @@ namespace DBGen
 
             List<string> list = File.ReadAllLines(listFile).ToList();
 
-            foreach (string str in Directory.GetFiles(folder, ext, SearchOption.AllDirectories))
-            {
-                string fileName = Path.GetFileNameWithoutExtension(str);
 
-                if (!list.Contains(fileName))
-                    list.Add(fileName);
+            if (ext != null)
+            {
+
+                foreach (string str in Directory.GetFiles(folder, ext, SearchOption.AllDirectories))
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(str);
+
+                    if (!list.Contains(fileName))
+                        list.Add(fileName);
+                }
+            }
+            else
+            {
+                foreach (string str in Directory.GetDirectories(folder))
+                {
+                    string dirName = new DirectoryInfo(str).Name;
+
+                    if (!list.Contains(dirName))
+                        list.Add(dirName);
+                }
             }
 
             File.WriteAllLines(listFile, list);

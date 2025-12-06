@@ -20,6 +20,9 @@ namespace DBGen
             string rootDir = Path.Combine("db_gen.puid");
             string listFile = Path.Combine(rootDir, "particle.txt");
 
+            if (!Directory.Exists(rootDir))
+                return;
+
             if (!File.Exists(listFile))
                 File.Create(listFile).Close();
 
@@ -43,6 +46,9 @@ namespace DBGen
             File.WriteAllLines(listFile, list);
 
             ARMP particles = Program.GetInputTable("particle");
+
+            if (particles == null)
+                return;
 
             foreach(string str in list)
             {

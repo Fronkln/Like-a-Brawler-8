@@ -34,40 +34,6 @@ namespace DBGen
             string[] curDat = ReadGenOutputFile();
             List<string> output = new List<string>();
 
-            /*
-            foreach(FileInfo inf in localizedSoundDirFiles[0])
-            {
-                string[] nameSplit = inf.Name.Split('_');
-                string name = "";
-
-                for (int i = 1; i < nameSplit.Length; i++)
-                {
-                    name += nameSplit[i];
-
-                    if (i != nameSplit.Length - 1)
-                        name += "_";
-                }
-
-                string fileName = name;
-                name = name.Replace(".acb", "");
-
-                string soundGenPath = Path.Combine(genDir, "sound", fileName);
-                string streamGenPath = Path.Combine(genDir, "stream", fileName);
-
-                byte category = byte.Parse(nameSplit[0].Replace("ctg", ""));
-
-                output.Add(name + "|" + category);
-
-                inf.CopyTo(Path.Combine("sound", fileName), true);
-                inf.Delete();
-
-                if(File.Exists(streamGenPath))
-                {
-                    File.Copy(streamGenPath, Path.Combine("stream", name + ".awb"), true);
-                    File.Delete(streamGenPath);
-                }
-            }
-            */
 
             File.AppendAllLines(genListPath, output);
         }
@@ -90,9 +56,10 @@ namespace DBGen
                 return;
             }
 
-            /*
-            DirectoryInfo[] localizedSoundDirs = genDirInf.GetDirectories()
+            
+            DirectoryInfo[] localizedSoundDirs = new DirectoryInfo(Directory.GetCurrentDirectory()).GetDirectories()
                 .Where(x => x.Name.StartsWith("sound"))
+                .Where(x => x.Name.Contains("_"))
                 .Where(x => x.Name.Length <= 8)
                 .OrderBy(x => x.Name)
                 .ToArray();
@@ -105,11 +72,6 @@ namespace DBGen
             FileInfo[][] localizedSoundDirFiles = localizedSoundDirs
                 .Select(x => x.GetFiles("*.acb"))
                 .ToArray();
-
-            //ctg10_hact_y7b1550_amogus
-            localizedSoundDirFiles[0] = localizedSoundDirFiles[0]
-                .ToArray();
-            */
 
 
             ProcessGenOutputFile();
@@ -147,11 +109,17 @@ namespace DBGen
                 subTableEntry.SetValueFromColumn("0", (uint)(subTableEntry.ID + 1));
                 subTableEntry.SetValueFromColumn("2", (uint)(subTableEntry.ID));
 
-                if(File.Exists(streamGenPath))
-                    mainEntry.SetValueFromColumn("have_awb", true);
+                bool streamAdded = false;
 
-                /*
-                for (int i = 1; i < localizedSoundDirFiles.Length; i++)
+                Console.WriteLine(streamGenPath);
+
+                if (File.Exists(streamGenPath))
+                {
+                    mainEntry.SetValueFromColumn("have_awb", true);
+                    streamAdded = true;
+                }
+
+                for (int i = 0; i < localizedSoundDirFiles.Length; i++)
                 {
                     if (localizedSoundDirFiles[i].FirstOrDefault(x => x.Name == fileName) != null)
                     {
@@ -159,16 +127,18 @@ namespace DBGen
                         mainEntry.SetValueFromColumn(haveLocalizedACBColumn, true);
                     }
                 }
-                */
 
-                Console.WriteLine("Added " + name + $", category {category}");
+                if(!streamAdded)
+                    Console.WriteLine("Added " + name + $", category {category}, ID: " + mainEntry.GetValueFromColumn("*cuesheet_id"));
+                else
+                    Console.WriteLine("Added " + name + $"(and stream), category {category}, ID: " + mainEntry.GetValueFromColumn("*cuesheet_id"));
             }
 
             Result = soundCuesheetInfo;
             ArmpFileWriter.WriteARMPToFile(soundCuesheetInfo, Path.Combine(Program.dbPath, "sound_cuesheet_info.bin"));
 
 
-            string tempCuesheetMapPath = Path.Combine(Program.dbPath, "sound_cuesheet_info_map___TEMP.toberemoved");
+            string tempCuesheetMapPath = Path.Combine(Program.dbPath, "sound_cuesheet_info.db_index");
 
             //Until ret fixes the ingame sound_cuesheet_info reading bug, this is a workaround
             if (!File.Exists(tempCuesheetMapPath))

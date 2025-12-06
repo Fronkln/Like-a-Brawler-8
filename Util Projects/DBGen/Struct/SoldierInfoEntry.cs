@@ -23,8 +23,8 @@ namespace DBGen
         public int BaseWait = 8;
         public int EXPPoint = 6;
         public int JobEXPPoint = 6;
-        public byte LifeGaugeType = 0;
-        public bool ForceKind = false;
-        public bool NoSujimon = false;
+        public byte? LifeGaugeType = 0;
+        public bool? ForceKind = false;
+        public bool? NoSujimon = false;
     }
 }

@@ -245,6 +245,8 @@ namespace LikeABrawler2
 
         public static void OnBattleStart()
         {
+            DragonEngine.Log("Brawler Battle Start");
+
             Character player = BrawlerBattleManager.PlayerCharacter;
 
             IsExtremeHeat = false;
@@ -262,6 +264,8 @@ namespace LikeABrawler2
 
         public static void OnBattleEnd()
         {
+            DragonEngine.Log("Brawler Battle End");
+
             m_isAttackingDoOnce = false;
             IsExtremeHeat = false;
             CurrentStyle = PlayerStyle.Default;

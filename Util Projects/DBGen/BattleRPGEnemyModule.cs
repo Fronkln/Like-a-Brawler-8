@@ -51,12 +51,26 @@ namespace DBGen
                 string enemyFilePath = Path.Combine(str2, "enemy.dat");
                 BattleRPGEnemyEntry enemyData = JsonConvert.DeserializeObject<BattleRPGEnemyEntry>(File.ReadAllText(enemyFilePath));
 
-                ArmpEntry newEntry = battleRpgEnemy.MainTable.AddEntry(new DirectoryInfo(str2).Name);
+                ArmpEntry newEntry = null;
+
+                if (enemyData.IDOverride != 0)
+                     newEntry = battleRpgEnemy.MainTable.GetEntry(enemyData.IDOverride);
+                else
+                    newEntry = battleRpgEnemy.MainTable.AddEntry(new DirectoryInfo(str2).Name);
                 newEntry.SetValueFromColumn("name", enemyData.Name);
                 newEntry.SetValueFromColumn("ctrltype", (ushort)battleCtrlType.MainTable.GetEntry(enemyData.CtrlType).ID);
                 newEntry.SetValueFromColumn("arts", Convert.ToUInt16(battleRpgEnemyArts.MainTable.SubTable.GetEntry(enemyData.Arts).GetValueFromColumn("0")));
                 newEntry.SetValueFromColumn("model", enemyData.Model);
-                newEntry.SetValueFromColumn("position_ai", (byte)20);
+
+                try
+                {
+                    if (enemyData.IDOverride == 0)
+                        newEntry.SetValueFromColumn("position_ai", (byte)20);
+                }
+                catch
+                {
+
+                }
                 newEntry.SetValueFromColumn("equip_l", enemyData.EquipL);
                 newEntry.SetValueFromColumn("equip_r", enemyData.EquipR);
             }

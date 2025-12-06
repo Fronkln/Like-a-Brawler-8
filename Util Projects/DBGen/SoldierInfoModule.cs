@@ -90,11 +90,24 @@ namespace DBGen
         private static void SetSoldierDat(SoldierInfoEntry soldierData, ArmpEntry entry)
         {
             entry.SetValueFromColumn("enemy_id", (ushort)battleRpgEnemy.MainTable.GetEntry(soldierData.EnemyID).ID);
-            entry.SetValueFromColumn("life_gauge_type", soldierData.LifeGaugeType);
-            entry.SetValueFromColumn("force_kind", soldierData.ForceKind);
-            entry.SetValueFromColumn("no_sujimon", soldierData.NoSujimon);
+
+            return;
+
+            if (soldierData.LifeGaugeType.HasValue)
+                entry.SetValueFromColumn("life_gauge_type", soldierData.LifeGaugeType);
+
+            if(soldierData.ForceKind.HasValue)
+                entry.SetValueFromColumn("force_kind", soldierData.ForceKind);
+
+            if (soldierData.NoSujimon.HasValue)
+                entry.SetValueFromColumn("no_sujimon", soldierData.NoSujimon);
+
             entry.SetValueFromColumn("hp", soldierData.Health);
-            entry.SetValueFromColumn("hp_ratio", soldierData.HPRatio);
+            try
+            {
+                entry.SetValueFromColumn("hp_ratio", soldierData.HPRatio);
+            }
+            catch { }
             entry.SetValueFromColumn("attack", soldierData.Attack);
             entry.SetValueFromColumn("defence", soldierData.Defense);
         }
