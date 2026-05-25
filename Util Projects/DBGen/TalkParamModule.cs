@@ -68,7 +68,7 @@ namespace DBGen
                 {
                     try
                     {
-                        talkParamBin.MainTable.GetEntry(dirName);
+                        talkParamBin.GetMainTable().GetEntry(dirName);
                         continue;
                     }
                     catch
@@ -118,7 +118,7 @@ namespace DBGen
                 {
                     try
                     {
-                        talkParamBin.MainTable.GetEntry(str);
+                        talkParamBin.GetMainTable().GetEntry(str);
                         Console.WriteLine(str + " already exists in talk param bin, skipping...");
                         continue;
                     }
@@ -133,9 +133,9 @@ namespace DBGen
                 if (canAdd)
                 {
                     ArmpEntry entry = null;
-                    if (!talkParamBin.MainTable.TryGetEntry(str, out entry))
+                    if (!talkParamBin.GetMainTable().TryGetEntry(str, out entry))
                     {
-                        ArmpEntry talkEntry = talkParamBin.MainTable.AddEntry(str);
+                        ArmpEntry talkEntry = talkParamBin.GetMainTable().AddEntry(str);
                         try
                         {
                             string path = "hact";
@@ -229,7 +229,7 @@ namespace DBGen
                 if (!nameToFind.StartsWith("hact"))
                     nameToFind = "hact_" + nameToFind;
 
-                ArmpEntry cuesheetEntry = SoundCuesheetModule.Result.MainTable.GetAllEntries().FirstOrDefault(x => x.GetValueFromColumn("name").ToString().Contains(nameToFind));
+                ArmpEntry cuesheetEntry = SoundCuesheetModule.Result.GetMainTable().GetAllEntries().FirstOrDefault(x => x.GetValueFromColumn("name").ToString().Contains(nameToFind));
 
                 if (cuesheetEntry != null)
                 {
@@ -285,7 +285,7 @@ namespace DBGen
                 catch
                 {
                     ArmpEntry foundEntry = null;
-                    bool found = particlePUID.MainTable.TryGetEntry(ptcName, out foundEntry);
+                    bool found = particlePUID.GetMainTable().TryGetEntry(ptcName, out foundEntry);
 
                     if (found)
                         newID = foundEntry.ID;

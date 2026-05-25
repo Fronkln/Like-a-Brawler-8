@@ -37,7 +37,7 @@ namespace DBGen
                 string profileName = split[0];
                 string name = split[1];
 
-                ArmpEntry entry = inputGameState.MainTable.GetAllEntries().FirstOrDefault(x => (string)x.GetValueFromColumn("profile_name") == profileName);
+                ArmpEntry entry = inputGameState.GetMainTable().GetAllEntries().FirstOrDefault(x => (string)x.GetValueFromColumn("profile_name") == profileName);
 
                 if (entry == null)
                     continue;
@@ -48,17 +48,19 @@ namespace DBGen
 
 
                 ArmpTable bindingsTable = (ArmpTable)entry.GetValueFromColumn("bindings");
-                bindingsTable.GetAllEntries().Clear();
+
+                foreach (var entrya in bindingsTable.GetAllEntries())
+                    bindingsTable.DeleteEntry(entrya.ID);
 
                 //parse buttons
-                foreach(string inputFile in inf.GetFiles("*.txt")
+                foreach (string inputFile in inf.GetFiles("*.txt")
                     .Select(x => x.FullName)
                     .OrderBy(x => uint.Parse(Path.GetFileNameWithoutExtension(x))))
                 {
                     string dat = File.ReadAllText(inputFile);
                     InputGameStateEntry input = JsonConvert.DeserializeObject<InputGameStateEntry>(dat);
 
-                    ArmpEntry inputActionEntry = inputActionList.MainTable.GetEntry(input.InputActionName);
+                    ArmpEntry inputActionEntry = inputActionList.GetMainTable().GetEntry(input.InputActionName);
                     ArmpEntry inputEntry = bindingsTable.AddEntry();
                     inputEntry.SetValueFromColumn("1", (ushort)inputActionEntry.ID);
                     inputEntry.SetValueFromColumn("2", input.Button1);

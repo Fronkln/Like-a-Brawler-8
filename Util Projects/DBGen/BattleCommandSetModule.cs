@@ -48,10 +48,10 @@ namespace DBGen
             foreach(string str in list)
             {
                 BattleCommandSetEntry entryDat = JsonConvert.DeserializeObject<BattleCommandSetEntry>(File.ReadAllText(rootDir + @"\" + str));
-                ArmpEntry entry = battleCommandSet.MainTable.AddEntry();
-                entry.SetValueFromColumn("motion_set", (ushort)battleMotionSet.MainTable.GetEntry(entryDat.MotionSet).ID);
-                ArmpEntry subEntry = battleCommandSet.MainTable.SubTable.AddEntry(Path.GetFileNameWithoutExtension(str));
-                subEntry.SetValueFromColumn("0", cfcList.MainTable.GetEntry(subEntry.Name).ID);
+                ArmpEntry entry = battleCommandSet.GetMainTable().AddEntry();
+                entry.SetValueFromColumn("motion_set", (ushort)battleMotionSet.GetMainTable().GetEntry(entryDat.MotionSet).ID);
+                ArmpEntry subEntry = battleCommandSet.GetMainTable().Indexer.AddEntry(Path.GetFileNameWithoutExtension(str));
+                subEntry.SetValueFromColumn("0", cfcList.GetMainTable().GetEntry(subEntry.Name).ID);
                 subEntry.SetValueFromColumn("2", entry.ID);
             }
 

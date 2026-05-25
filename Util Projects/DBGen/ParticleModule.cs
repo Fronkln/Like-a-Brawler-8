@@ -56,13 +56,13 @@ namespace DBGen
 
                 try
                 {
-                    var entry = particles.MainTable.GetEntry(pibName);
+                    var entry = particles.GetMainTable().GetEntry(pibName);
                     pibMap[pibName] = entry.ID;
                     Console.WriteLine(pibName + " already exists. Skipping");
                 }
                 catch
                 {
-                    ArmpEntry entry = particles.MainTable.AddEntry(pibName);
+                    ArmpEntry entry = particles.GetMainTable().AddEntry(pibName);
                     pibMap[pibName] = entry.ID;
                     Console.WriteLine("Added " + pibName + ", ID: " + entry.ID);
                 }
@@ -71,7 +71,7 @@ namespace DBGen
             foreach(string str in pibPaths)
             {
                 BasePib pib = PIB.Read(str);
-                pib.ParticleID = particles.MainTable.GetEntry(Path.GetFileNameWithoutExtension(str)).ID;
+                pib.ParticleID = particles.GetMainTable().GetEntry(Path.GetFileNameWithoutExtension(str)).ID;
                 PIB.Write(pib, str);
             }
 

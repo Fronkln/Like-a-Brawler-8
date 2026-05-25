@@ -54,12 +54,12 @@ namespace DBGen
                 ArmpEntry newEntry = null;
 
                 if (enemyData.IDOverride != 0)
-                     newEntry = battleRpgEnemy.MainTable.GetEntry(enemyData.IDOverride);
+                     newEntry = battleRpgEnemy.GetMainTable().GetEntry(enemyData.IDOverride);
                 else
-                    newEntry = battleRpgEnemy.MainTable.AddEntry(new DirectoryInfo(str2).Name);
+                    newEntry = battleRpgEnemy.GetMainTable().AddEntry(new DirectoryInfo(str2).Name);
                 newEntry.SetValueFromColumn("name", enemyData.Name);
-                newEntry.SetValueFromColumn("ctrltype", (ushort)battleCtrlType.MainTable.GetEntry(enemyData.CtrlType).ID);
-                newEntry.SetValueFromColumn("arts", Convert.ToUInt16(battleRpgEnemyArts.MainTable.SubTable.GetEntry(enemyData.Arts).GetValueFromColumn("0")));
+                newEntry.SetValueFromColumn("ctrltype", (ushort)battleCtrlType.GetMainTable().GetEntry(enemyData.CtrlType).ID);
+                newEntry.SetValueFromColumn("arts", Convert.ToUInt16(battleRpgEnemyArts.GetMainTable().Indexer.GetEntry(enemyData.Arts).GetValueFromColumn("0")));
                 newEntry.SetValueFromColumn("model", enemyData.Model);
 
                 try

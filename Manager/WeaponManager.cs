@@ -294,10 +294,10 @@ namespace LikeABrawler2
 
             AssetArmsCategoryID cat = Asset.GetArmsCategory(unit.AssetID);
 
-            BrawlerBattleManager.PlayerFighter.Equip(unit.AssetID, AttachmentCombinationID.right_weapon, 0, RPGSkillID.invalid);
+            BrawlerBattleManager.PlayerFighter.Equip(new Weapon() { Unit = unit.UID});
             DragonEngine.Log("Picking up " + unit.AssetID + ", Category: " + cat);
 
-            unit.DestroyEntity();
+            //unit.DestroyEntity();
 
             PickedUpWeapon = BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.UID;
             OnWeaponPickedUp(cat, true);
@@ -361,8 +361,10 @@ namespace LikeABrawler2
 
             if (PickedUpWeaponUseCount <= 0)
             {
+                //  BrawlerBattleManager.PlayerFighter.DropWeapon(new DropWeaponOption(AttachmentCombinationID.right_weapon, true));
                 PickedUpWeapon.Get().DestroyEntity();
 
+#warning TODO: Disable attack on humanmode instead of doing this
                 new DETaskTime(0.1f, delegate { BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToEndReady(); });
             }
 

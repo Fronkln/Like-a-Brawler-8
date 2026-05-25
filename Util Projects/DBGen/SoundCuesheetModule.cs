@@ -12,7 +12,7 @@ namespace DBGen
 {
     internal static class SoundCuesheetModule
     {
-        private static string genDir = "sound_gen";
+        private static string genDir = "sound";
 
         public static ARMP Result;
         
@@ -90,7 +90,7 @@ namespace DBGen
 
                 try
                 {
-                    soundCuesheetInfo.MainTable.SubTable.GetEntry(name);
+                    soundCuesheetInfo.GetMainTable().Indexer.GetEntry(name);
                     Console.WriteLine(name + " already exists in sound cuesheet info, skipping...");
                     continue;
                 }
@@ -99,13 +99,13 @@ namespace DBGen
 
                 }
 
-                ArmpEntry mainEntry = soundCuesheetInfo.MainTable.AddEntry();
+                ArmpEntry mainEntry = soundCuesheetInfo.GetMainTable().AddEntry();
                 mainEntry.SetValueFromColumn("name", name);
                 mainEntry.SetValueFromColumn("*cuesheet_id", (ushort)(mainEntry.ID + 1));
                 mainEntry.SetValueFromColumn("category", category);
                 mainEntry.SetValueFromColumn("exists", true);
 
-                ArmpEntry subTableEntry = soundCuesheetInfo.MainTable.SubTable.AddEntry(name);
+                ArmpEntry subTableEntry = soundCuesheetInfo.GetMainTable().Indexer.AddEntry(name);
                 subTableEntry.SetValueFromColumn("0", (uint)(subTableEntry.ID + 1));
                 subTableEntry.SetValueFromColumn("2", (uint)(subTableEntry.ID));
 
@@ -146,7 +146,7 @@ namespace DBGen
 
             Dictionary<uint, string> map = new Dictionary<uint, string>();
 
-            foreach (ArmpEntry entry in soundCuesheetInfo.MainTable.SubTable.GetAllEntries())
+            foreach (ArmpEntry entry in soundCuesheetInfo.GetMainTable().Indexer.GetAllEntries())
                 map.Add((uint)entry.GetValueFromColumn("0"), entry.Name);
 
             File.WriteAllLines(tempCuesheetMapPath, map.Select(x => x.Key.ToString() + " " + x.Value.ToString()));

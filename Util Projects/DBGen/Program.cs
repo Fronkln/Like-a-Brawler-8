@@ -133,7 +133,6 @@ namespace DBGen
                 ParticleModule.Procedure();
                 Console.WriteLine();
                 TalkParamModule.Procedure();
-
                 TalkSelectModule.Procedure();
                 Console.WriteLine();
                 TalkTalkerModule.Procedure();
@@ -150,8 +149,6 @@ namespace DBGen
                 BattleCtrlTypeModule.Procedure();
                 Console.WriteLine();
                 BattleCommandSetModule.Procedure();
-
-
                 RPGSkillModule.Procedure();
                 Console.WriteLine();
                 RPGEnemyArtsModule.Procedure();
@@ -244,21 +241,21 @@ namespace DBGen
 
                 try
                 {
-                    gmtTable.MainTable.GetEntry(fileName);
+                    gmtTable.GetMainTable().GetEntry(fileName);
                 }
                 catch
                 {
-                    gmtTable.MainTable.AddEntry(fileName);
+                    gmtTable.GetMainTable().AddEntry(fileName);
                 }
 
                 try
                 {
                     if (bepExists)
-                        bepTable.MainTable.GetEntry(fileName);
+                        bepTable.GetMainTable().GetEntry(fileName);
                 }
                 catch
                 {
-                    bepTable.MainTable.AddEntry(fileName);
+                    bepTable.GetMainTable().AddEntry(fileName);
                 }
 
                 Console.WriteLine((!bepExists ? "Added GMT" : "Added GMT and BEP") + " for " + motion);
@@ -277,7 +274,7 @@ namespace DBGen
         {
             Dictionary<uint, string> map = new Dictionary<uint, string>();
 
-            foreach (ArmpEntry entry in armp.MainTable.GetAllEntries())
+            foreach (ArmpEntry entry in armp.GetMainTable().GetAllEntries())
             {
                 if (entry.IsValid)
                     map.Add(entry.ID, entry.Name);
@@ -290,7 +287,7 @@ namespace DBGen
         {
             Dictionary<uint, string> map = new Dictionary<uint, string>();
 
-            foreach (ArmpEntry entry in armp.MainTable.SubTable.GetAllEntries())
+            foreach (ArmpEntry entry in armp.GetMainTable().Indexer.GetAllEntries())
                 map.Add(Convert.ToUInt32(entry.GetValueFromColumn("2")), entry.Name);
 
             return map.Select(x => x.Key.ToString() + " " + x.Value.ToString());

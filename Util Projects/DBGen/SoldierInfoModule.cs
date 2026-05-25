@@ -49,7 +49,7 @@ namespace DBGen
             File.WriteAllLines(listFile, list);
             battleRpgEnemy = Program.GetOutputDBTable("battle_rpg_enemy");
 
-            foreach(string str in list)
+            foreach (string str in list)
             {
                 string str2 = rootDir + @"\" + str + @"\";
                 string soldierFile = Path.Combine(str2, "soldier.dat");
@@ -59,13 +59,13 @@ namespace DBGen
 
                 if (string.IsNullOrEmpty(soldierData.IDOverride))
                 {
-                    entry = soldierInfoArmp.MainTable.AddEntry(new DirectoryInfo(str2).Name);
+                    entry = soldierInfoArmp.GetMainTable().AddEntry(new DirectoryInfo(str2).Name);
                     SetSoldierDat(soldierData, entry);
                     Console.WriteLine("Added soldier entry " + entry.Name + $"({entry.ID})");
                 }
                 else
                 {
-                    foreach(ArmpEntry armp in soldierInfoArmp.MainTable.GetAllEntries())
+                    foreach (ArmpEntry armp in soldierInfoArmp.GetMainTable().GetAllEntries())
                     {
                         if (armp.Name == soldierData.IDOverride)
                         {
@@ -89,18 +89,29 @@ namespace DBGen
 
         private static void SetSoldierDat(SoldierInfoEntry soldierData, ArmpEntry entry)
         {
-            entry.SetValueFromColumn("enemy_id", (ushort)battleRpgEnemy.MainTable.GetEntry(soldierData.EnemyID).ID);
+            if (!string.IsNullOrEmpty(soldierData.EnemyID))
+                entry.SetValueFromColumn("enemy_id", (ushort)battleRpgEnemy.GetMainTable().GetEntry(soldierData.EnemyID).ID);
 
-            return;
-
+#warning TODO: Fix
+            /*
             if (soldierData.LifeGaugeType.HasValue)
                 entry.SetValueFromColumn("life_gauge_type", soldierData.LifeGaugeType);
+            */
 
-            if(soldierData.ForceKind.HasValue)
-                entry.SetValueFromColumn("force_kind", soldierData.ForceKind);
+            if (string.IsNullOrEmpty(soldierData.IDOverride))
+            {
+                if (soldierData.ForceKind.HasValue)
+                    entry.SetValueFromColumn("force_kind", soldierData.ForceKind);
 
-            if (soldierData.NoSujimon.HasValue)
-                entry.SetValueFromColumn("no_sujimon", soldierData.NoSujimon);
+                if (soldierData.NoSujimon.HasValue)
+                    entry.SetValueFromColumn("no_sujimon", soldierData.NoSujimon);
+
+                if (soldierData.LifeGaugeType.HasValue)
+                    entry.SetValueFromColumn("life_gauge_type", soldierData.LifeGaugeType);
+
+
+                entry.SetValueFromColumn("chara", soldierData.CharaID);
+            }
 
             entry.SetValueFromColumn("hp", soldierData.Health);
             try

@@ -31,8 +31,8 @@ namespace DBGen
                 string[] lines = File.ReadAllLines(Path.Combine(rootDir, "talk_select_select", str + ".txt"));
                 string[] split = lines[0].Split(' ');
 
-                ArmpEntry entry = select.MainTable.AddEntry(str);
-                ArmpTable table = ((ArmpTableMain)select.MainTable.GetEntry(1).GetValueFromColumn("choice")).Copy(false);
+                ArmpEntry entry = select.GetMainTable().AddEntry(str);
+                ArmpTable table = ((ArmpTable)select.GetMainTable().GetEntry(1).GetValueFromColumn("choice")).Copy(false);
 
                 entry.SetValueFromColumn("select_type", byte.Parse(split[0]));
                 entry.SetValueFromColumn("cancel_type", byte.Parse(split[1]));

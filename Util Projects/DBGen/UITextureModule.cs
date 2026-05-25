@@ -27,7 +27,7 @@ namespace DBGen
             Console.WriteLine("------|UI TEXTURE GEN|-----");
 
             foreach (string str in File.ReadLines(listFile))
-                uiTexture.MainTable.AddEntry(str);
+                uiTexture.GetMainTable().AddEntry(str);
 
             ArmpFileWriter.WriteARMPToFile(uiTexture, Path.Combine(Program.puidPath, "ui_texture.bin"));
             Console.WriteLine("------|UI TEXTURE GEN COMPLETE|-----");

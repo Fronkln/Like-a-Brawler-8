@@ -55,19 +55,32 @@ namespace DBGen
                 List<ArmpEntry> attacksEntryMain = new List<ArmpEntry>();
 
                 ArmpEntry enemyEntry = null;
+                bool alreadyExists = false;
 
-                if (!rpgEnemyArtsData.MainTable.SubTable.TryGetEntry(str, out enemyEntry))
+                if (!rpgEnemyArtsData.GetMainTable().Indexer.TryGetEntry(str, out enemyEntry))
                 {
-                    enemyEntry = rpgEnemyArtsData.MainTable.SubTable.AddEntry(str);
-                    rpgEnemyArtsType.MainTable.AddEntry(enemyEntry.Name);
+                    enemyEntry = rpgEnemyArtsData.GetMainTable().Indexer.AddEntry(str);
+                    rpgEnemyArtsType.GetMainTable().AddEntry(enemyEntry.Name);
                 }
+                else
+                    alreadyExists = true;
 
-                List<ArmpEntry> entries = rpgEnemyArtsData.MainTable.SubTable.GetAllEntries();
+                List<ArmpEntry> entries = rpgEnemyArtsData.GetMainTable().Indexer.GetAllEntries().ToList();
 
                 uint last = (uint)entries[entries.Count - 2].GetValueFromColumn("0");
 
-                enemyEntry.SetValueFromColumn("0", last + 1);
-                ArmpTable armp = ((ArmpTableMain)(entries[0].GetValueFromColumn("1"))).Copy(false);
+                if(!alreadyExists)
+                    enemyEntry.SetValueFromColumn("0", last + 1);
+                else
+                {
+                    foreach(var entry in rpgEnemyArtsData.GetMainTable().GetAllEntries())
+                        if(entry.GetValueFromColumn<int>("*id") == enemyEntry.GetValueFromColumn<int>("0"))
+                        {
+                            entry.SetValueFromColumn("*id", 0);
+                        }
+                }
+
+                ArmpTable armp = ((ArmpTable)(entries[0].GetValueFromColumn("1"))).Copy(false);
 
 
                 ushort ID = (ushort)((uint)enemyEntry.GetValueFromColumn("0"));
@@ -75,13 +88,18 @@ namespace DBGen
                 for (int i = 0; i < attacksList.Length; i++)
                     attacksDat.Add(JsonConvert.DeserializeObject<RPGEnemyArtsEntry>(File.ReadAllText(attacksList[i])));
 
-
                 for(int i = 0; i < attacksDat.Count; i++)
                 {
-                    ArmpEntry entry = rpgEnemyArtsData.MainTable.AddEntry();
+                    ArmpEntry entry = rpgEnemyArtsData.GetMainTable().AddEntry();
                     RPGEnemyArtsEntry data = attacksDat[i];
                     entry.SetValueFromColumn("rate", data.Rate);
-                    entry.SetValueFromColumn("skill", (ushort)rpgSkillData.MainTable.GetEntry(data.Skill).ID);
+                    entry.SetValueFromColumn("condition_1", data.Condition1);
+                    entry.SetValueFromColumn("condition_2", data.Condition2);
+                    entry.SetValueFromColumn("condition_3", data.Condition3);
+                    entry.SetValueFromColumn("condition_1_x", data.Condition1X);
+                    entry.SetValueFromColumn("condition_2_x", data.Condition2X);
+                    entry.SetValueFromColumn("condition_3_x", data.Condition3X);
+                    entry.SetValueFromColumn("skill", (ushort)rpgSkillData.GetMainTable().GetEntry(data.Skill).ID);
                     entry.SetValueFromColumn("*id", ID);
                     entry.SetValueFromColumn("**idx", (uint)(i + 1));
 
@@ -95,7 +113,7 @@ namespace DBGen
                     skillTblEntry.SetValueFromColumn("2", (uint)attacksEntryMain[i].ID);
                 }
 
-                enemyEntry.SetValueFromColumn("1", (ArmpTableMain)armp);
+                enemyEntry.SetValueFromColumn("1", (ArmpTable)armp);
                 enemyEntry.SetValueFromColumn("2", (uint)attacksEntryMain[0].ID);
 
                 Console.WriteLine("Added " + enemyEntry.Name);

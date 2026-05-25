@@ -740,7 +740,6 @@ namespace LikeABrawler2
             DragonEngine.Log("Player spawned, address: " + PlayerCharacter.Pointer.ToString("X"));
 
             BrawlerPlayer.CurrentPlayer = PlayerCharacter.Attributes.player_id;
-            BrawlerPlayer.PreBattleCommandset = PlayerCharacter.Attributes.command_set_id;
 
             //Ichiban animations are too silly on others.
             if (BrawlerPlayer.IsOtherPlayer())
@@ -789,9 +788,6 @@ namespace LikeABrawler2
             CharacterAttributes playerAttribs = PlayerCharacter.Attributes;
 
             BrawlerPlayer.CurrentPlayer = playerAttribs.player_id;
-            BrawlerPlayer.OriginalPlayerAttributes = playerAttribs;
-            BrawlerPlayer.OriginalPlayerAttributes.player_id = BrawlerPlayer.CurrentPlayer;
-
             BrawlerFighterInfo.Infos.Add(PlayerCharacter.UID, new BrawlerFighterInfo() { Fighter = PlayerFighter });
 
             BrawlerPlayer.OnBattleStart();

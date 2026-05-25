@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.3.32929.385
+# Visual Studio Version 18
+VisualStudioVersion = 18.5.11723.231 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Like a Brawler 8", "Like a Brawler 8.csproj", "{7B845ACC-9F32-4FD4-8FB6-173BFCC67708}"
 EndProject
@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElvisCommand", "Util Projec
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elvis Commander", "Util Projects\Elvis Commander\Elvis Commander.csproj", "{A0DEDB71-B2F4-4793-B1B3-D2C7A11891AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DELibrary.NET", "Dependencies\DELib\DELibrary.NET\DELibrary.NET.csproj", "{9900112C-25D6-427D-846A-A90E31CF8FE3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DELibrary.NET", "..\Y7Internal.NET\DELibrary.NET\DELibrary.NET.csproj", "{9900112C-25D6-427D-846A-A90E31CF8FE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,10 +53,10 @@ Global
 		{A0DEDB71-B2F4-4793-B1B3-D2C7A11891AC}.Infinite Wealth Debug|x64.Build.0 = Debug|x64
 		{A0DEDB71-B2F4-4793-B1B3-D2C7A11891AC}.Infinite Wealth Release|x64.ActiveCfg = Release|x64
 		{A0DEDB71-B2F4-4793-B1B3-D2C7A11891AC}.Infinite Wealth Release|x64.Build.0 = Release|x64
-		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Demo Debug|x64.ActiveCfg = Debug|x64
-		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Demo Debug|x64.Build.0 = Debug|x64
-		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Demo Release|x64.ActiveCfg = Release|x64
-		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Demo Release|x64.Build.0 = Release|x64
+		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Demo Debug|x64.ActiveCfg = Infinite Wealth Debug|x64
+		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Demo Debug|x64.Build.0 = Infinite Wealth Debug|x64
+		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Demo Release|x64.ActiveCfg = Infinite Wealth Debug|x64
+		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Demo Release|x64.Build.0 = Infinite Wealth Debug|x64
 		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Infinite Wealth Debug|x64.ActiveCfg = Infinite Wealth Debug|x64
 		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Infinite Wealth Debug|x64.Build.0 = Infinite Wealth Debug|x64
 		{9900112C-25D6-427D-846A-A90E31CF8FE3}.Infinite Wealth Release|x64.ActiveCfg = Infinite Wealth Release|x64

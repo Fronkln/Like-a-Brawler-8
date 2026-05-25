@@ -8,6 +8,7 @@ namespace LikeABrawler2
         private IntPtr m_rpgCamFunc1;
         private IntPtr m_rpgCamFunc2;
         private IntPtr m_rpgCamFunc3;
+        private IntPtr m_battleCamFlag;
 
         public override void Init()
         {
@@ -18,6 +19,9 @@ namespace LikeABrawler2
 
             //ccamera function only used by rpg camera
             m_rpgCamFunc3 = CPP.ReadCall(CPP.PatternSearch("E8 ? ? ? ? EB ? 33 D2 48 8B CF E8 ? ? ? ? 41 B1 ?"));
+
+            //COMBAT: Flag that prevents Camera Battle Finish node from playing properly.
+            m_battleCamFlag = CPP.PatternSearch("41 83 8E ? ? ? ? ? B8");
         }
 
         protected override void SetActive()
@@ -27,6 +31,7 @@ namespace LikeABrawler2
             CPP.PatchMemory(m_rpgCamFunc1, new byte[] { 0xC3, 0x90, 0x90 });
             CPP.PatchMemory(m_rpgCamFunc2, new byte[] { 0xC3, 0x90, 0x90 });
             CPP.PatchMemory(m_rpgCamFunc3, new byte[] { 0xC3, 0x90, 0x90, 0x90 });
+            CPP.NopMemory(m_battleCamFlag, 8);
         }
 
         protected override void SetInactive()
@@ -36,6 +41,7 @@ namespace LikeABrawler2
             CPP.PatchMemory(m_rpgCamFunc1, new byte[] { 0x40, 0x56, 0x57 });
             CPP.PatchMemory(m_rpgCamFunc2, new byte[] { 0x48, 0x8B, 0xC4 });
             CPP.PatchMemory(m_rpgCamFunc3, new byte[] { 0xC5, 0xF8, 0x10, 0x02 });
+            CPP.PatchMemory(m_battleCamFlag, new byte[] { 0x41, 0x83, 0x8E, 0x94, 0x00, 0x00, 0x00, 0x02 });
         }
     }
 }

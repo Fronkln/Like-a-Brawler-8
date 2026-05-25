@@ -15,6 +15,7 @@ namespace DBGen
         public string CommandName;
         public string HAct;
         public float BaseAttackRatio = 100f;
+        public float SPAttackRatio = 0f;
         public int Category = 11;
         public byte Attribute = 1;
         public float BootDist = 1.5f;
@@ -25,5 +26,11 @@ namespace DBGen
         public uint RestTime = 100;
         public bool IsSync = false;
         public string OverrideName = "";
+        public int PlayEffectSelf = 0;
+        public int UseFixWep = 0;
+        public int UseFixWepL = 0;
+        public bool? IsMoveCut;
+
+        public string DownBranchSkill = "";
     }
 }

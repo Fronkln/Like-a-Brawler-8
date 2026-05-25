@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\Costura.Fody.5.7.0\build\Costura.Fody.props" Condition="Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.props')" />
+  <Import Project="packages\Costura.Fody.6.2.0\build\Costura.Fody.props" Condition="Exists('packages\Costura.Fody.6.2.0\build\Costura.Fody.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -61,8 +61,8 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Costura, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Costura.Fody.5.7.0\lib\netstandard1.0\Costura.dll</HintPath>
+    <Reference Include="Costura, Version=6.2.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
+      <HintPath>packages\Costura.Fody.6.2.0\lib\netstandard2.0\Costura.dll</HintPath>
     </Reference>
     <Reference Include="LibARMP">
       <HintPath>Dependencies\LibARMP.dll</HintPath>
@@ -290,6 +290,7 @@
     <Compile Include="Patches\AuthPatches.cs" />
     <Compile Include="Patches\BattleTurnManagerPatches.cs" />
     <Compile Include="Patches\CameraPatches.cs" />
+    <Compile Include="Patches\FighterModePatches.cs" />
     <Compile Include="Patches\HijackedFunction.cs" />
     <Compile Include="Patches\NopPatch.cs" />
     <Compile Include="Patches\ParticlePatches.cs" />
@@ -340,7 +341,7 @@
     <Compile Include="Utils\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Dependencies\DELib\DELibrary.NET\DELibrary.NET.csproj">
+    <ProjectReference Include="..\Y7Internal.NET\DELibrary.NET\DELibrary.NET.csproj">
       <Project>{9900112c-25d6-427d-846a-a90e31cf8fe3}</Project>
       <Name>DELibrary.NET</Name>
     </ProjectReference>
@@ -356,16 +357,16 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(TargetDir)$(ProjectName).dll"  "C:\Program Files (x86)\Steam\steamapps\common\LikeADragon8\runtime\media\mods\Like A Brawler 8\$(ProjectName).dll"
-copy /Y "C:\Users\orhan_vfigibb\source\repos\Y7Internal.NET\DELibrary.NET\$(OutDir)DELibrary.NET.exe"  "C:\Program Files (x86)\Steam\steamapps\common\LikeADragon8\runtime\media\srmm-libs\62d185f2-0d10-42d0-955c-67bf5f757994\DE Library\DELibrary.NET.dll"</PostBuildEvent>
+copy /Y "C:\Users\orhan\source\repos\Y7Internal.NET\DELibrary.NET\$(OutDir)DELibrary.NET.exe"  "C:\Program Files (x86)\Steam\steamapps\common\LikeADragon8\runtime\media\srmm-libs\62d185f2-0d10-42d0-955c-67bf5f757994\DE Library\DELibrary.NET.dll"</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="packages\Fody.6.5.5\build\Fody.targets" Condition="Exists('packages\Fody.6.5.5\build\Fody.targets')" />
+  <Import Project="packages\Fody.6.9.3\build\Fody.targets" Condition="Exists('packages\Fody.6.9.3\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\Fody.6.5.5\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Fody.6.5.5\build\Fody.targets'))" />
-    <Error Condition="!Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.7.0\build\Costura.Fody.props'))" />
-    <Error Condition="!Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.7.0\build\Costura.Fody.targets'))" />
+    <Error Condition="!Exists('packages\Fody.6.9.3\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Fody.6.9.3\build\Fody.targets'))" />
+    <Error Condition="!Exists('packages\Costura.Fody.6.2.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.6.2.0\build\Costura.Fody.props'))" />
+    <Error Condition="!Exists('packages\Costura.Fody.6.2.0\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.6.2.0\build\Costura.Fody.targets'))" />
   </Target>
-  <Import Project="packages\Costura.Fody.5.7.0\build\Costura.Fody.targets" Condition="Exists('packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" />
+  <Import Project="packages\Costura.Fody.6.2.0\build\Costura.Fody.targets" Condition="Exists('packages\Costura.Fody.6.2.0\build\Costura.Fody.targets')" />
 </Project>

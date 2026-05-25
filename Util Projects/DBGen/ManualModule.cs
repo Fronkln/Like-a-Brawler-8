@@ -1,4 +1,5 @@
-﻿using LibARMP;
+﻿using HActLib;
+using LibARMP;
 using LibARMP.IO;
 using System;
 using System.Collections.Generic;
@@ -46,8 +47,8 @@ namespace DBGen
             {
                 string dir = Path.Combine(rootDir, str);
 
-                ArmpEntry tutEntry = manual.MainTable.AddEntry(new DirectoryInfo(str).Name);
-                ArmpTable mainTable = ((ArmpTableMain)manual.MainTable.GetEntry(1).GetValueFromColumn("table")).Copy(false);
+                ArmpEntry tutEntry = manual.GetMainTable().AddEntry(new DirectoryInfo(str).Name);
+                ArmpTable mainTable = ((ArmpTable)manual.GetMainTable().GetAllEntries().FirstOrDefault(x => x.IsValid).GetValueFromColumn("table")).Copy(false);
                 tutEntry.SetValueFromColumn("table", mainTable);
 
                 foreach (string file in new DirectoryInfo(dir).GetFiles("*.txt")
@@ -62,18 +63,28 @@ namespace DBGen
                         instructions.AppendLine(split[i]);
 
                     ArmpEntry instructionEntry = mainTable.AddEntry();
-                    instructionEntry.SetValueFromColumn("8", split[0]);
-                    instructionEntry.SetValueFromColumn("1", instructions.ToString());
-                    instructionEntry.SetValueFromColumn("7", (byte)2);
+
+                    if(Program.Game >= HActLib.Game.LADIW)
+                    {
+                        instructionEntry.SetValueFromColumn("8", split[0]);
+                        instructionEntry.SetValueFromColumn("1", instructions.ToString());
+                        instructionEntry.SetValueFromColumn("7", (byte)2);
+                    }
+                    else
+                    {
+                        instructionEntry.SetValueFromColumn("14", split[0]);
+                        instructionEntry.SetValueFromColumn("6", instructions.ToString());
+                        instructionEntry.SetValueFromColumn("12", (byte)2);
+                    }
 
                     if(uiTexture != null)
                     {
                         try
                         {
-                            ArmpEntry texture = uiTexture.MainTable.GetEntry(split[1]);
+                            ArmpEntry texture = uiTexture.GetMainTable().GetEntry(split[1]);
 
                             if (texture != null)
-                                instructionEntry.SetValueFromColumn("2", (ushort)texture.ID);
+                                instructionEntry.SetValueFromColumn(Program.Game >= Game.LADIW ? "2" : "7", (ushort)texture.ID);
                         }
                         catch
                         {

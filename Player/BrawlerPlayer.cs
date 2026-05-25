@@ -12,15 +12,12 @@ using System.Threading.Tasks;
 
 namespace LikeABrawler2
 {
-    public static class BrawlerPlayer
+#warning TODO: Slowly make this not a static class
+    public class BrawlerPlayer
     {
         public static Player.ID CurrentPlayer = 0;
         public static PlayerStyle CurrentStyle = PlayerStyle.NotApplicable;
         public static RPGJobID CurrentJob { get { return Player.GetCurrentJob(CurrentPlayer); } }
-
-        public static BattleCommandSetID PreBattleCommandset;
-
-        public static CharacterAttributes OriginalPlayerAttributes;
 
         public static Dictionary<StageID, EHC> StageEHC = new Dictionary<StageID, EHC>();
         public static Dictionary<RPGJobID, EHC> JobEHC = new Dictionary<RPGJobID, EHC>();
@@ -251,8 +248,15 @@ namespace LikeABrawler2
 
             IsExtremeHeat = false;
 
-            if(!IsOtherPlayer())
+            //Recursively enumerate and load all combat animations
+            //Using commandset 235 as reference, which is kiryu krh
+            BattleResourceManager.DoPrepareRefAll(235);
+
+
+            if (!IsOtherPlayer())
+            {
                 ToNormalMoveset();
+            }
             else
                 SetupWeapon(BrawlerBattleManager.PlayerFighter._ptr);
 

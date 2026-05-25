@@ -43,11 +43,12 @@ namespace DBGen
             {
                 string path = Path.Combine(rootDir, str);
                 string name = new DirectoryInfo(str).Name;
-                var mainEntry = pTalkList.MainTable.AddEntry(name);
+                var mainEntry = pTalkList.GetMainTable().AddEntry(name);
                 ArmpEntry start = null;
 
                 mainEntry.SetValueFromColumn("start_condition", 4);
                 mainEntry.SetValueFromColumn("name", "thing");
+                mainEntry.SetValueFromColumn("is_no_button_skip", true);
 
                 if (Directory.Exists(path))
                 {
@@ -57,7 +58,7 @@ namespace DBGen
                     {
                         string[] fileBuff = File.ReadAllLines(texts[i]);
                         string[] split1 = fileBuff[0].Split(' ');
-                        var entry = pTalk.MainTable.AddEntry(name + "_" + i.ToString("D3"));
+                        var entry = pTalk.GetMainTable().AddEntry(name + "_" + i.ToString("D3"));
                         entry.SetValueFromColumn("character", byte.Parse(split1[0]));
                         entry.SetValueFromColumn("emote", byte.Parse(split1[1]));
 
@@ -69,7 +70,7 @@ namespace DBGen
                             uint idx = uint.Parse(cueSplit[1]);
 
                             if (SoundCuesheetModule.Result != null)
-                                entry.SetValueFromColumn("cuesheet_name", SoundCuesheetModule.Result.MainTable.SubTable.GetEntry(sName).ID + 1);
+                                entry.SetValueFromColumn("cuesheet_name", SoundCuesheetModule.Result.GetMainTable().Indexer.GetEntry(sName).ID + 1);
 
                             entry.SetValueFromColumn("cue_name", (ushort)idx);
                         }
@@ -94,7 +95,7 @@ namespace DBGen
                 }
 
                 mainEntry.SetValueFromColumn("is_no_check_main_story", true);
-                var endEntry = pTalk.MainTable.AddEntry(name + "_999");
+                var endEntry = pTalk.GetMainTable().AddEntry(name + "_999");
                 endEntry.SetValueFromColumn("character", 5);
             }
 

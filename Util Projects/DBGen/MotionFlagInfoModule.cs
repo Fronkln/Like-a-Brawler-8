@@ -50,7 +50,7 @@ namespace DBGen
                 if (!File.Exists(genDir + str + ".txt"))
                     continue;
 
-                ArmpEntry puidEntry = gmtTable.MainTable.GetEntryProper(str);
+                ArmpEntry puidEntry = gmtTable.GetMainTable().GetEntryProper(str);
 
                 if (puidEntry == null)
                     continue;
@@ -66,12 +66,12 @@ namespace DBGen
                 string flagFile = "motion/gen/flag/" + entry.Name + ".txt";
                 MotionFlagInfo flags = JsonConvert.DeserializeObject<MotionFlagInfo>(File.ReadAllText(flagFile));
 
-                ArmpEntry newEntryMain = motionFlagBin.MainTable.AddEntry();
+                ArmpEntry newEntryMain = motionFlagBin.GetMainTable().AddEntry();
                 ArmpEntry newEntrySub = null;
 
 
-                if(motionFlagBin.MainTable.SubTable != null)
-                    newEntrySub = motionFlagBin.MainTable.SubTable.AddEntry(entry.Name);
+                if(motionFlagBin.GetMainTable().Indexer != null)
+                    newEntrySub = motionFlagBin.GetMainTable().Indexer.AddEntry(entry.Name);
 
                 TrySet(newEntryMain, "is_common_pack", flags.is_common_pack);
                 TrySet(newEntryMain, "is_loop", flags.is_loop);

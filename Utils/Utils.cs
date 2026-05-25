@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +13,14 @@ namespace LikeABrawler2
         {
             double val = (rnd.NextDouble() * (max - min) + min); 
             return (float)val;
+        }
+
+        public static IntPtr ToIntPtr(this object target)
+        {
+            IntPtr allocedObj = Marshal.AllocHGlobal(Marshal.SizeOf(target));
+            Marshal.StructureToPtr(target, allocedObj, false);
+
+            return allocedObj;
         }
     }
 }

@@ -30,7 +30,7 @@ namespace DBGen
             {
                 string[] split = str.Split('|');
 
-                ArmpEntry entry = inputAction.MainTable.AddEntry(split[0]);
+                ArmpEntry entry = inputAction.GetMainTable().AddEntry(split[0]);
                 entry.SetValueFromColumn("name", split[1]);
 
                 Console.WriteLine("Added input action " + split[0] + ", ID: " + entry.ID);

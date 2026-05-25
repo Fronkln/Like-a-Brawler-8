@@ -1,11 +1,7 @@
 ﻿using DragonEngineLibrary;
 using DragonEngineLibrary.Unsafe;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LikeABrawler2
 {
@@ -66,10 +62,17 @@ namespace LikeABrawler2
             if (Mod.IsTurnBased())
                 return m_isInputSwayTrampoline(humanModeManager);
 
+
             HumanModeManager manager = new HumanModeManager() { Pointer = humanModeManager };
             Character human = manager.Human;
 
+            if (manager.Human.UID != BrawlerBattleManager.PlayerCharacter.UID)
+                return m_isInputSwayTrampoline(humanModeManager);
 
+            //if we dont do it like this the character may double sway with one press
+            return BattleManager.PadInfo.IsJustPush(BattleButtonID.sway);
+
+            /*
             if (manager.Human.UID == BrawlerBattleManager.PlayerCharacter.UID)
             {
                 //Dont restart sway procedure when we are on our manual CFC defined sway
@@ -80,6 +83,7 @@ namespace LikeABrawler2
             }
             else
                 return m_isInputSwayTrampoline(humanModeManager);
+            */
         }
 
         private static HumanModeManagerDamageExecValid m_damageExecValidTrampoline;

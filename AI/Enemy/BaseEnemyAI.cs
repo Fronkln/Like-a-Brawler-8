@@ -608,7 +608,7 @@ namespace LikeABrawler2
             str.bKeepInfinity = true;
             str.nKeepDamage = 255;
 
-            var ptr = str.ToIntPtr();
+            var ptr = Utils.ToIntPtr(str);
             Fighter.GetStatus().AddExEffect(str.ToIntPtr(), false, false);
             Marshal.FreeHGlobal(ptr);
 

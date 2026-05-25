@@ -14,6 +14,7 @@ namespace LikeABrawler2
         public static HActPatches HActPatches = new HActPatches();
         public static SupporterPatches SupporterPatches = new SupporterPatches();
         public static HumanModePatches HumanModePatches = new HumanModePatches();
+        public static FighterModePatches FighterModePatches = new FighterModePatches();
         public static InventoryPatches InventoryPatches = new InventoryPatches();
         public static CFCPatches CFCPatches = new CFCPatches();
         public static ParticlePatches ParticlePatches = new ParticlePatches();
@@ -37,6 +38,7 @@ namespace LikeABrawler2
             HActPatches.Init();
             HActDamage.Init();
             HumanModePatches.Init();
+            FighterModePatches.Init();
             InventoryPatches.Init();
             InventoryPatches.Activate(); //need this to be always ready
             CFCPatches.Init();
@@ -57,6 +59,8 @@ namespace LikeABrawler2
             if (Enabled)
                 return;
 
+            DragonEngine.Log("Enabling realtime combat patches...");
+
             Enabled = true;
 
             CombatPatches.Activate();
@@ -66,6 +70,7 @@ namespace LikeABrawler2
             SupporterPatches.Activate();
             CombatPlayerPatches.Activate();
             HumanModePatches.Activate();
+            FighterModePatches.Activate();
             InventoryPatches.Activate();
             CFCPatches.Activate();
             ParticlePatches.Activate();
@@ -85,6 +90,8 @@ namespace LikeABrawler2
             if (!Enabled)
                 return;
 
+            DragonEngine.Log("Disabling realtime combat patches...");
+
             Enabled = false;
 
             CombatPatches.Deactivate();
@@ -94,6 +101,7 @@ namespace LikeABrawler2
             SupporterPatches.Deactivate();
             CombatPlayerPatches.Deactivate();
             HumanModePatches.Deactivate();
+            FighterModePatches.Deactivate();
             ParticlePatches.Deactivate();
             PausePatches.Deactivate();
             CameraPatches.Deactivate();

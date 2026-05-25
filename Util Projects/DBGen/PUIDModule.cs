@@ -70,7 +70,7 @@ namespace DBGen
             {
                 bool contains = false;
 
-                foreach (ArmpEntry entrya in table.MainTable.GetAllEntries())
+                foreach (ArmpEntry entrya in table.GetMainTable().GetAllEntries())
                 {
                     if (entrya.Name == str)
                     {
@@ -81,7 +81,7 @@ namespace DBGen
 
                 if (!contains)
                 {
-                    ArmpEntry entry = table.MainTable.AddEntry(str);
+                    ArmpEntry entry = table.GetMainTable().AddEntry(str);
                     Console.WriteLine("Added " + str + ", ID: " + entry.ID);
                 }
             }

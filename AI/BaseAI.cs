@@ -8,7 +8,8 @@ namespace LikeABrawler2
     public class BaseAI
     {
         public Fighter Fighter;
-        public Character Character;
+        public Character Character { get { return CharacterHandle.Get(); } }
+        public EntityHandle<Character> CharacterHandle;
 
         public EHC HActList;
 

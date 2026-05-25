@@ -301,8 +301,7 @@ namespace LikeABrawler2
             }
 
             ai.Fighter = fighter;
-            ai.Character = fighter.Character;
-
+            ai.CharacterHandle = fighter.Character;
 
             BrawlerFighterInfo inf = new BrawlerFighterInfo() { Fighter = fighter};
 

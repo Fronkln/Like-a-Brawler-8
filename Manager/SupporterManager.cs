@@ -127,7 +127,7 @@ namespace LikeABrawler2
                 ai = new BaseSupporterAI();
 
             ai.Fighter = fighter;
-            ai.Character = fighter.Character;
+            ai.CharacterHandle = fighter.Character;
             BrawlerFighterInfo.Infos.Add(ai.Character.UID, new BrawlerFighterInfo() { Fighter = fighter});
 
             ai.Awake();

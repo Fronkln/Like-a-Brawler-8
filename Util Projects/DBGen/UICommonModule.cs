@@ -27,8 +27,8 @@ namespace DBGen
 
             foreach (string str in File.ReadLines(listFile))
             {
-                ArmpEntry commonTex = uiCommonTexture.MainTable.AddEntry();
-                commonTex.SetValueFromColumn("*", (ushort)uiTexture.MainTable.GetEntry(str).ID);
+                ArmpEntry commonTex = uiCommonTexture.GetMainTable().AddEntry();
+                commonTex.SetValueFromColumn("*", (ushort)uiTexture.GetMainTable().GetEntry(str).ID);
             }
 
             ArmpFileWriter.WriteARMPToFile(uiCommonTexture, Path.Combine(Program.dbPath, "ui_texture_common.bin"));

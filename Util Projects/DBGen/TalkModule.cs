@@ -47,8 +47,8 @@ namespace DBGen
             {
                 string dir = Path.Combine(rootDir, str);
 
-                ArmpTable table = ((ArmpTableMain)talk.MainTable.GetEntry(1).GetValueFromColumn("text")).Copy(false);
-                ArmpEntry tableEntry = talk.MainTable.AddEntry(new DirectoryInfo(dir).Name);
+                ArmpTable table = ((ArmpTable)talk.GetMainTable().GetEntry(1).GetValueFromColumn("text")).Copy(false);
+                ArmpEntry tableEntry = talk.GetMainTable().AddEntry(new DirectoryInfo(dir).Name);
                 tableEntry.SetValueFromColumn("text", table);
 
 
@@ -67,7 +67,7 @@ namespace DBGen
                     ushort speakerID = 0;
 
                     if (!string.IsNullOrEmpty(speaker))
-                        speakerID = (ushort)talkSpeaker.MainTable.GetEntry(speaker).ID;
+                        speakerID = (ushort)talkSpeaker.GetMainTable().GetEntry(speaker).ID;
 
                     ArmpEntry tableTextEntry = table.AddEntry();
                     tableTextEntry.SetValueFromColumn("1", speakerID);

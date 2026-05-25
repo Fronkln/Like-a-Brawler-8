@@ -28,7 +28,7 @@ namespace DBGen
 
             foreach (string str in File.ReadAllLines(listFile))
             {
-                ArmpEntry speakerEntry = speaker.MainTable.AddEntry(str);
+                ArmpEntry speakerEntry = speaker.GetMainTable().AddEntry(str);
                 speakerEntry.SetValueFromColumn("talk_talker", str);
             }
 
