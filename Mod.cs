@@ -1,12 +1,14 @@
-﻿using System;
+﻿using DragonEngineLibrary;
+using ElvisCommand;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
-using DragonEngineLibrary;
-using ElvisCommand;
 
 namespace LikeABrawler2
 {
@@ -23,6 +25,81 @@ namespace LikeABrawler2
 
         public const float CriticalHPRatio = 0.3f;
 
+        public static List<BrawlerPlayer> Players = new List<BrawlerPlayer>();
+        public static event Action<EntityHandle<Character>, uint> OnPlayerCreatedEvent = null;
+
+        public const int COOP_PLAYER_COUNT = 0;
+
+        public static Character MainPlayerCharacter
+        {
+            get
+            {
+                if (Players.Count > 0)
+                    return Players[0].Character;
+                else
+                    return new Character();
+            }
+        }
+
+        public static Fighter MainPlayerFighter
+        {
+            get
+            {
+                if (Players.Count > 0)
+                    return Players[0].Fighter;
+                else
+                    return FighterManager.GetFighter(0);
+            }
+        }
+
+        public static BrawlerPlayer MainPlayer
+        {
+            get
+            {
+                if (Players.Count > 0)
+                    return Players[0];
+                else
+                    return null;
+            }
+        }
+
+        public static bool DoesPlayersExist()
+        {
+            return Players.Count > 0;
+        }
+
+        public static BrawlerPlayer GetPlayer(int idx)
+        {
+            return Players[idx];
+        }
+
+        //TODO: Make these linear time with UID dicts for better performance when u work on co-op
+        public static BrawlerPlayer GetPlayerByUID(uint uid)
+        {
+            return Players.FirstOrDefault(x => x.Character.UID == uid);
+        }
+
+        public static BrawlerPlayer GetPlayerByPartyIndex(uint id)
+        {
+            return Players.FirstOrDefault(x => x.PartyMemberIndex == id);
+        }
+
+        public static void RegisterPlayer(EntityHandle<Character> player, uint nakamaIndex)
+        {
+            BrawlerPlayer playerInstance = new BrawlerPlayer();
+            playerInstance.CharacterHandle = player;
+            playerInstance.PlayerID = player.Get().Attributes.player_id;
+            playerInstance.PartyMemberIndex = nakamaIndex;
+            playerInstance.Update();
+            playerInstance.OnSpawn();
+
+            Players.Add(playerInstance);
+
+            OnPlayerCreatedEvent?.Invoke(player, nakamaIndex);
+
+            DragonEngine.Log("Added brawler player with nakama index: " + nakamaIndex);
+        }
+
         public static bool IsTurnBased()
         {
             return Gamemode == 0;
@@ -32,34 +109,6 @@ namespace LikeABrawler2
         {
             return Gamemode == 1;
         }
-
-
-        [DllImport("user32.dll")]
-        public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct RECT
-        {
-            public int Left;
-            public int Top;
-            public int Right;
-            public int Bottom;
-        }
-
-
-        public static Vector2 GetControlSize(IntPtr hWnd)
-        {
-            RECT pRect;
-            Vector2 cSize;
-            // get coordinates relative to window
-            GetWindowRect(hWnd, out pRect);
-
-            cSize.x = pRect.Right - pRect.Left;
-            cSize.y = pRect.Bottom - pRect.Top;
-
-            return cSize;
-        }
-
 
         //14.11.2023, the journey begins.
         public override void OnModInit()
@@ -104,7 +153,7 @@ namespace LikeABrawler2
 
                 DragonEngine.Log("Like A Brawler Init Complete");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 DragonEngine.MessageBox(IntPtr.Zero, $"Error initializing Like A Brawler!\n{ex.ToString()}", "Like A Brawler Error", 0x00000010);
             }
@@ -144,10 +193,27 @@ namespace LikeABrawler2
             IsGameFocused = ApplicationIsActivated();
             IsGamePaused = GameVarManager.GetValueBool(GameVarID.is_pause);
 
+            for (uint i = 0; i <= COOP_PLAYER_COUNT; i++)
+            {
+                EntityHandle<Character> partyMember = NakamaManager.GetCharacterHandle(i);
+
+                if (partyMember.IsValid())
+                {
+                    if (GetPlayerByPartyIndex(i) == null)
+                        RegisterPlayer(partyMember, i);
+                }
+            }
+
 #if DEBUG
             Debug.GameUpdate();
 #endif
             DETaskManager.Update();
+
+            Players = Players.Where(x => x.CharacterHandle.IsValid()).ToList();
+
+            foreach (var brawlerPlayer in Players)
+                brawlerPlayer.Update();
+
             BrawlerBattleManager.Update();
         }
 

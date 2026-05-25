@@ -32,11 +32,11 @@ namespace LikeABrawler2
                         HActRequestOptions opts = new HActRequestOptions();
                         opts.id = ids[0];
                         opts.is_force_play = true;
-                        opts.base_mtx.matrix = BrawlerBattleManager.PlayerCharacter.GetMatrix();
+                        opts.base_mtx.matrix = Mod.MainPlayerCharacter.GetMatrix();
 
                         HeatActionManager.IsY8BHact = false;
                         HeatActionManager.ShowEnemyGaugeDoOnce = false;
-                        opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
+                        opts.Register(HActReplaceID.hu_player1, Mod.MainPlayerCharacter);
 
                         DragonEngine.Log("hact " + ids[0]);
 

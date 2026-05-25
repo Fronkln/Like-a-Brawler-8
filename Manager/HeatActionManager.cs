@@ -54,11 +54,14 @@ namespace LikeABrawler2
 
         public static long GetHActCost()
         {
-            long heatMax = Player.GetHeatMax(BrawlerPlayer.CurrentPlayer);
-            long heatNow = Player.GetHeatNow(BrawlerPlayer.CurrentPlayer);
+#warning TODO: Make co-op compliant
+            var player = Mod.MainPlayer;
+
+            long heatMax = Player.GetHeatMax(player.PlayerID);
+            long heatNow = Player.GetHeatNow(player.PlayerID);
 
 
-            if (BrawlerPlayer.IsKasuga())
+            if (player.IsKasuga())
             {
                 if (heatMax < TEMP_HACT_COST)
                 {
@@ -108,6 +111,9 @@ namespace LikeABrawler2
 
         public static void Update()
         {
+#warning TODO: Make co-op compliant
+            var player = Mod.MainPlayer;
+
             if (BrawlerBattleManager.Battling && BrawlerBattleManager.CurrentPhase == BattleTurnManager.TurnPhase.Action)
             {
                 if (m_hactCd > 0 && !BrawlerBattleManager.IsHAct)
@@ -116,7 +122,7 @@ namespace LikeABrawler2
                 //HAct Priority, Stage -> Job -> Shared Player -> Player
 
                 StageID stageID = SceneService.GetSceneInfo().ScenePlay.Get().StageID;
-                RPGJobID job = Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer);
+                RPGJobID job = Player.GetCurrentJob(player.PlayerID);
 
                 HeatActionInformation newPerformableHact = null;
 
@@ -126,7 +132,7 @@ namespace LikeABrawler2
 
                 if(newPerformableHact == null)
                 {
-                    if(BrawlerPlayer.IsExtremeHeat || BrawlerPlayer.IsOtherPlayer())
+                    if(BrawlerPlayer.IsExtremeHeat || player.IsOtherPlayer())
                     {
                         if (BrawlerPlayer.JobEHC.ContainsKey(job))
                             newPerformableHact = Iterate(BrawlerPlayer.JobEHC[job]);
@@ -136,7 +142,7 @@ namespace LikeABrawler2
                     newPerformableHact = Iterate(BrawlerPlayer.PlayerSharedHActs);
 
                 if (newPerformableHact == null)
-                     newPerformableHact = Iterate(BrawlerPlayer.GetCurrentPlayerHActSet());
+                     newPerformableHact = Iterate(player.GetCurrentPlayerHActSet());
 
                 PerformableHact = newPerformableHact;
 
@@ -182,18 +188,21 @@ namespace LikeABrawler2
         //False = heat gauge is not visible, hacts are not permitted.
         public static bool AllowHAct()
         {
-            return Player.GetLevel(BrawlerPlayer.CurrentPlayer) >= 2;
+            return Player.GetLevel(Mod.MainPlayer.PlayerID) >= 2;
         }
 
         public static bool CanHAct()
         {
-            return BrawlerBattleManager.Battling && m_hactCd <= 0 && !MortalReversalManager.Procedure && !BrawlerPlayer.IsInputDisableHAct() && !IsHAct() && AllowHAct() && (Player.GetHeatNow(BrawlerPlayer.CurrentPlayer) >= GetHActCost()) && PerformableHact != null;
+#warning TODO: Make co-op compliant
+            var player = Mod.MainPlayer;
+
+            return BrawlerBattleManager.Battling && m_hactCd <= 0 && !MortalReversalManager.Procedure && !BrawlerPlayer.IsInputDisableHAct() && !IsHAct() && AllowHAct() && (Player.GetHeatNow(player.PlayerID) >= GetHActCost()) && PerformableHact != null;
         }
 
 
         public static HeatActionInformation Iterate(EHC ehc)
         {
-            return HeatActionSimulator.Check(BrawlerBattleManager.PlayerFighter, ehc);
+            return HeatActionSimulator.Check(Mod.MainPlayerFighter, ehc);
         }
 
         public static void OnCanPerformHAct(HeatActionInformation atk)
@@ -224,16 +233,18 @@ namespace LikeABrawler2
 
         public static void ExecHeatAction(HeatActionInformation info)
         {
+            var performingPlayer = Mod.GetPlayerByUID(info.Performer.Character.UID);
+
             DragonEngine.Log("Execute hact: " + info.Hact.Name);
 
-            if (info.UseHeat)
+            if (info.UseHeat && performingPlayer != null)
             {
-                int newHeat = Player.GetHeatNow(BrawlerPlayer.CurrentPlayer) - (int)GetHActCost();
+                int newHeat = Player.GetHeatNow(performingPlayer.PlayerID) - (int)GetHActCost();
 
                 if (newHeat < 0)
                     newHeat = 0;
 
-                Player.SetHeatNow(BrawlerPlayer.CurrentPlayer, newHeat);
+                Player.SetHeatNow(performingPlayer.PlayerID, newHeat);
             }
 
             Vector3 hactPos = new Vector3(info.Hact.Position[0], info.Hact.Position[1], info.Hact.Position[2]);
@@ -263,7 +274,7 @@ namespace LikeABrawler2
                     }
                     break;
                 case HeatActionSpecialType.Asset:
-                    AssetUnit asset = AssetManager.FindNearestAssetFromAll(BrawlerBattleManager.PlayerCharacter.GetPosCenter(), 0).Get();
+                    AssetUnit asset = AssetManager.FindNearestAssetFromAll(info.Performer.Character.GetPosCenter(), 0).Get();
                     Vector3 assetPos = asset.GetPosCenter();
 
                     opts.base_mtx.matrix.Position = assetPos;
@@ -442,7 +453,7 @@ namespace LikeABrawler2
 
         public static void CalcHActDamageMultiplier()
         {
-            uint playerLevel = Player.GetLevel(BrawlerBattleManager.PlayerCharacter.Attributes.player_id);
+            uint playerLevel = Player.GetLevel(Mod.MainPlayerCharacter.Attributes.player_id);
             float mult = 1;
             int numIncrease = 0;
 

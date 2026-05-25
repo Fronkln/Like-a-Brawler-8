@@ -149,12 +149,12 @@ namespace LikeABrawler2
         private static HumanModeManagerIsInputSway m_isInputSwayTrampoline = null;
         public static bool HumanModeManager_IsInputSway(IntPtr humanModeMngPtr)
         {
-            if (BrawlerBattleManager.CurrentPhase != BattleTurnManager.TurnPhase.Action || BrawlerBattleManager.PlayerCharacter == null)
+            if (BrawlerBattleManager.CurrentPhase != BattleTurnManager.TurnPhase.Action || Mod.MainPlayerCharacter == null)
                 return m_isInputSwayTrampoline(humanModeMngPtr);
 
             HumanModeManager manager = new HumanModeManager() { Pointer = humanModeMngPtr };
 
-            if (manager.Human.Pointer != BrawlerBattleManager.PlayerCharacter.Pointer)
+            if (manager.Human.Pointer != Mod.MainPlayerCharacter.Pointer)
                 return m_isInputSwayTrampoline(humanModeMngPtr);
             else
                 return BrawlerPlayer.IsInputSway(manager);
@@ -163,12 +163,12 @@ namespace LikeABrawler2
         private static HumanModeManagerIsInputGuard m_isInputGuardTrampoline = null;
         public static bool HumanModeManager_IsInputGuard(IntPtr humanModeMngPtr)
         {
-            if(BrawlerBattleManager.CurrentPhase != BattleTurnManager.TurnPhase.Action || BrawlerBattleManager.PlayerCharacter == null)
+            if(BrawlerBattleManager.CurrentPhase != BattleTurnManager.TurnPhase.Action || Mod.MainPlayerCharacter == null)
                 return m_isInputGuardTrampoline(humanModeMngPtr);
 
             HumanModeManager manager = new HumanModeManager() { Pointer = humanModeMngPtr };
 
-            if (manager.Human.Pointer != BrawlerBattleManager.PlayerCharacter.Pointer)
+            if (manager.Human.Pointer != Mod.MainPlayerCharacter.Pointer)
             {
                 BaseAI ai = manager.Human.TryGetAI();
                 if(ai == null)
@@ -194,14 +194,14 @@ namespace LikeABrawler2
         private static HumanModeManagerIsInputPickup m_isInputPickupTrampoline = null;
         public static bool HumanModeManager_IsInputPickup(IntPtr humanModeMngPtr)
         {
-            if (BrawlerBattleManager.CurrentPhase != BattleTurnManager.TurnPhase.Action || BrawlerBattleManager.PlayerCharacter == null)
+            if (BrawlerBattleManager.CurrentPhase != BattleTurnManager.TurnPhase.Action || Mod.MainPlayerCharacter == null)
                 return m_isInputPickupTrampoline(humanModeMngPtr);
 
             return true;
 
             HumanModeManager manager = new HumanModeManager() { Pointer = humanModeMngPtr };
 
-            if (manager.Human.Pointer != BrawlerBattleManager.PlayerCharacter.Pointer)
+            if (manager.Human.Pointer != Mod.MainPlayerCharacter.Pointer)
                 return m_isInputGuardTrampoline(humanModeMngPtr);
             else
                 return BrawlerPlayer.IsInputGuard(manager);
@@ -220,7 +220,7 @@ namespace LikeABrawler2
 
             Fighter fighter = new Fighter((IntPtr)(fighterAddr));
 
-            if (fighter == BrawlerBattleManager.PlayerFighter)
+            if (Mod.GetPlayerByUID(fighter.Character.UID) != null)
                 return true;
 
             BaseEnemyAI ai = EnemyManager.GetAI(fighter);

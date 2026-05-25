@@ -15,7 +15,7 @@ namespace LikeABrawler2.Auth
             IntPtr skillNamePtr = (IntPtr)(thisObj.ToInt64() + 48);
             string hactName = Marshal.PtrToStringAnsi(skillNamePtr);
 
-            BattleTurnManager.ForceCounterCommand(BrawlerBattleManager.PlayerFighter, BrawlerBattleManager.AllEnemiesNearest[0], DBManager.GetSkill("e_yamai_mortal_attack_2"));
+            BattleTurnManager.ForceCounterCommand(Mod.MainPlayerFighter, BrawlerBattleManager.AllEnemiesNearest[0], DBManager.GetSkill("e_yamai_mortal_attack_2"));
             DragonEngine.Log("transit");
         }
     }

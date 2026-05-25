@@ -81,7 +81,7 @@ namespace LikeABrawler2
             if (Mod.IsTurnBased())
                 return;
 
-            if (PlayerFighter.IsValid())
+            if (Mod.MainPlayerFighter.IsValid())
                 BrawlerPlayer.InputUpdate();
         }
 
@@ -94,11 +94,10 @@ namespace LikeABrawler2
         {
             Character character = null;
 
-            if (PlayerFighter.IsValid())
-                character = PlayerFighter.Character;
+            if (Mod.MainPlayerCharacter.IsValid())
+                character = Mod.MainPlayerCharacter;
             else
                 character = DragonEngine.GetHumanPlayer();
-
 
             if (!PlayerCharacter.IsValid() && character.IsValid())
             {
@@ -107,7 +106,6 @@ namespace LikeABrawler2
             }
 
             PlayerCharacter = character;
-
 #if DEMO
             //DEMO: Chapter 1 only
             //Check if we are in chapter 2.
@@ -123,9 +121,9 @@ namespace LikeABrawler2
 
             AllFighters = FighterManager.GetAllFighters();
             AllEnemies = AllFighters.Where(x => x.IsEnemy() && !x.IsDead()).ToArray();
-            AllEnemiesNearest = AllEnemies.OrderBy(x => Vector3.Distance(PlayerFighter.Character.Transform.Position, x.Character.Transform.Position)).ToArray();
+            AllEnemiesNearest = AllEnemies.OrderBy(x => Vector3.Distance(Mod.MainPlayerCharacter.Transform.Position, x.Character.Transform.Position)).ToArray();
 
-            var enemiesBehindMe = AllEnemies.Where(x => !PlayerCharacter.IsFacingEntity(x.Character)).OrderBy(x => Vector3.Distance(PlayerFighter.Character.Transform.Position, x.Character.Transform.Position));
+            var enemiesBehindMe = AllEnemies.Where(x => !Mod.MainPlayerCharacter.IsFacingEntity(x.Character)).OrderBy(x => Vector3.Distance(PlayerFighter.Character.Transform.Position, x.Character.Transform.Position));
 
             if (enemiesBehindMe.Any())
             {
@@ -144,7 +142,7 @@ namespace LikeABrawler2
                 PlayerFighter = FighterManager.GetPlayer();
             else
             {
-                int idx = NakamaManager.FindIndex(BrawlerPlayer.CurrentPlayer);
+                int idx = NakamaManager.FindIndex(Mod.MainPlayer.PlayerID);
 
                 if (idx >= 0)
                     PlayerFighter = FighterManager.GetFighter((uint)idx);
@@ -155,7 +153,7 @@ namespace LikeABrawler2
             //TODO: Improve this battle start detection
             if (!m_battleStartedDoOnce)
             {
-                if (PlayerFighter.IsValid())
+                if (Mod.DoesPlayersExist() && Mod.MainPlayer.Fighter.IsValid())
                 {
                     if (Mod.IsRealtime())
                         OnRealtimeBattleStart();
@@ -198,7 +196,7 @@ namespace LikeABrawler2
 
                     if (paused)
                     {
-                        PlayerFighter.GetStatus().SetHPCurrent(Player.GetHPNow(BrawlerPlayer.CurrentPlayer));
+                        PlayerFighter.GetStatus().SetHPCurrent(Player.GetHPNow(Mod.MainPlayer.PlayerID));
 
                         Fighter p2 = FighterManager.GetFighter(1);
                         Fighter p3 = FighterManager.GetFighter(2);
@@ -302,7 +300,6 @@ namespace LikeABrawler2
 
             PlayerCharacter = chara;
             PlayerFighter = FighterManager.GetFighter(idx);
-            BrawlerPlayer.CurrentPlayer = chara.Attributes.player_id;
 
             EntityHandle<CameraBase> cam = PlayerCharacter.GetSceneEntity<CameraBase>(SceneEntity.camera_free);
 
@@ -510,7 +507,7 @@ namespace LikeABrawler2
         {
             BrawlerPatches.CombatPatches.EnableAssignment();
 
-            if (BattleTurnManager.SelectedFighter.UID != BrawlerBattleManager.PlayerFighter.CharacterUID)
+            if (BattleTurnManager.SelectedFighter.UID != Mod.MainPlayerFighter.CharacterUID)
                 SkipTurn();
             else
             {
@@ -622,7 +619,7 @@ namespace LikeABrawler2
             if (Mod.IsGamePaused)
                 return;
 
-            BrawlerPlayer.Update();
+            BrawlerPlayer.Update_STATIC_TEMP();
             WeaponManager.RealtimeCombatUpdate();
 
             RPGCamera.Sleep();
@@ -693,20 +690,21 @@ namespace LikeABrawler2
             BattleTurnManager.OverrideAttackerSelection2(DecideTurnAttacker);
             if (Mod.IsTurnBased())
             {
-                if (PlayerFighter.IsValid())
+                if (Battling)
                 {
-                    BrawlerPlayer.CurrentPlayer = PlayerCharacter.Attributes.player_id;
                     SkipTurn();
 
-                    BrawlerPlayer.ToNormalMoveset();
-                    // PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, BrawlerPlayer.GetCommandSetForJob(BrawlerPlayer.CurrentPlayer, Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer)));
+                    foreach (var player in Mod.Players)
+                    {
+                        player.ToNormalMoveset();
+                    }
                 }
             }
 
             Mod.Gamemode = 1;
             DragonEngine.Log("Changed gamemode to realtime.");
 
-            if (BrawlerPlayer.IsKasuga())
+            if (Mod.MainPlayer.IsKasuga())
                 IniSettings.IsIchibanRealtime = 1;
             else
                 IniSettings.IsKiryuRealtime = 1;
@@ -719,15 +717,17 @@ namespace LikeABrawler2
 
             if (Mod.IsRealtime())
                 if (BattleTurnManager.CurrentPhase != BattleTurnManager.TurnPhase.NumPhases)
-                    PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, RPG.GetJobCommandSetID(BrawlerPlayer.CurrentPlayer, Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer)));
+                {
+                    foreach (var player in Mod.Players)
+                        player.Character.HumanModeManager.CommandsetModel.SetCommandSet(0, RPG.GetJobCommandSetID(player.PlayerID, player.CurrentJob));
+                }
 
             BrawlerUIManager.OnSwitchToTurnBased();
-
 
             Mod.Gamemode = 0;
             DragonEngine.Log("Changed gamemode to turn based.");
 
-            if (BrawlerPlayer.IsKasuga())
+            if (Mod.MainPlayer.IsKasuga())
                 IniSettings.IsIchibanRealtime = 0;
             else
                 IniSettings.IsKiryuRealtime = 0;
@@ -739,13 +739,7 @@ namespace LikeABrawler2
         {
             DragonEngine.Log("Player spawned, address: " + PlayerCharacter.Pointer.ToString("X"));
 
-            BrawlerPlayer.CurrentPlayer = PlayerCharacter.Attributes.player_id;
-
-            //Ichiban animations are too silly on others.
-            if (BrawlerPlayer.IsOtherPlayer())
-                PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(1, (BattleCommandSetID)DBManager.GetCommandSet("p_kiryu_legend"));
-
-            if (BrawlerPlayer.IsKasuga())
+            if (Mod.MainPlayer.IsKasuga())
             {
                 if (IniSettings.IsIchibanRealtime == 1)
                     ChangeToRealtime();
@@ -785,12 +779,8 @@ namespace LikeABrawler2
 
             HeatActionManager.AwaitingHAct = false;
 
-            CharacterAttributes playerAttribs = PlayerCharacter.Attributes;
-
-            BrawlerPlayer.CurrentPlayer = playerAttribs.player_id;
-            BrawlerFighterInfo.Infos.Add(PlayerCharacter.UID, new BrawlerFighterInfo() { Fighter = PlayerFighter });
-
-            BrawlerPlayer.OnBattleStart();
+            foreach (var player in Mod.Players)
+                player.OnBattleStart();
 
             OnBattleStartEvent?.Invoke();
 
@@ -803,13 +793,13 @@ namespace LikeABrawler2
             SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("y8b_common"));
             SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("y8b_common_sfx"));
 
-            if (BrawlerPlayer.IsDragon())
+            if (Mod.MainPlayer.IsDragon())
                 SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("bbg_k"));
 
-            if (BrawlerPlayer.IsKasuga())
+            if (Mod.MainPlayer.IsKasuga())
                 SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("style_freeter"));
 
-            if (BrawlerPlayer.IsDragon())
+            if (Mod.MainPlayer.IsDragon())
                 SoundManager.LoadCuesheet(DBManager.GetSoundCuesheet("style_oedragon"));
 
             EffectEventManager.LoadScreen(28); //Judge_fatalblow
@@ -903,9 +893,12 @@ namespace LikeABrawler2
             m_battleActionStartedDoOnce = true;
             ConvertAllies();
 
-            if (PlayerCharacter.HumanModeManager.CurrentMode.ModeName == "BattleStartAction")
+            foreach(var player in Mod.Players)
             {
-                PlayerCharacter.HumanModeManager.ToEndReady();
+                if (player.Character.HumanModeManager.CurrentMode.ModeName == "BattleStartAction")
+                {
+                   player.Character.HumanModeManager.ToEndReady();
+                }
             }
         }
 
@@ -1045,7 +1038,10 @@ namespace LikeABrawler2
             }
 
             SupporterManager.OnBattleEnd();
-            BrawlerPlayer.OnBattleEnd();
+
+            foreach (var player in Mod.Players)
+                player.OnBattleEnd();
+
             StopSpecialMusic(); //lets ensure
             OnForceDeliveryHelpOFF();
             UsedDeliveryOnce = false;
@@ -1156,21 +1152,6 @@ namespace LikeABrawler2
                 chosenEnemy = AllEnemies[0];
 
             return chosenEnemy._ptr;
-        }
-
-        public static void ChangeCharacter(Player.ID playerID)
-        {
-            if (playerID == BrawlerPlayer.CurrentPlayer)
-                return;
-
-            BrawlerPlayer.CurrentPlayer = playerID;
-
-            PlayerCharacter = DragonEngine.GetHumanPlayer();
-
-            if (playerID == Player.ID.kasuga)
-                PlayerCharacter.GetRender().Reload((CharacterID)15286);
-            else
-                PlayerCharacter.GetRender().Reload((CharacterID)23350);
         }
     }
 }

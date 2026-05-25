@@ -52,9 +52,9 @@ namespace LikeABrawler2
 
         public static bool IsPlayerRealtime()
         {
-            if (BrawlerPlayer.IsKasuga())
+            if (Mod.MainPlayer.IsKasuga())
                 return IsIchibanRealtime == 1;
-            else if (BrawlerPlayer.IsKiryu())
+            else if (Mod.MainPlayer.IsKiryu())
                 return IsKiryuRealtime == 1;
 
             else return IsIchibanRealtime == 1;

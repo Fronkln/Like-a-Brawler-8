@@ -29,7 +29,7 @@ namespace LikeABrawler2
 
         public override EntityHandle<Character> OverrideMarkTarget(EntityHandle<Character> original)
         {
-            return BrawlerBattleManager.PlayerCharacter.UID;
+            return Mod.MainPlayerCharacter.UID;
         }
     }
 }

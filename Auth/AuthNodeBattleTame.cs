@@ -40,7 +40,7 @@ namespace LikeABrawler2
                     m_activeDoOnce = true;
                 }
 
-                BrawlerBattleManager.PlayerCharacter.GetMotion().SetTempSpeed(0.1f);
+                Mod.MainPlayerCharacter.GetMotion().SetTempSpeed(0.1f);
                 m_tameTime += DragonEngine.deltaTime;
 
                 if (!m_tameCharged && m_tameTime >= TAME_CHARGE_TIME)

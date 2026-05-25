@@ -23,7 +23,7 @@ namespace LikeABrawler2
 
             if (performableHact != null)
             {
-                performableHact.PosOverride = BrawlerBattleManager.PlayerCharacter.GetPosCenter();
+                performableHact.PosOverride = Mod.MainPlayerCharacter.GetPosCenter();
                 HeatActionManager.ExecHeatAction(performableHact);
 
                 m_hactCd = HACT_COOLDOWN;

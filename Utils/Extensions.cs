@@ -136,7 +136,7 @@ namespace LikeABrawler2
 
         public static bool IsMainPlayer(this Fighter fighter)
         {
-            return BrawlerBattleManager.PlayerCharacter.UID == fighter.Character.UID;
+            return Mod.MainPlayerCharacter.UID == fighter.Character.UID;
         }
 
         public static int GetPartyMemberIndex(this Fighter fighter)

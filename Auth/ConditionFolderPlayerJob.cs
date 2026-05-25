@@ -12,11 +12,11 @@ namespace LikeABrawler2
 
             RPGJobID playerJob;
 
-            if(BrawlerPlayer.IsExtremeHeat || BrawlerPlayer.IsOtherPlayer())
-                playerJob = Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer);
+            if(BrawlerPlayer.IsExtremeHeat || Mod.MainPlayer.IsOtherPlayer())
+                playerJob = Player.GetCurrentJob(Mod.MainPlayer.PlayerID);
             else
             {
-                if (BrawlerPlayer.IsKiryu())
+                if (Mod.MainPlayer.IsKiryu())
                     playerJob = RPGJobID.kiryu_01;
                 else 
                     playerJob = RPGJobID.kasuga_freeter;

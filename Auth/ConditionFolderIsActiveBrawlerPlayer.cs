@@ -17,7 +17,7 @@ namespace LikeABrawler2
             uint* handle = (uint*)(disableInfo);
             Character chara = new EntityHandle<Character>(*handle);
 
-            return BrawlerBattleManager.PlayerCharacter.UID == chara.UID;
+            return Mod.MainPlayerCharacter.UID == chara.UID;
         }
     }
 }

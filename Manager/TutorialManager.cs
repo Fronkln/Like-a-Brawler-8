@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
@@ -99,7 +100,8 @@ namespace LikeABrawler2
             m_goalTime += DragonEngine.deltaTime;
 
             if(currentGoal.Modifier.HasFlag(TutorialModifier.DontAllowPlayerDamage))
-                BrawlerBattleManager.PlayerFighter.GetStatus().SetHPCurrent(Player.GetHPMax(BrawlerPlayer.CurrentPlayer));
+                foreach (var player in Mod.Players)
+                    Mod.MainPlayerFighter.GetStatus().SetHPCurrent(Player.GetHPMax(player.PlayerID));
 
            if(currentGoal.Modifier.HasFlag(TutorialModifier.DontAllowEnemyDamage))
                 foreach(Fighter enemy in BrawlerBattleManager.AllEnemies)
@@ -109,10 +111,12 @@ namespace LikeABrawler2
                 }
 
             if(currentGoal.Modifier.HasFlag(TutorialModifier.FullHeat))
-                Player.SetHeatNow(BrawlerPlayer.CurrentPlayer, Player.GetHeatMax(BrawlerPlayer.CurrentPlayer));
+                foreach(var player in Mod.Players)
+                    Player.SetHeatNow(player.PlayerID, Player.GetHeatMax(player.PlayerID));
 
             if(currentGoal.Modifier.HasFlag(TutorialModifier.NoHeat))
-                Player.SetHeatNow(BrawlerPlayer.CurrentPlayer, 0);
+                foreach (var player in Mod.Players)
+                    Player.SetHeatNow(player.PlayerID, 0);
 
             if (currentGoal.CheckDelegate?.Invoke() == true)
             {
@@ -187,7 +191,7 @@ namespace LikeABrawler2
                 HActRequestOptions opts = new HActRequestOptions();
                 opts.id = goal.TalkID;
                 opts.is_force_play = true;
-                opts.base_mtx.matrix = BrawlerBattleManager.PlayerCharacter.GetMatrix();
+                opts.base_mtx.matrix = Mod.MainPlayerCharacter.GetMatrix();
                 HeatActionManager.RequestTalk(opts);
             }
             else
@@ -212,7 +216,7 @@ namespace LikeABrawler2
 
             List<TutorialGoal> goals = new List<TutorialGoal>();
 
-            string introductionTalk = Player.GetLevel(BrawlerPlayer.CurrentPlayer) <= 1 ? "y8b_tutorial_btl01_0100_01" : "y8b_tutorial_btl01_0100_01_ng";
+            string introductionTalk = Player.GetLevel(Mod.MainPlayer.PlayerID) <= 1 ? "y8b_tutorial_btl01_0100_01" : "y8b_tutorial_btl01_0100_01_ng";
 
             TutorialGoal hactGoalTest = new TutorialGoal();
             hactGoalTest.SetTalkID(DBManager.GetTalkParam(introductionTalk));
@@ -226,7 +230,7 @@ namespace LikeABrawler2
                 "\n<symbol=button_shikaku> <symbol=button_shikaku> <symbol=button_shikaku>");
             rushCombo.CheckDelegate = delegate 
             {
-                string command = BrawlerBattleManager.PlayerCharacter.HumanModeManager.GetCommandName().ToLowerInvariant();
+                string command = Mod.MainPlayerCharacter.HumanModeManager.GetCommandName().ToLowerInvariant();
 
                 if (!m_rushAttackOnce)
                 {
@@ -235,7 +239,7 @@ namespace LikeABrawler2
 
                     return false;
                 }
-                else if (!BrawlerBattleManager.PlayerCharacter.HumanModeManager.IsAttack())
+                else if (!Mod.MainPlayerCharacter.HumanModeManager.IsAttack())
                     return true;
 
                 return false;
@@ -251,7 +255,7 @@ namespace LikeABrawler2
                 );
             finisherCombo.CheckDelegate = delegate
             {
-                string command = BrawlerBattleManager.PlayerCharacter.HumanModeManager.GetCommandName().ToLowerInvariant();
+                string command = Mod.MainPlayerCharacter.HumanModeManager.GetCommandName().ToLowerInvariant();
                 return command.StartsWith("attackfinish");
             };
 
@@ -264,7 +268,7 @@ namespace LikeABrawler2
                  "<color=batting_pitch_light_blue>Grabbing</color>" +
                  "\n<symbol=button_maru>"
                 );
-            grab.CheckDelegate = delegate { return BrawlerFighterInfo.Infos[BrawlerBattleManager.PlayerCharacter.UID].IsSync; };
+            grab.CheckDelegate = delegate { return BrawlerFighterInfo.Infos[Mod.MainPlayerCharacter.UID].IsSync; };
 
 
             TutorialGoal battleStance = new TutorialGoal();
@@ -275,7 +279,7 @@ namespace LikeABrawler2
             battleStance.Modifier = TutorialModifier.DontAllowPlayerDamage | TutorialModifier.DontAllowEnemyDamage | TutorialModifier.NoHeat;
             battleStance.CheckDelegate = delegate
             {
-                if (CombatPlayerPatches.HumanModeManager_IsInputKamae(BrawlerBattleManager.PlayerCharacter.HumanModeManager.Pointer))
+                if (CombatPlayerPatches.HumanModeManager_IsInputKamae(Mod.MainPlayerCharacter.HumanModeManager.Pointer))
                     m_stanceTime += DragonEngine.deltaTime;
 
                 if (m_stanceTime >= 3)
@@ -293,7 +297,7 @@ namespace LikeABrawler2
 
             guard.CheckDelegate = delegate
             {
-                if (BrawlerBattleManager.PlayerCharacter.HumanModeManager.IsGuarding())
+                if (Mod.MainPlayerCharacter.HumanModeManager.IsGuarding())
                     m_guardTime += DragonEngine.deltaTime;
 
                 if (m_guardTime >= 3)
@@ -344,7 +348,7 @@ namespace LikeABrawler2
                 "\n<symbol=button_maru> facing a nearby object");
             wepPickup.CheckDelegate = delegate
             {
-                return BrawlerFighterInfo.Infos[BrawlerBattleManager.PlayerCharacter.UID].RightWeapon.IsValid();
+                return BrawlerFighterInfo.Infos[Mod.MainPlayerCharacter.UID].RightWeapon.IsValid();
             };
             wepPickup.TimeToComplete = 12f;
             wepPickup.Modifier = TutorialModifier.DontAllowPlayerDamage | TutorialModifier.DontAllowEnemyDamage | TutorialModifier.NoHeat;
@@ -477,7 +481,7 @@ namespace LikeABrawler2
 
             rushWeave.CheckDelegate = delegate
             {
-                return BrawlerPlayer.CurrentStyle == PlayerStyle.Rush && BrawlerBattleManager.PlayerCharacter.HumanModeManager.IsGuarding();
+                return BrawlerPlayer.CurrentStyle == PlayerStyle.Rush && Mod.MainPlayerCharacter.HumanModeManager.IsGuarding();
             };
 
             TutorialGoal beastTutorial = new TutorialGoal();
@@ -536,7 +540,7 @@ namespace LikeABrawler2
             swayAttack.SetInstructions(
                 "<color=batting_pitch_light_blue>Komaki Evade & Strike</color>" +
                 "\n<symbol=button_sankaku> while dodging");
-            swayAttack.CheckDelegate = delegate { return BrawlerBattleManager.PlayerCharacter.HumanModeManager.GetCommandName().StartsWith("SwayAttack"); };
+            swayAttack.CheckDelegate = delegate { return Mod.MainPlayerCharacter.HumanModeManager.GetCommandName().StartsWith("SwayAttack"); };
             swayAttack.TimeToComplete = 30;
             swayAttack.Modifier = TutorialModifier.DontAllowPlayerDamage | TutorialModifier.DontAllowEnemyDamage | TutorialModifier.FullHeat | TutorialModifier.DontAllowStyleChange;
 
@@ -544,7 +548,7 @@ namespace LikeABrawler2
             finishingHold.SetInstructions(
                 "<color=batting_pitch_light_blue>Finishing Hold</color>" +
                 "\n<symbol=button_maru> during a finisher");
-            finishingHold.CheckDelegate = delegate { return BrawlerBattleManager.PlayerCharacter.HumanModeManager.GetCommandName().StartsWith("FinishingHold") || m_goalTime >= 30; };
+            finishingHold.CheckDelegate = delegate { return Mod.MainPlayerCharacter.HumanModeManager.GetCommandName().StartsWith("FinishingHold") || m_goalTime >= 30; };
             finishingHold.TimeToComplete = 30;
             finishingHold.Modifier = TutorialModifier.DontAllowPlayerDamage | TutorialModifier.DontAllowEnemyDamage | TutorialModifier.FullHeat | TutorialModifier.DontAllowStyleChange;
 
@@ -552,7 +556,7 @@ namespace LikeABrawler2
             parry.SetInstructions(
                 "<color=batting_pitch_light_blue>Komaki Parry</color>" +
                 "\n<symbol=button_maru> before enemy attack lands");
-            parry.CheckDelegate = delegate { return BrawlerBattleManager.PlayerCharacter.HumanModeManager.GetCommandName() == "CounterParry" || m_goalTime >= 30; };
+            parry.CheckDelegate = delegate { return Mod.MainPlayerCharacter.HumanModeManager.GetCommandName() == "CounterParry" || m_goalTime >= 30; };
             parry.TimeToComplete =30;
             parry.Modifier = TutorialModifier.DontAllowPlayerDamage | TutorialModifier.DontAllowEnemyDamage | TutorialModifier.FullHeat | TutorialModifier.DontAllowStyleChange;
 
@@ -560,7 +564,7 @@ namespace LikeABrawler2
             tigerDrop.SetInstructions(
                 "<color=batting_pitch_light_blue>Komaki Tiger Drop</color>" +
                 "\n<symbol=button_r1> + <symbol=button_sankaku> before enemy attack lands (can be performed in Legend as well)");
-            tigerDrop.CheckDelegate = delegate { return BrawlerBattleManager.PlayerCharacter.HumanModeManager.GetCommandName() == "Counter" || m_goalTime >= 30; };
+            tigerDrop.CheckDelegate = delegate { return Mod.MainPlayerCharacter.HumanModeManager.GetCommandName() == "Counter" || m_goalTime >= 30; };
             tigerDrop.TimeToComplete = 30;
             tigerDrop.Modifier = TutorialModifier.DontAllowPlayerDamage | TutorialModifier.DontAllowEnemyDamage | TutorialModifier.FullHeat | TutorialModifier.DontAllowStyleChange;
 

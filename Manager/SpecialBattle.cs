@@ -58,7 +58,7 @@ namespace LikeABrawler2
                 case 189:
                     if (m_adachiSwapped)
                     {
-                        if (BrawlerPlayer.IsOtherPlayer())
+                        if (Mod.MainPlayer.IsOtherPlayer())
                         {
                             if (BrawlerBattleManager.CurrentPhase == BattleTurnManager.TurnPhase.Event)
                                 if (!HeatActionManager.IsY8BHact)
@@ -111,12 +111,12 @@ namespace LikeABrawler2
             {
                 if (IsDreamSequenceStart())
                 {
-                    if ((uint)BrawlerBattleManager.PlayerCharacter.GetMotion().GmtID == 19778)
+                    if ((uint)Mod.MainPlayerCharacter.GetMotion().GmtID == 19778)
                     {
                         m_dreamSequenceStart = false;
                         m_dreamSequenceFighting = true;
 
-                        BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)FighterCommandManager.FindSetID("p_kiryu_legend"));
+                        Mod.MainPlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)FighterCommandManager.FindSetID("p_kiryu_legend"));
 
                         DragonEngine.Log("START FIGHTING!");
                     }
@@ -128,18 +128,18 @@ namespace LikeABrawler2
 
                     if (m_dreamSequenceFighting)
                     {
-                        bool* free_movement_mode = (bool*)(BrawlerBattleManager.PlayerCharacter.Pointer.ToInt64() + 0x11A3);
+                        bool* free_movement_mode = (bool*)(Mod.MainPlayerCharacter.Pointer.ToInt64() + 0x11A3);
                         *free_movement_mode = true;
 
                         if (!m_warpedOnce)
                         {
-                            if (Vector3.Distance(m_dreamBattleStartPos, BrawlerBattleManager.PlayerCharacter.Transform.Position) >= 50)
+                            if (Vector3.Distance(m_dreamBattleStartPos, Mod.MainPlayerCharacter.Transform.Position) >= 50)
                             {
                                 m_warpedOnce = true;
 
                                 if(m_dreamSequenceEnemy == EnemyAIBossDaigo.Instance.Fighter)
                                 {
-                                    BrawlerBattleManager.PlayerCharacter.GetRender().Reload((CharacterID)9416);
+                                    Mod.MainPlayerCharacter.GetRender().Reload((CharacterID)9416);
                                     m_dreamSequenceEnemy.Character.GetRender().Reload((CharacterID)9403);
                                     
                                     new DETask(delegate
@@ -150,7 +150,7 @@ namespace LikeABrawler2
                                         HActRequestOptions opts = new HActRequestOptions();
                                         opts.id = DBManager.GetTalkParam("y8bb1740_dgo_punch_lock");
 
-                                        opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
+                                        opts.Register(HActReplaceID.hu_player1, Mod.MainPlayerCharacter);
                                         opts.Register(HActReplaceID.hu_enemy_00, m_dreamSequenceEnemy.Character);
 
                                         opts.base_mtx.matrix = m_dreamSequenceEnemy.Character.GetMatrix();
@@ -172,7 +172,7 @@ namespace LikeABrawler2
 
                                 if(m_dreamSequenceEnemy == EnemyAIBossMajima.Instance.Fighter)
                                 {
-                                    BrawlerBattleManager.PlayerCharacter.GetRender().Reload((CharacterID)11486);
+                                    Mod.MainPlayerCharacter.GetRender().Reload((CharacterID)11486);
                                     m_dreamSequenceEnemy.Character.GetRender().Reload((CharacterID)103);
 
                                     new DETask(delegate
@@ -183,7 +183,7 @@ namespace LikeABrawler2
                                         HActRequestOptions opts = new HActRequestOptions();
                                         opts.id = DBManager.GetTalkParam("y8bb1750_majima_combo");
 
-                                        opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
+                                        opts.Register(HActReplaceID.hu_player1, Mod.MainPlayerCharacter);
                                         opts.Register(HActReplaceID.hu_enemy_00, m_dreamSequenceEnemy.Character);
 
                                         opts.base_mtx.matrix = m_dreamSequenceEnemy.Character.GetMatrix();
@@ -203,7 +203,7 @@ namespace LikeABrawler2
 
                                 if(m_dreamSequenceEnemy == EnemyAIBossSaejima.Instance.Fighter)
                                 {
-                                    BrawlerBattleManager.PlayerCharacter.GetRender().Reload((CharacterID)9402);
+                                    Mod.MainPlayerCharacter.GetRender().Reload((CharacterID)9402);
                                     m_dreamSequenceEnemy.Character.GetRender().Reload((CharacterID)16652);
 
                                     new DETask(delegate
@@ -214,7 +214,7 @@ namespace LikeABrawler2
                                         HActRequestOptions opts = new HActRequestOptions();
                                         opts.id = DBManager.GetTalkParam("y8bb1760_sae_soul");
 
-                                        opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
+                                        opts.Register(HActReplaceID.hu_player1, Mod.MainPlayerCharacter);
                                         opts.Register(HActReplaceID.hu_enemy_00, m_dreamSequenceEnemy.Character);
 
                                         opts.base_mtx.matrix = m_dreamSequenceEnemy.Character.GetMatrix();
@@ -244,21 +244,21 @@ namespace LikeABrawler2
 
                             new DETask(delegate
                             {
-                                return Vector3.Distance(m_dreamBattleStartPos, BrawlerBattleManager.PlayerCharacter.Transform.Position) <= 50;
+                                return Vector3.Distance(m_dreamBattleStartPos, Mod.MainPlayerCharacter.Transform.Position) <= 50;
                             }, delegate
                             {
                                 //player gott warped back to the area
-                                BrawlerBattleManager.PlayerCharacter.GetRender().Reload(BrawlerBattleManager.PlayerCharacter.Attributes.chara_id);
+                                Mod.MainPlayerCharacter.GetRender().Reload(Mod.MainPlayerCharacter.Attributes.chara_id);
 
                                 new DETaskTime(0.5f, delegate
                                 {
                                     m_dreamSequenceFinish = false;
                                     m_warpedOnce = false;
-                                    BrawlerPlayer.OnStyleSwitch(PlayerStyle.Default, true);
+                                    Mod.MainPlayer.OnStyleSwitch(PlayerStyle.Default, true);
                                     BrawlerBattleManager.ChangeToRealtime();
                                 });
                             });
-                            BrawlerPlayer.OnStyleSwitch(PlayerStyle.Default, true);
+                            Mod.MainPlayer.OnStyleSwitch(PlayerStyle.Default, true);
                             DragonEngine.Log("Dream sequence end.");
                         }
                     }
@@ -270,7 +270,10 @@ namespace LikeABrawler2
         {
             m_dreamSequenceStart = true;
             DragonEngine.Log("DREAM SEQUENCE!");
-            BrawlerPlayer.OnExtremeHeatModeOFF();
+
+            foreach(var player in Mod.Players)
+                player.OnExtremeHeatModeOFF();
+
             BrawlerPlayer.CurrentStyle = PlayerStyle.Resurgence;
             BrawlerBattleManager.ChangeToTurnBased();
 

@@ -14,6 +14,7 @@ namespace LikeABrawler2.Auth
         {
             DragonEngine.Log("Character decision!");
 
+            /*
             Player.ID playerID = (Player.ID)Marshal.ReadInt32((IntPtr)(thisObj.ToInt64() + 52));
             BrawlerBattleManager.ChangeCharacter(playerID);
 
@@ -21,6 +22,7 @@ namespace LikeABrawler2.Auth
                 BrawlerBattleManager.ChangeToRealtime();
             else
                 BrawlerBattleManager.ChangeToTurnBased();
+            */
         }
     }
 }

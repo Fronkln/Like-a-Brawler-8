@@ -36,6 +36,9 @@ namespace LikeABrawler2
 
         private unsafe static bool ProcessSpecialCond(IntPtr handler, IntPtr checkFighterResult, IntPtr fighter)
         {
+            Fighter fighterObj = new Fighter(fighter);
+            var player = Mod.GetPlayerByUID(fighterObj.Character.UID);
+
             byte* paramsPtr = *(byte**)(checkFighterResult.ToInt64() + 0x8);
             byte condType = *paramsPtr;
             byte op = *(paramsPtr + 3);
@@ -49,13 +52,13 @@ namespace LikeABrawler2
                 case 3:
                     return CheckFacingNearestPickableAsset(fighter, op, paramsPtr);
                 case 4:
-                    return CheckKiryuStyle(fighter, op, paramsPtr);
+                    return CheckKiryuStyle(player, op, paramsPtr);
                 case 5:
-                    return CheckIsIchiban(fighter, op, paramsPtr);
+                    return CheckIsIchiban(player, op, paramsPtr);
                 case 6:
                     return CheckExtremeHeat(fighter, op, paramsPtr);
                 case 7:
-                    return CheckPlayerJob(fighter, op, paramsPtr);
+                    return CheckPlayerJob(player, op, paramsPtr);
                 case 8:
                     return CheckAIParam(fighter, op, paramsPtr);
                 case 9:
@@ -73,15 +76,15 @@ namespace LikeABrawler2
                 case 15:
                     return CheckAwakeningStat(fighter, op, paramsPtr);
                 case 16:
-                    return CheckIsDragon(fighter, op, paramsPtr);
+                    return CheckIsDragon(player, op, paramsPtr);
                 case 17:
                     return true;
                 case 18: //ShouldEnterJobCommandset
-                    if (BrawlerPlayer.IsOtherPlayer())
+                    if (player.IsOtherPlayer())
                         return true;
                     else return BrawlerPlayer.IsExtremeHeat;
                 case 19: //ShouldExitJobCommandset
-                    if (BrawlerPlayer.IsOtherPlayer())
+                    if (player.IsOtherPlayer())
                         return false;
                     else return !BrawlerPlayer.IsExtremeHeat;
             }
@@ -91,8 +94,14 @@ namespace LikeABrawler2
 
         private unsafe static bool CheckPlayerLevelCond(IntPtr fighter, byte op, byte* paramsPtr)
         {
+            Fighter fighterObj = new Fighter(fighter);
+            var player = Mod.GetPlayerByUID(fighterObj.Character.UID);
+
+            if (player == null)
+                return false;
+
             byte level = *(paramsPtr + 1);
-            uint fLevel = Player.GetLevel(BrawlerPlayer.CurrentPlayer);
+            uint fLevel = Player.GetLevel(player.PlayerID);
 
             switch (op)
             {
@@ -108,9 +117,10 @@ namespace LikeABrawler2
         }
         private static bool CheckNearestPickableAssetType(IntPtr fighter, byte op, byte* paramsPtr)
         {
+            Fighter fighterChara = new Fighter(fighter);
             byte category = *(paramsPtr + 1);
 
-            var unit = AssetManager.FindNearestAssetFromAll(DragonEngine.GetHumanPlayer().GetPosCenter(), 2);
+            var unit = AssetManager.FindNearestAssetFromAll(fighterChara.Character.GetPosCenter(), 2);
 
             if (!unit.IsValid())
                 return false;
@@ -129,13 +139,12 @@ namespace LikeABrawler2
         private static bool CheckFacingNearestPickableAsset(IntPtr fighter, byte op, byte* paramsPtr)
         {
             byte category = *(paramsPtr + 1);
+            Fighter fighterChara = new Fighter(fighter);
 
-            var unit = AssetManager.FindNearestAssetFromAll(DragonEngine.GetHumanPlayer().GetPosCenter(), 2);
+            var unit = AssetManager.FindNearestAssetFromAll(fighterChara.Character.GetPosCenter(), 2);
 
             if (!unit.IsValid())
                 return false;
-
-            Fighter fighterChara = new Fighter(fighter);
 
             switch (op)
             {
@@ -148,8 +157,11 @@ namespace LikeABrawler2
             }
         }
 
-        private static bool CheckIsIchiban(IntPtr fighter, byte op, byte* paramsPtr)
+        private static bool CheckIsIchiban(BrawlerPlayer player, byte op, byte* paramsPtr)
         {
+            if (player == null)
+                return false;
+
             byte category = *(paramsPtr + 1);
 
             switch (op)
@@ -157,15 +169,18 @@ namespace LikeABrawler2
                 default:
                     return true;
                 case 0:
-                    return BrawlerPlayer.IsKasuga();
+                    return player.IsKasuga();
                 case 3:
-                    return !BrawlerPlayer.IsKasuga();
+                    return player.IsKasuga();
             }
         }
 
-        private static bool CheckKiryuStyle(IntPtr fighter, byte op, byte* paramsPtr)
+        private static bool CheckKiryuStyle(BrawlerPlayer player, byte op, byte* paramsPtr)
         {
-            if (!BrawlerPlayer.IsDragon())
+            if (player == null)
+                return false;
+
+            if (!player.IsDragon())
                 return false;
 
             byte style = *(paramsPtr + 1);
@@ -194,8 +209,11 @@ namespace LikeABrawler2
             }
         }
 
-        private static bool CheckPlayerJob(IntPtr fighter, byte op, byte* paramsPtr)
+        private static bool CheckPlayerJob(BrawlerPlayer player, byte op, byte* paramsPtr)
         {
+            if (player == null)
+                return false;
+
             byte job = *(paramsPtr + 1);
 
             switch (op)
@@ -203,9 +221,9 @@ namespace LikeABrawler2
                 default:
                     return true;
                 case 0:
-                    return job == (byte)Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer);
+                    return job == (byte)Player.GetCurrentJob(player.PlayerID);
                 case 3:
-                    return job != (byte)Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer);
+                    return job != (byte)Player.GetCurrentJob(player.PlayerID);
             }
         }
 
@@ -349,7 +367,7 @@ namespace LikeABrawler2
         private static bool CheckEnemyBehindPlayer(IntPtr fighterPtr, byte op, byte* paramsPtr)
         {
             return BrawlerBattleManager.NearestEnemyBehindPlayer.IsValid() && 
-                Vector3.Distance(BrawlerBattleManager.NearestEnemyBehindPlayer.Character.Transform.Position, BrawlerBattleManager.PlayerCharacter.Transform.Position) <= 3.5f;
+                Vector3.Distance(BrawlerBattleManager.NearestEnemyBehindPlayer.Character.Transform.Position, Mod.MainPlayerCharacter.Transform.Position) <= 3.5f;
         }
 
         private static bool CheckAwakeningStat(IntPtr fighterPtr, byte op, byte* paramsPtr)
@@ -357,17 +375,20 @@ namespace LikeABrawler2
             return false;
         }
 
-        private static bool CheckIsDragon(IntPtr fighterPtr, byte op, byte* paramsPtr)
+        private static bool CheckIsDragon(BrawlerPlayer player, byte op, byte* paramsPtr)
         {
+            if (player == null)
+                return false;
+
             switch (op)
             {
                 default:
                     return true;
 
                 case 0:
-                    return BrawlerPlayer.IsDragon();
+                    return player.IsDragon();
                 case 3:
-                    return !BrawlerPlayer.IsDragon();
+                    return !player.IsDragon();
             }
         }
     }

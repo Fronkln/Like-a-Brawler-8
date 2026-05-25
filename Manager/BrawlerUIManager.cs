@@ -68,7 +68,7 @@ namespace LikeABrawler2
 
         private static uint GetRealtimeGaugeID()
         {
-            uint characterID = (uint)BrawlerBattleManager.PlayerCharacter.Attributes.chara_id;
+            uint characterID = (uint)Mod.MainPlayerCharacter.Attributes.chara_id;
 
             //Kasuga (worker)
             if(characterID == 26149 || characterID == 23390 || characterID == 23389 || characterID == 11455)
@@ -92,9 +92,9 @@ namespace LikeABrawler2
                 characterID == 17196)
                 return 1172;
 
-            if (BrawlerPlayer.IsKasuga())
+            if (Mod.MainPlayer.IsKasuga())
                 return 394;
-            else if (BrawlerPlayer.IsKiryu())
+            else if (Mod.MainPlayer.IsKiryu())
                 return 1171;
             else
                 return 394; //temp;
@@ -102,7 +102,7 @@ namespace LikeABrawler2
 
         private static bool ShouldCreateRealtimeGauge()
         {
-            return !UseClassicGauge && !BrawlerPlayer.IsOtherPlayer();
+            return !UseClassicGauge && !Mod.MainPlayer.IsOtherPlayer();
         }
 
         private static void CreateRealtimeGauge()
@@ -113,7 +113,7 @@ namespace LikeABrawler2
             m_realtimeGaugeHeat.GetChild(3).SetVisible(false);
 
             //We just don't have UI textures for other characters.
-            if(BrawlerPlayer.IsOtherPlayer())
+            if(Mod.MainPlayer.IsOtherPlayer())
                 RealtimeGauge.GetChild(0).GetChild(0).GetChild(3).SetVisible(false);
         }
         
@@ -202,7 +202,7 @@ namespace LikeABrawler2
             UIHandleBase gaugesRoot = uiHandle.GetChild(0).GetChild(0);
             GaugeRoot = gaugesRoot;
 
-            if (!BrawlerPlayer.IsOtherPlayer() || BrawlerPlayer.IsOtherPlayerLeader())
+            if (!Mod.MainPlayer.IsOtherPlayer() || Mod.MainPlayer.IsOtherPlayerLeader())
             {
                 int idx = 0;
 
@@ -220,7 +220,7 @@ namespace LikeABrawler2
             }
             else
             {
-                int idx = NakamaManager.FindIndex(BrawlerPlayer.CurrentPlayer);
+                int idx = NakamaManager.FindIndex(Mod.MainPlayer.PlayerID);
                 idx = idx + 2;
 
                 gauge = gaugesRoot.GetChild(idx).GetChild(0).GetChild(0);
@@ -248,20 +248,20 @@ namespace LikeABrawler2
                 m_wepPickup.SetVisible(false);
             }
 
-            if (!Mod.IsRealtime())
+            if (!Mod.IsRealtime() || !Mod.DoesPlayersExist())
                 return;
 
-            if (ShouldCreateRealtimeGauge() && BrawlerBattleManager.PlayerCharacter.IsValid() && RealtimeGauge.Handle == 0)
+            if (ShouldCreateRealtimeGauge() && RealtimeGauge.Handle == 0)
                 CreateRealtimeGauge();
 
             if(BrawlerBattleManager.IsHAct)
                 GaugeRoot.SetVisible(false);
             else
             {
-                if(!UseClassicGauge && (!BrawlerPlayer.IsOtherPlayer()))
+                if(!UseClassicGauge && (!Mod.MainPlayer.IsOtherPlayer()))
                 {
                     m_playerGaugeRoot.SetVisible(!BrawlerBattleManager.Battling);
-                    RealtimeGauge.SetVisible(BrawlerBattleManager.Battling && !BrawlerBattleManager.PlayerCharacter.IsDead() && BattleTurnManager.CurrentPhase > BattleTurnManager.TurnPhase.Start && !(BrawlerBattleManager.IsHAct && !HeatActionManager.IsY8BHact));
+                    RealtimeGauge.SetVisible(BrawlerBattleManager.Battling && !Mod.MainPlayerCharacter.IsDead() && BattleTurnManager.CurrentPhase > BattleTurnManager.TurnPhase.Start && !(BrawlerBattleManager.IsHAct && !HeatActionManager.IsY8BHact));
                 }
             }
 
@@ -278,7 +278,7 @@ namespace LikeABrawler2
                 m_wepPickup.SetPosition(WeaponManager.NearestAsset.GetPosCenter());
 
 
-            long playerHp = BrawlerBattleManager.PlayerFighter.GetStatus().CurrentHP;
+            long playerHp = Mod.MainPlayerFighter.GetStatus().CurrentHP;
 
             //Game only updates these values *sometimes* when they are changed during combat. and we dont want that, we always want constant update
             //To account for things like game script changing health, or player using healing on menu
@@ -287,15 +287,15 @@ namespace LikeABrawler2
             {
                 GaugeRoot.SetVisible(!Debug.NoUI);
 
-                if (UseClassicGauge || (BrawlerPlayer.IsOtherPlayer()))
+                if (UseClassicGauge || (Mod.MainPlayer.IsOtherPlayer()))
                 {
-                    m_playerGauge_HealthGauge.SetValue((float)playerHp / (float)Player.GetHPMax(BrawlerPlayer.CurrentPlayer));
+                    m_playerGauge_HealthGauge.SetValue((float)playerHp / (float)Player.GetHPMax(Mod.MainPlayer.PlayerID));
                     m_playerGauge_HealthGaugeLabel.SetText(playerHp.ToString());
-                    m_playerGauge_HeatGauge.SetValue((float)Player.GetHeatNow(BrawlerPlayer.CurrentPlayer) / (float)Player.GetHeatMax(BrawlerPlayer.CurrentPlayer));
-                    m_playerGauge_HeatGaugeLabel.SetText(Player.GetHeatNow(BrawlerPlayer.CurrentPlayer).ToString());
+                    m_playerGauge_HeatGauge.SetValue((float)Player.GetHeatNow(Mod.MainPlayer.PlayerID) / (float)Player.GetHeatMax(Mod.MainPlayer.PlayerID));
+                    m_playerGauge_HeatGaugeLabel.SetText(Player.GetHeatNow(Mod.MainPlayer.PlayerID).ToString());
                     m_playerGauge_NextLabel.SetVisible(false);
 
-                    if (BrawlerPlayer.IsKiryu())
+                    if (Mod.MainPlayer.IsKiryu())
                     {
                         //Kiryu style icon
                         m_playerGauge.GetChild(0).SetVisible(false);
@@ -303,8 +303,8 @@ namespace LikeABrawler2
                 }
                 else
                 {
-                    m_realtimeGaugeHealth.SetValue((float)playerHp / (float)Player.GetHPMax(BrawlerPlayer.CurrentPlayer));
-                    m_realtimeGaugeHeat.SetValue((float)Player.GetHeatNow(BrawlerPlayer.CurrentPlayer) / (float)Player.GetHeatMax(BrawlerPlayer.CurrentPlayer));
+                    m_realtimeGaugeHealth.SetValue((float)playerHp / (float)Player.GetHPMax(Mod.MainPlayer.PlayerID));
+                    m_realtimeGaugeHeat.SetValue((float)Player.GetHeatNow(Mod.MainPlayer.PlayerID) / (float)Player.GetHeatMax(Mod.MainPlayer.PlayerID));
                 }
             }
 

@@ -54,7 +54,7 @@ namespace LikeABrawler2
             HActRequestOptions opts = new HActRequestOptions();
             opts.id = DBManager.GetTalkParam("y8bb1430_ask_rush");
 
-            opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
+            opts.Register(HActReplaceID.hu_player1, Mod.MainPlayerCharacter);
             opts.Register(HActReplaceID.hu_enemy_00, Character);
 
             opts.base_mtx.matrix = Character.GetMatrix();
@@ -80,7 +80,7 @@ namespace LikeABrawler2
             m_mortalDoneOnce = true;
 
             HActRequestOptions opts = HActRequestOptions.Simple(DBManager.GetTalkParam("y8b_tutorial_btl01_0400_01"));
-            opts.base_mtx.matrix = BrawlerBattleManager.PlayerCharacter.GetMatrix();
+            opts.base_mtx.matrix = Mod.MainPlayerCharacter.GetMatrix();
 
             new DETaskTime(0.1f, 
                 delegate 

@@ -8,7 +8,7 @@ namespace LikeABrawler2
         public static bool Check(IntPtr disableInfo, IntPtr node)
         {
             uint* level = (uint*)(disableInfo.ToInt64() + 36);
-            return !(Player.GetLevel(BrawlerPlayer.CurrentPlayer) >= *level);
+            return !(Player.GetLevel(Mod.MainPlayer.PlayerID) >= *level);
         }
     }
 }

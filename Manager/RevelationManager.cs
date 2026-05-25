@@ -73,12 +73,12 @@ namespace LikeABrawler2
 
         public static void OnPlayerSpawn()
         {
-            if (BrawlerBattleManager.PlayerCharacter.IsValid())
+            if (Mod.MainPlayerCharacter.IsValid())
             {
-                uint startLevel = BrawlerSaveData.GetRevelationQueue(BrawlerPlayer.IsKiryu());
+                uint startLevel = BrawlerSaveData.GetRevelationQueue(Mod.MainPlayer.IsKiryu());
 
                 if (startLevel > 0)
-                    m_revelationQueue = GetRevelations(BrawlerSaveData.GetRevelationQueue(BrawlerPlayer.IsKiryu()));
+                    m_revelationQueue = GetRevelations(BrawlerSaveData.GetRevelationQueue(Mod.MainPlayer.IsKiryu()));
                 else
                     m_revelationQueue.Clear();
 
@@ -125,18 +125,18 @@ namespace LikeABrawler2
 
         private static void DoRevelationProcedure()
         {
-            BrawlerSaveData.SetRevelationQueue(0, BrawlerPlayer.IsKiryu());
+            BrawlerSaveData.SetRevelationQueue(0, Mod.MainPlayer.IsKiryu());
 
             TalkParamID hactID = 0;
 
-            if (BrawlerPlayer.IsKasuga())
+            if (Mod.MainPlayer.IsKasuga())
                 hactID = DBManager.GetTalkParam("y8b1260_ich_rev_start");
 
             HActRequestOptions opts = new HActRequestOptions();
             opts.id = hactID;
             opts.is_force_play = true;
-            opts.base_mtx.matrix = BrawlerBattleManager.PlayerCharacter.GetMatrix();
-            opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
+            opts.base_mtx.matrix = Mod.MainPlayerCharacter.GetMatrix();
+            opts.Register(HActReplaceID.hu_player1, Mod.MainPlayerCharacter);
             HeatActionManager.RequestTalk(opts);
 
             DragonEngine.Log("That's rad!");
@@ -171,7 +171,7 @@ namespace LikeABrawler2
             opts.id = hactID;
             opts.is_force_play = true;
 
-            opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
+            opts.Register(HActReplaceID.hu_player1, Mod.MainPlayerCharacter);
             HActManager.RequestHActProc(opts);
 
 
@@ -210,7 +210,7 @@ namespace LikeABrawler2
 
             if (m_revelationQueue.Count > 0)
             {
-                BrawlerSaveData.SetRevelationQueue((int)m_lastPlayerLevel + 1, BrawlerPlayer.IsKiryu());
+                BrawlerSaveData.SetRevelationQueue((int)m_lastPlayerLevel + 1, Mod.MainPlayer.IsKiryu());
                 DragonEngine.Log("Player can experience new revelations.");
             }
         }

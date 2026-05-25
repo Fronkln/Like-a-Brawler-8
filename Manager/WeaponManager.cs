@@ -149,7 +149,7 @@ namespace LikeABrawler2
 
         public static EHC GetEHCSetForWeapon(AssetArmsCategoryID category, JobWeaponType specialType = JobWeaponType.Unknown)
         {
-            Player.ID playerID = BrawlerPlayer.CurrentPlayer;
+            Player.ID playerID = Mod.MainPlayer.PlayerID;
 
             if (!WeaponEHCs.ContainsKey(playerID))
                 playerID = Player.ID.invalid;
@@ -175,7 +175,7 @@ namespace LikeABrawler2
         {
             /*
             //Weapon broke
-            if (PickedUpWeapon.UID != 0 && (!PickedUpWeapon.IsValid() || !BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.IsValid()))
+            if (PickedUpWeapon.UID != 0 && (!PickedUpWeapon.IsValid() || !Mod.MainPlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.IsValid()))
             {
                 PickedUpWeapon.UID = 0;
 
@@ -188,13 +188,13 @@ namespace LikeABrawler2
             if (m_reduceCountCooldown >= 0)
                 m_reduceCountCooldown -= DragonEngine.deltaTime;
 
-            if(!BrawlerFighterInfo.Player.IsAttack)
+            if(!Mod.MainPlayer.FighterInfo.IsAttack)
             {
                 m_lastHitCommand.set_ = 0;
                 m_lastHitCommand.cmd = 0;
             }
 
-            NearestAsset = AssetManager.FindNearestAssetFromAll(DragonEngine.GetHumanPlayer().GetPosCenter(), 2);
+            NearestAsset = AssetManager.FindNearestAssetFromAll(Mod.MainPlayerCharacter.GetPosCenter(), 2);
 
             if (!NearestAsset.IsValid())
             {
@@ -202,19 +202,19 @@ namespace LikeABrawler2
                 return;
             }
 
-            if (Vector3.Distance(NearestAsset.GetPosCenter(), BrawlerBattleManager.PlayerCharacter.GetPosCenter()) > 2f)
+            if (Vector3.Distance(NearestAsset.GetPosCenter(), Mod.MainPlayerCharacter.GetPosCenter()) > 2f)
             {
                 NearestAsset = null;
                 return;
             }
 
-            if(!BrawlerBattleManager.PlayerCharacter.IsFacingEntity(NearestAsset, 0))
+            if(!Mod.MainPlayerCharacter.IsFacingEntity(NearestAsset, 0))
             {
                 NearestAsset = null;
                 return;
             }
 
-            Fighter player = BrawlerBattleManager.PlayerFighter;
+            Fighter player = Mod.MainPlayerFighter;
 
 
             if (NearestAsset != null)
@@ -240,7 +240,7 @@ namespace LikeABrawler2
                         {
                             //07.01.2025
                             //Infinite Wealth breaks "Move to play in moveset" forcing me to hardcode this behavior
-                            ushort setID = BrawlerBattleManager.PlayerCharacter.HumanModeManager.CurrentMode.GetCommandID().set_;
+                            ushort setID = Mod.MainPlayerCharacter.HumanModeManager.CurrentMode.GetCommandID().set_;
 
 
                             if(DBManager.CommandsetWepAttacks.ContainsKey(setID))
@@ -250,7 +250,7 @@ namespace LikeABrawler2
                                 if (DBManager.CommandsetWepAttacks[setID].ContainsKey(cat))
                                 {
                                     ushort setID2 = (ushort)FighterCommandManager.FindSetID(DBManager.CommandsetWepAttacks[setID][cat]);
-                                    BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToAttackMode(new FighterCommandID(setID2, FighterCommandManager.GetCommandID(setID2, "PickupAttack")));
+                                    Mod.MainPlayerCharacter.HumanModeManager.ToAttackMode(new FighterCommandID(setID2, FighterCommandManager.GetCommandID(setID2, "PickupAttack")));
                                 }
                             }
                         }
@@ -269,7 +269,7 @@ namespace LikeABrawler2
                     {
                         if (!PickedUpWeapon.IsValid() || PickedUpWeapon == null)
                         {
-                            PickedUpWeapon = BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit;
+                            PickedUpWeapon = Mod.MainPlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit;
                             OnWeaponPickedUp(Asset.GetArmsCategory(PickedUpWeapon.Get().AssetID), false);
                         }
 
@@ -294,12 +294,12 @@ namespace LikeABrawler2
 
             AssetArmsCategoryID cat = Asset.GetArmsCategory(unit.AssetID);
 
-            BrawlerBattleManager.PlayerFighter.Equip(new Weapon() { Unit = unit.UID});
+            Mod.MainPlayerFighter.Equip(new Weapon() { Unit = unit.UID});
             DragonEngine.Log("Picking up " + unit.AssetID + ", Category: " + cat);
 
             //unit.DestroyEntity();
 
-            PickedUpWeapon = BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.UID;
+            PickedUpWeapon = Mod.MainPlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.UID;
             OnWeaponPickedUp(cat, true);
         }
 
@@ -311,12 +311,11 @@ namespace LikeABrawler2
                 PickedUpWeaponUseCount = 3;
 
             if (fromGround)
-            {
+            {   
+                /*
                 string wepCommandset = "";
                 Player.ID playerID = BrawlerPlayer.CurrentPlayer;
 
-
-                /*
                 if (!WeaponCommandsets.ContainsKey(playerID))
                     playerID = Player.ID.invalid;
 
@@ -324,7 +323,7 @@ namespace LikeABrawler2
                     wepCommandset = WeaponCommandsets[playerID][cat];
 
                 if (wepCommandset != "")
-                    BrawlerBattleManager.PlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)FighterCommandManager.FindSetID(wepCommandset));
+                    Mod.MainPlayerCharacter.HumanModeManager.CommandsetModel.SetCommandSet(0, (BattleCommandSetID)FighterCommandManager.FindSetID(wepCommandset));
                 */
             }
         }
@@ -352,7 +351,7 @@ namespace LikeABrawler2
             if (!PickedUpWeapon.IsValid() || !BrawlerFighterInfo.Player.IsAttack)
                 return;
 
-            FighterCommandID currentCommand = BrawlerBattleManager.PlayerCharacter.HumanModeManager.CurrentMode.GetCommandID();
+            FighterCommandID currentCommand = Mod.MainPlayerCharacter.HumanModeManager.CurrentMode.GetCommandID();
 
             if ((currentCommand.cmd == m_lastHitCommand.cmd && currentCommand.set_ == m_lastHitCommand.set_) || m_reduceCountCooldown > 0)
                 return;
@@ -361,11 +360,11 @@ namespace LikeABrawler2
 
             if (PickedUpWeaponUseCount <= 0)
             {
-                //  BrawlerBattleManager.PlayerFighter.DropWeapon(new DropWeaponOption(AttachmentCombinationID.right_weapon, true));
+                //  Mod.MainPlayerFighter.DropWeapon(new DropWeaponOption(AttachmentCombinationID.right_weapon, true));
                 PickedUpWeapon.Get().DestroyEntity();
 
 #warning TODO: Disable attack on humanmode instead of doing this
-                new DETaskTime(0.1f, delegate { BrawlerBattleManager.PlayerCharacter.HumanModeManager.ToEndReady(); });
+                new DETaskTime(0.1f, delegate { Mod.MainPlayerCharacter.HumanModeManager.ToEndReady(); });
             }
 
             m_lastHitCommand = currentCommand;

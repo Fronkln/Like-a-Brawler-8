@@ -85,7 +85,7 @@ namespace LikeABrawler2
                     {
                         if (!Supporters.ContainsKey(fighter.Character.UID))
                         {
-                            if(fighter.Character.UID != DragonEngine.GetHumanPlayer().UID)
+                            if(fighter.Character.UID != Mod.MainPlayerCharacter.UID)
                                 CreateSupporter(fighter, fighter.Character.Attributes.player_id);
                         }
                     }
@@ -93,7 +93,7 @@ namespace LikeABrawler2
             }
 
             Supporters = Supporters.Where(x => new EntityHandle<Character>(x.Key).IsValid()).ToDictionary(x => x.Key, x => x.Value);
-            SupportersNearest = Supporters.OrderBy(x => Vector3.Distance(BrawlerBattleManager.PlayerFighter.Character.Transform.Position, x.Value.Character.Transform.Position)).Select( x => x.Value).ToArray();
+            SupportersNearest = Supporters.OrderBy(x => Vector3.Distance(Mod.MainPlayerCharacter.Transform.Position, x.Value.Character.Transform.Position)).Select( x => x.Value).ToArray();
 
             foreach (var kv in Supporters)
             {
@@ -101,7 +101,7 @@ namespace LikeABrawler2
                 supporter.Update();
 
                 if (BattleTurnManager.CurrentPhase == BattleTurnManager.TurnPhase.Action && !HeatActionManager.IsHAct() && !Mod.IsGamePaused)
-                    if(supporter.Character != BrawlerBattleManager.PlayerCharacter)
+                    if(supporter.Character != Mod.MainPlayerCharacter)
                         supporter.CombatUpdate();
             }
         }

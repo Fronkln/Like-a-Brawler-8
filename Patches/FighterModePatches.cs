@@ -22,8 +22,8 @@ namespace LikeABrawler2
         {
             base.Init();
 
-            m_swayGetMotionIDFunc = (IntPtr)0x151C6B780; // CPP.PatternSearch("40 56 57 41 56 41 57 48 83 EC ? 48 89 CF");
-            m_calcSwayLimitFunc = (IntPtr)0x151C44DF0;
+            m_swayGetMotionIDFunc = CPP.PatternSearch("48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 4C 89 74 24 ? 55 48 89 E5 48 83 EC ? 48 89 CE 48 83 C1");
+            m_calcSwayLimitFunc = CPP.PatternSearch("48 83 EC ? 48 83 C1 ? E8 ? ? ? ? 31 C0");
         }
 
         protected override void SetActive()
@@ -59,10 +59,13 @@ namespace LikeABrawler2
             HumanModeManager hMan = hObj.Parent;
             Character human = hMan.Human;
 
-            if (human.UID != BrawlerBattleManager.PlayerCharacter.UID)
+            if (human.UID != Mod.MainPlayerCharacter.UID)
                 return _calcSwayLimitTrampoline(fighterMode);
 
-            return 5;
+            if (BrawlerPlayer.CurrentStyle == PlayerStyle.Rush)
+                return 3;
+
+            return 2;
         }
 
         private static FighterModeSwayGetMotionID _swayMotionIDTrampoline = null;
@@ -119,8 +122,7 @@ namespace LikeABrawler2
             FighterCommandID cfcID = new FighterCommandID((ushort)commandset, commandIndex);
             FighterCommandInfo commandInfo = cfcID.GetInfo();
 
-
-            return MotionService.FindGmtID(commandInfo.Animation);
+            return commandInfo.GmtID;
         }
     }
 }

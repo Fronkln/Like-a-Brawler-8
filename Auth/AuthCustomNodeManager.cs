@@ -87,7 +87,7 @@ namespace LikeABrawler2
             RegisterPlayFunc(70019, 
                 delegate 
                 { 
-                    BrawlerBattleManager.PlayerFighter.ThrowEquipAsset(false, true); 
+                    Mod.MainPlayerFighter.ThrowEquipAsset(false, true); 
                 });
 
             //AuthNodeDisableTargeting
@@ -102,8 +102,8 @@ namespace LikeABrawler2
             RegisterPlayFunc(70021, 
                 delegate 
                 {
-                    BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get().DestroyEntity();
-                    BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.left_weapon).Unit.Get().DestroyEntity();
+                    Mod.MainPlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get().DestroyEntity();
+                    Mod.MainPlayerFighter.GetWeapon(AttachmentCombinationID.left_weapon).Unit.Get().DestroyEntity();
                 });
 
             //AuthNodeEnemySetupWeapon

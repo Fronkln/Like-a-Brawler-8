@@ -228,7 +228,7 @@ namespace LikeABrawler2
 
             Fighter fighter = new Fighter((IntPtr)(&addr));
 
-            if (!owner.IsPartyMember() && owner.UID != BrawlerBattleManager.PlayerCharacter.UID)
+            if (!owner.IsPartyMember() && owner.UID != Mod.MainPlayerCharacter.UID)
             {
                 //Dont rebalance for higher difficulties
                 if (NativeFuncs.BattleDifficultyFunc() <= 1)
@@ -255,10 +255,10 @@ namespace LikeABrawler2
             if (BrawlerPlayer.CurrentStyle != PlayerStyle.Default && BrawlerPlayer.CurrentStyle != PlayerStyle.Dragon)
                 return;
 
-            if (BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.IsValid())
+            if (Mod.MainPlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.IsValid())
                 return;
 
-            BattleTurnManager.ForceCounterCommand(BrawlerBattleManager.PlayerFighter, BrawlerBattleManager.AllEnemiesNearest[0], (RPGSkillID)1386);
+            BattleTurnManager.ForceCounterCommand(Mod.MainPlayerFighter, BrawlerBattleManager.AllEnemiesNearest[0], (RPGSkillID)1386);
         }
 
 
@@ -272,14 +272,15 @@ namespace LikeABrawler2
 
             Character ownerCharacter = new Character() { Pointer = charaRender.Owner.Pointer };
 
-            bool isPlayer = ownerCharacter.UID == BrawlerBattleManager.PlayerCharacter.UID;
+            var player = Mod.GetPlayerByUID(ownerCharacter.UID);
+            bool isPlayer = player != null;
             bool isParty = ownerCharacter.IsPartyMember();
 
             if (isPlayer || isParty)
             {
-                if (ownerCharacter.UID == BrawlerBattleManager.PlayerCharacter.UID)
+                if (isPlayer)
                 {
-                    if (!BrawlerBattleManager.AllowPlayerTransformThisFight && !BrawlerPlayer.IsOtherPlayer())
+                    if (!BrawlerBattleManager.AllowPlayerTransformThisFight && !player.IsOtherPlayer())
                         return IntPtr.Zero;
                 }
                 else
@@ -322,7 +323,7 @@ namespace LikeABrawler2
                 //...because if he doesnt, he only taunts kasuga
                 //*characterHandle = ai.OverrideMarkTarget(new EntityHandle<Character>(*characterHandle)).UID;
 
-                *characterHandle = BrawlerBattleManager.PlayerCharacter.UID;
+                *characterHandle = Mod.MainPlayerCharacter.UID;
             }
 
             m_ecBattleStatusSetMarkFighterTrampoline(statusPtr, characterHandle);
@@ -352,11 +353,13 @@ namespace LikeABrawler2
         {
             Fighter fighter = new Fighter(fighterPtr);
 
-            if (fighter != BrawlerBattleManager.PlayerFighter)
+            BrawlerPlayer player = Mod.GetPlayerByUID(fighter.Character.UID);
+
+            if (player == null)
                 return m_fighterDisableRunTrampoline(fighterPtr);
 
             //Let EX Heat Ichiban, Beast and OEDOD to run with weapons
-            if (BrawlerPlayer.CurrentJob == RPGJobID.kasuga_freeter && BrawlerPlayer.IsExtremeHeat)
+            if (player.CurrentJob == RPGJobID.kasuga_freeter && BrawlerPlayer.IsExtremeHeat)
                 return false;
 
             if (BrawlerPlayer.CurrentStyle == PlayerStyle.Beast || BrawlerPlayer.CurrentStyle == PlayerStyle.Dragon)
@@ -371,7 +374,7 @@ namespace LikeABrawler2
             AuthNode node = new AuthNode() { Pointer = thisPtr };
             Character character = node.GetSelf().Get().GetCharacter();
 
-            if (character != BrawlerBattleManager.PlayerCharacter)
+            if (character != Mod.MainPlayerCharacter)
                 return;
 
             m_liveActionPlayFunc(thisPtr);
@@ -383,7 +386,7 @@ namespace LikeABrawler2
             AuthNode node = new AuthNode() { Pointer = thisPtr };
             Character character = node.GetSelf().Get().GetCharacter();
 
-            if (character != BrawlerBattleManager.PlayerCharacter)
+            if (character != Mod.MainPlayerCharacter)
                 return;
 
             m_liveActionPlayFunc2(thisPtr);

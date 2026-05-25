@@ -72,16 +72,16 @@ namespace LikeABrawler2
         protected override void OnSway()
         {
             base.OnSway();
-            m_swayAttack = new Random().Next(0, 101) <= SwayAttackChance && Character.IsFacingEntity(BrawlerBattleManager.PlayerCharacter) && DistToPlayer <= 4f;
+            m_swayAttack = new Random().Next(0, 101) <= SwayAttackChance && Character.IsFacingEntity(Mod.MainPlayerCharacter) && DistToPlayer <= 4f;
         }
 
         protected override void OnPlayerStartAttackingEvent()
         {
             base.OnPlayerStartAttackingEvent();
 
-            if(Character.IsFacingEntity(BrawlerBattleManager.PlayerCharacter) && BrawlerBattleManager.PlayerCharacter.IsFacingEntity(Character))
+            if(Character.IsFacingEntity(Mod.MainPlayerCharacter) && Mod.MainPlayerCharacter.IsFacingEntity(Character))
             {
-                float dist = Vector3.Distance(Character.Transform.Position, BrawlerBattleManager.PlayerCharacter.Transform.Position);
+                float dist = Vector3.Distance(Character.Transform.Position, Mod.MainPlayerCharacter.Transform.Position);
 
                 if (dist >= 3.5f)
                 {

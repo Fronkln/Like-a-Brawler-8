@@ -57,7 +57,7 @@ namespace LikeABrawler2
         private bool m_counterAttacking = false;
 
         public List<Fighter> PlayersNearest = new List<Fighter>();
-        public float DistToPlayer { get { return Vector3.Distance(Character.Transform.Position, BrawlerBattleManager.PlayerCharacter.Transform.Position); } }
+        public float DistToPlayer { get { return Vector3.Distance(Character.Transform.Position, Mod.MainPlayerCharacter.Transform.Position); } }
 
         protected float PlayerRunTowardsMeTime = 0;
         protected float LastPlayerRunTowardsMeTime = 0;
@@ -133,7 +133,7 @@ namespace LikeABrawler2
             //07.01.2025: if you are reading this, the code below fixes gun damage for western job and yes it fucking sucks still
             //you should add me on discord (jhrino) so we can have a tiny chat about how awful this is and i'll even thank you for looking at my code
 
-            AssetArmsCategoryID assetArmsCat = Asset.GetArmsCategory(BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get().AssetID);
+            AssetArmsCategoryID assetArmsCat = Asset.GetArmsCategory(Mod.MainPlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon).Unit.Get().AssetID);
             if (assetArmsCat == AssetArmsCategoryID.Y)
             {
                 int attr = Marshal.ReadByte(battleDamageInfo + 0x64);
@@ -141,7 +141,7 @@ namespace LikeABrawler2
                 if (attr == 4)
                 {
                     //placeholder damage calculation: TODO, use player base damage, AND weapon stats.
-                    int damage = (int)(BrawlerBattleManager.PlayerFighter.GetStatus().AttackPower * 0.45f);
+                    int damage = (int)(Mod.MainPlayerFighter.GetStatus().AttackPower * 0.45f);
                     *(int*)(battleDamageInfo.ToInt64() + 0x120) = damage;
                     *(int*)(battleDamageInfo.ToInt64() + 0x124) = damage;
                 }
@@ -159,7 +159,7 @@ namespace LikeABrawler2
             RecentHitsWithoutDefensiveMove++;
             OnTakeDamageEvent(dmg);
 
-            if(dmg.Attacker.UID == BrawlerBattleManager.PlayerCharacter.UID && dmg.Weapon.IsValid())
+            if(dmg.Attacker.UID == Mod.MainPlayerCharacter.UID && dmg.Weapon.IsValid())
             {
                 //player hit us with weapon
                 WeaponManager.OnHitWeapon();
@@ -294,12 +294,12 @@ namespace LikeABrawler2
             if (!Debug.AttackFirstMember)
             {
                 if (original.Get().IsPartyMember())
-                    return BrawlerBattleManager.PlayerCharacter;
+                    return Mod.MainPlayerCharacter;
             }
             else
                 return FighterManager.GetFighter(1).Character.UID;
 
-            return BrawlerBattleManager.PlayerCharacter;
+            return Mod.MainPlayerCharacter;
         }
 
         public virtual bool AllowCanGetTurn()
@@ -314,13 +314,12 @@ namespace LikeABrawler2
             //helps with forcing AI to target kasuga
             //TODO: does this mess up targeting for support skills?
             uint* tagFighter = (uint*)(Fighter.GetStatus().Pointer.ToInt64() + 0x2014);
-            *tagFighter = BrawlerBattleManager.PlayerCharacter.UID;
+            *tagFighter = Mod.MainPlayerCharacter.UID;
 
             PlayersNearest.Clear();
 
-
-            if (BrawlerBattleManager.PlayerFighter.IsValid())
-                PlayersNearest.Add(BrawlerBattleManager.PlayerFighter);
+            if (Mod.DoesPlayersExist())
+                PlayersNearest.Add(Mod.MainPlayerFighter);
 
             Fighter p1 = FighterManager.GetFighter(1);
             Fighter p2 = FighterManager.GetFighter(2);
@@ -425,7 +424,7 @@ namespace LikeABrawler2
             if (m_mortalSkill != RPGSkillID.invalid)
             {
                 BattleTurnManager.ChangeActionStep(BattleTurnManager.ActionStep.ActionStart);
-                BattleTurnManager.ForceCounterCommand(Fighter, BrawlerBattleManager.PlayerFighter, m_mortalSkill);
+                BattleTurnManager.ForceCounterCommand(Fighter, Mod.MainPlayerFighter, m_mortalSkill);
 
                 m_mortalSkill = RPGSkillID.invalid;
                 m_numMortalAttacks++;
@@ -467,9 +466,9 @@ namespace LikeABrawler2
                 m_swaying = false;
             }
 
-            if (Character.IsFacingEachother(BrawlerBattleManager.PlayerCharacter, 0.1f))
+            if (Character.IsFacingEachother(Mod.MainPlayerCharacter, 0.1f))
             {
-                if (BrawlerBattleManager.PlayerFighter.IsRunning())
+                if (Mod.MainPlayerFighter.IsRunning())
                 {
                     PlayerRunTowardsMeTime += DragonEngine.deltaTime;
                     TimeSincePlayerRunTowardsMe = 0;
@@ -495,7 +494,7 @@ namespace LikeABrawler2
         public void ExecuteCounterAttack(RPGSkillID id, bool showEffect)
         {
           //  m_allowCounterEffectDoOnce = showEffect;
-            BattleTurnManager.ForceCounterCommand(Fighter, BrawlerBattleManager.PlayerFighter, id);
+            BattleTurnManager.ForceCounterCommand(Fighter, Mod.MainPlayerFighter, id);
             SoundManager.PlayCue((SoundCuesheetID)7, 4, 0);
 
             //Grant hyperarmor for 1.5 secs
@@ -580,7 +579,7 @@ namespace LikeABrawler2
             {
                 if(!IsMortalAttack())
                 {
-                    BattleTurnManager.ForceCounterCommand(Fighter, BrawlerBattleManager.PlayerFighter, m_mortalSkill);
+                    BattleTurnManager.ForceCounterCommand(Fighter, Mod.MainPlayerFighter, m_mortalSkill);
                     Fighter.Character.Components.EffectEvent.Get().PlayEventOverride((EffectEventCharaID)1501);
                     SoundManager.PlayCue(DBManager.GetSoundCuesheet("y8b_common"), 1, 0);
                     DragonEngine.Log("Proc mortal attack");

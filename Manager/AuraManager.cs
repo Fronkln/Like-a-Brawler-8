@@ -33,7 +33,10 @@ namespace LikeABrawler2
 
         public static void Update()
         {
-            RPGJobID playerJob = Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer);
+            if (!Mod.DoesPlayersExist())
+                return;
+
+            RPGJobID playerJob = Player.GetCurrentJob(Mod.MainPlayer.PlayerID);
             AuraDefinition aura;
 
             if (!AuraDefs.ContainsKey(playerJob))
@@ -99,13 +102,13 @@ namespace LikeABrawler2
 
         private static void StopAura()
         {
-            BrawlerBattleManager.PlayerCharacter.Components.EffectEvent.Get().StopEvent(LastAura.Loop, false);
+            Mod.MainPlayerCharacter.Components.EffectEvent.Get().StopEvent(LastAura.Loop, false);
             m_auraPlaying = false;
         }
 
         private static void StartAura()
         {
-            BrawlerBattleManager.PlayerCharacter.Components.EffectEvent.Get().PlayEventOverride(LastAura.Loop);
+            Mod.MainPlayerCharacter.Components.EffectEvent.Get().PlayEventOverride(LastAura.Loop);
             m_auraPlaying = true;
         }
     }

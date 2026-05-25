@@ -24,16 +24,16 @@ namespace LikeABrawler2
             {
                 CounterFlag = true;
 
-                FighterCommandID command = BrawlerBattleManager.PlayerCharacter.HumanModeManager.CurrentMode.GetCommandID();
+                FighterCommandID command = Mod.MainPlayerCharacter.HumanModeManager.CurrentMode.GetCommandID();
                 string targetSkillName = DBManager.GetCommandSet(command.set_) + "_mortal_counter";
                 RPGSkillID mrSkill = DBManager.GetSkill(targetSkillName);
 
                 if (mrSkill <= 0)
                     mrSkill = DBManager.GetSkill("mortal_counter_test");
 
-                BattleTurnManager.ForceCounterCommand(BrawlerBattleManager.PlayerFighter, Attacker, mrSkill);
+                BattleTurnManager.ForceCounterCommand(Mod.MainPlayerFighter, Attacker, mrSkill);
 
-               // BattleTurnManager.ForceCounterCommand(BrawlerBattleManager.PlayerFighter, Attacker, DBManager.GetSkill("mortal_counter_test"));
+               // BattleTurnManager.ForceCounterCommand(Mod.MainPlayerFighter, Attacker, DBManager.GetSkill("mortal_counter_test"));
                 EffectEventManager.PlayScreen(3); //just to add a tiny bit of flair
                 DragonEngine.Log("GET. REVERSED!");
                 Transit = false;
@@ -42,7 +42,7 @@ namespace LikeABrawler2
 
                 new DETaskTime(0.3f, delegate
                 {
-                    FighterCommandID commandId = BrawlerBattleManager.PlayerCharacter.HumanModeManager.CurrentMode.GetCommandID();
+                    FighterCommandID commandId = Mod.MainPlayerCharacter.HumanModeManager.CurrentMode.GetCommandID();
                     FighterCommandInfo commandInf = commandId.GetInfo();
 
                     if (commandInf.Id == "MortalCounter")
@@ -73,7 +73,7 @@ namespace LikeABrawler2
                 DragonEngine.SetSpeed(DESpeedType.Character, 0.1f);
                 DragonEngine.SetSpeed(DESpeedType.Player, 0.1f);
 
-                FighterCommandID commandId = BrawlerBattleManager.PlayerCharacter.HumanModeManager.CurrentMode.GetCommandID();
+                FighterCommandID commandId = Mod.MainPlayerCharacter.HumanModeManager.CurrentMode.GetCommandID();
                 FighterCommandInfo commandInf = commandId.GetInfo();
 
                 if (commandInf.Id != m_mortalCommand.Id)

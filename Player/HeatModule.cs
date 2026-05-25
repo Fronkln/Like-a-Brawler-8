@@ -44,10 +44,10 @@ namespace LikeABrawler2
 
             SoundManager.PlayCue(DBManager.GetSoundCuesheet("battle_common"), 15, 0);
 
-            if(BrawlerPlayer.IsKasuga())
-                BrawlerBattleManager.PlayerCharacter.Components.EffectEvent.Get().PlayEventOverride((EffectEventCharaID)2769);
+            if(Mod.MainPlayer.IsKasuga())
+                Mod.MainPlayerCharacter.Components.EffectEvent.Get().PlayEventOverride((EffectEventCharaID)2769);
             else
-                BrawlerBattleManager.PlayerCharacter.Components.EffectEvent.Get().PlayEventOverride(EffectEventCharaID.OgrefHeatAuraKr02);
+                Mod.MainPlayerCharacter.Components.EffectEvent.Get().PlayEventOverride(EffectEventCharaID.OgrefHeatAuraKr02);
         }
     }
 }

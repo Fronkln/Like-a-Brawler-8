@@ -81,7 +81,7 @@ namespace LikeABrawler2
             TalkPatches.Activate();
             
 
-            if (BrawlerBattleManager.PlayerFighter.IsValid())
+            if (Mod.MainPlayerFighter.IsValid())
                 CombatPatches.DisableAssignment();
         }
 

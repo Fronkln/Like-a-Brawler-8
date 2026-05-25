@@ -18,15 +18,15 @@ namespace LikeABrawler2
             Vector4 offsetXYZ = Marshal.PtrToStructure<Vector4>(dataPtr + 4);
             HActRangeInfo cfcRangeAtkInf = new HActRangeInfo();
 
-            if (BrawlerBattleManager.PlayerFighter.GetStatus().HAct.GetPlayInfo(ref cfcRangeAtkInf, (HActRangeType)rangeType))
+            if (Mod.MainPlayerFighter.GetStatus().HAct.GetPlayInfo(ref cfcRangeAtkInf, (HActRangeType)rangeType))
             {
                 Vector3 finalPos = (Vector3)cfcRangeAtkInf.Pos;
                 finalPos += (cfcRangeAtkInf.Rot * Vector3.forward) * offsetXYZ.z;
                 finalPos += (cfcRangeAtkInf.Rot * Vector3.up) * offsetXYZ.y;
                 finalPos += (cfcRangeAtkInf.Rot * -Vector3.right) * offsetXYZ.x;
 
-                BrawlerBattleManager.PlayerCharacter.WarpPosAndOrient(BrawlerBattleManager.PlayerCharacter.Transform.Position, cfcRangeAtkInf.Rot);
-                BrawlerBattleManager.PlayerCharacter.RequestWarpPose(new PoseInfo(finalPos, BrawlerBattleManager.PlayerCharacter.GetAngleY()));
+                Mod.MainPlayerCharacter.WarpPosAndOrient(Mod.MainPlayerCharacter.Transform.Position, cfcRangeAtkInf.Rot);
+                Mod.MainPlayerCharacter.RequestWarpPose(new PoseInfo(finalPos, Mod.MainPlayerCharacter.GetAngleY()));
             }
 
             DragonEngine.Log("Transit range");

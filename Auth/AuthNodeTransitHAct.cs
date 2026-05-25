@@ -17,19 +17,19 @@ namespace LikeABrawler2
             if (opts.id <= 0)
                 return;
 
-            opts.Register(HActReplaceID.hu_player1, BrawlerBattleManager.PlayerCharacter);
+            opts.Register(HActReplaceID.hu_player1, Mod.MainPlayerCharacter);
 
             if (BrawlerBattleManager.AllEnemiesNearest.Length > 0)
                 opts.Register(HActReplaceID.hu_enemy_00, BrawlerBattleManager.AllEnemiesNearest[0].Character);
 
             opts.is_force_play = true;
-            opts.base_mtx.matrix = BrawlerBattleManager.PlayerCharacter.GetMatrix();
+            opts.base_mtx.matrix = Mod.MainPlayerCharacter.GetMatrix();
 
 
             if(HeatActionManager.RequestTalk(opts))
             {
                 HeatActionInformation inf = new HeatActionInformation();
-                inf.Performer = BrawlerBattleManager.PlayerFighter;
+                inf.Performer = Mod.MainPlayerFighter;
                 inf.Map = new System.Collections.Generic.Dictionary<ElvisCommand.HeatActionActorType, Fighter>();
 
                 if (BrawlerBattleManager.AllEnemiesNearest.Length > 0)

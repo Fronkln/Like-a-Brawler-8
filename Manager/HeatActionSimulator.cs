@@ -19,7 +19,7 @@ namespace LikeABrawler2
             FighterMap map = new FighterMap();
 
             map[HeatActionActorType.Fighter] = performer;
-            map[HeatActionActorType.Player] = BrawlerBattleManager.PlayerFighter;
+            map[HeatActionActorType.Player] = Mod.MainPlayerFighter;
 
             if (performer.IsPlayer() || !performer.IsEnemy())
             {
@@ -150,7 +150,8 @@ namespace LikeABrawler2
                 return false;
 
             bool flag = false;
-            bool performerIsPlayer = actor.IsPlayer();
+            BrawlerPlayer player = Mod.GetPlayerByUID(actor.CharacterUID);
+            bool performerIsPlayer = player != null;
 
             CharacterAttributes actorAttributes = actor.Character.Attributes;
             BaseAI ai = actor.TryGetAI();
@@ -169,16 +170,16 @@ namespace LikeABrawler2
                     flag = actor.IsBrawlerCriticalHP();
                     break;
                 case HeatActionConditionType.CharacterLevel:
-                    flag = Logic.CheckNumberLogicalOperator(Player.GetLevel(BrawlerPlayer.CurrentPlayer), cond.Param1U32, cond.LogicalOperator);
+                    flag = Logic.CheckNumberLogicalOperator(Player.GetLevel(player.PlayerID), cond.Param1U32, cond.LogicalOperator);
                     break;
                 case HeatActionConditionType.Job:
                     if (actor.IsPlayer())
                     {
-                        RPGJobID job = Player.GetCurrentJob(BrawlerPlayer.CurrentPlayer);
+                        RPGJobID job = Player.GetCurrentJob(player.PlayerID);
 
-                        if(!BrawlerPlayer.IsOtherPlayer() && !BrawlerPlayer.IsExtremeHeat)
+                        if(!player.IsOtherPlayer() && !BrawlerPlayer.IsExtremeHeat)
                         {
-                            if (BrawlerPlayer.IsKasuga())
+                            if (player.IsKasuga())
                                 job = RPGJobID.kasuga_freeter;
                             else
                                 job = RPGJobID.kiryu_01;
@@ -190,7 +191,7 @@ namespace LikeABrawler2
                     break;
                 case HeatActionConditionType.JobLevel:
                     if (actor.IsPlayer())
-                        flag = Logic.CheckNumberLogicalOperator((uint)Player.GetJobLevel(BrawlerPlayer.CurrentPlayer), cond.Param1U32, cond.LogicalOperator);
+                        flag = Logic.CheckNumberLogicalOperator((uint)Player.GetJobLevel(player.PlayerID), cond.Param1U32, cond.LogicalOperator);
                     break;
 
                 case HeatActionConditionType.Down:
@@ -447,10 +448,10 @@ namespace LikeABrawler2
                     break;
 
                 case HeatActionConditionType.WeaponFlags:
-                    ItemID equipItem = Party.GetEquipItemID(BrawlerPlayer.CurrentPlayer, PartyEquipSlotID.weapon);
+                    ItemID equipItem = Party.GetEquipItemID(player.PlayerID, PartyEquipSlotID.weapon);
                     AssetID equipAssetID = Item.GetAssetID(equipItem);
 
-                    Weapon playerWep = BrawlerBattleManager.PlayerFighter.GetWeapon(AttachmentCombinationID.right_weapon);
+                    Weapon playerWep = actor.GetWeapon(AttachmentCombinationID.right_weapon);
 
                     if (playerWep.Unit.Get().AssetID != equipAssetID)
                         return false;
@@ -459,7 +460,7 @@ namespace LikeABrawler2
                     break;
 
                 case HeatActionConditionType.PlayerID:
-                    return BrawlerPlayer.CurrentPlayer == (Player.ID)cond.Param1U32;
+                    return player.PlayerID == (Player.ID)cond.Param1U32;
 
                 case HeatActionConditionType.PlayerStyle:
                     return BrawlerPlayer.CurrentStyle == (PlayerStyle)cond.Param1U32;

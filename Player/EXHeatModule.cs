@@ -25,8 +25,8 @@ namespace LikeABrawler2
                 m_exHeatDecay.m_tickRate = 0.2f;
 
                 if(BrawlerBattleManager.CurrentPhase == BattleTurnManager.TurnPhase.Action)
-                    if(Player.GetHeatNow(BrawlerPlayer.CurrentPlayer) > 0)
-                        Player.SetHeatNow(BrawlerPlayer.CurrentPlayer, Player.GetHeatNow(BrawlerPlayer.CurrentPlayer) - 1);
+                    if(Player.GetHeatNow(Mod.MainPlayer.PlayerID) > 0)
+                        Player.SetHeatNow(Mod.MainPlayer.PlayerID, Player.GetHeatNow(Mod.MainPlayer.PlayerID) - 1);
             }, !Mod.IsDemo() ? 0.1f : 0.2f //Make it decay slower in demo for more player experiment
             );
 
@@ -42,11 +42,11 @@ namespace LikeABrawler2
 
             if (BrawlerPlayer.IsExtremeHeat && !BrawlerBattleManager.IsHAct)
             {
-                int heat = Player.GetHeatNow(BrawlerPlayer.CurrentPlayer);
+                int heat = Player.GetHeatNow(Mod.MainPlayer.PlayerID);
 
                 if (heat <= 0 && !BrawlerBattleManager.IsHAct && !BrawlerFighterInfo.Player.IsSync && !BrawlerFighterInfo.Player.IsAttack)
                 {
-                    BrawlerPlayer.OnExtremeHeatModeOFF();
+                    Mod.MainPlayer.OnExtremeHeatModeOFF();
                 }
             }
         }

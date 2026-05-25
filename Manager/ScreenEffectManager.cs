@@ -37,7 +37,7 @@ namespace LikeABrawler2
 
         public static bool ShouldShowPhysicalWarning()
         {
-            return Mod.IsRealtime() && BrawlerBattleManager.Battling && BrawlerBattleManager.ActionBattleTime > 0f && BrawlerBattleManager.PlayerFighter.IsBrawlerCriticalHP() && !BrawlerBattleManager.PlayerFighter.IsDead() && !(BrawlerBattleManager.IsHAct && !HeatActionManager.IsY8BHact);
+            return Mod.IsRealtime() && BrawlerBattleManager.Battling && BrawlerBattleManager.ActionBattleTime > 0f && Mod.MainPlayerFighter.IsBrawlerCriticalHP() && !Mod.MainPlayerFighter.IsDead() && !(BrawlerBattleManager.IsHAct && !HeatActionManager.IsY8BHact);
         }
     }
 }

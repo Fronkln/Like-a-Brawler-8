@@ -10,9 +10,9 @@ namespace LikeABrawler2
             uint* id = (uint*)(disableInfo.ToInt64() + 36);
 
             if (BrawlerBattleManager.Battling)
-                return !((uint)BrawlerPlayer.CurrentPlayer == *id);
+                return !((uint)Mod.MainPlayer.PlayerID == *id);
             else
-                return !((uint)BrawlerBattleManager.PlayerCharacter.Attributes.player_id == *id);
+                return !((uint)Mod.MainPlayerCharacter.Attributes.player_id == *id);
         }
     }
 }

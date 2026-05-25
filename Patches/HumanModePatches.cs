@@ -2,6 +2,7 @@
 using DragonEngineLibrary.Unsafe;
 using System;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 
 namespace LikeABrawler2
 {
@@ -66,14 +67,14 @@ namespace LikeABrawler2
             HumanModeManager manager = new HumanModeManager() { Pointer = humanModeManager };
             Character human = manager.Human;
 
-            if (manager.Human.UID != BrawlerBattleManager.PlayerCharacter.UID)
+            if (manager.Human.UID != Mod.MainPlayerCharacter.UID)
                 return m_isInputSwayTrampoline(humanModeManager);
 
             //if we dont do it like this the character may double sway with one press
             return BattleManager.PadInfo.IsJustPush(BattleButtonID.sway);
 
             /*
-            if (manager.Human.UID == BrawlerBattleManager.PlayerCharacter.UID)
+            if (manager.Human.UID == Mod.MainPlayerCharacter.UID)
             {
                 //Dont restart sway procedure when we are on our manual CFC defined sway
                 if (manager.GetCommandName().StartsWith("Sway"))
@@ -94,8 +95,9 @@ namespace LikeABrawler2
 
             HumanModeManager manager = new HumanModeManager() { Pointer = humanModeManager };
             Character human = manager.Human;
+            var player = Mod.GetPlayerByUID(human.UID);
 
-            if(human.Attributes.player_id == BrawlerPlayer.CurrentPlayer)
+            if(player != null)
             {
                 if (!BrawlerPlayer.TransitDamage(new BattleDamageInfoSafe(battleDamageInfo)))
                     return false;
@@ -144,7 +146,11 @@ namespace LikeABrawler2
 
                 if (!HeatActionManager.IsHAct())
                 {
-                    BrawlerPlayer.OnHitEnemy(EnemyManager.GetAI(human.UID).Fighter, new BattleDamageInfoSafe(battleDamageInfo));
+                    var attackerPlayer = Mod.GetPlayerByUID((new BattleDamageInfoSafe(battleDamageInfo)).Attacker.UID);
+
+                    if(attackerPlayer != null)
+                        attackerPlayer.OnHitEnemy(EnemyManager.GetAI(human.UID).Fighter, new BattleDamageInfoSafe(battleDamageInfo));
+
                     enemy.OnTakeDamage(new BattleDamageInfoSafe(battleDamageInfo));
                 }
 

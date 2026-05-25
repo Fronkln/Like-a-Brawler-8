@@ -152,7 +152,7 @@ namespace LikeABrawler2
             /*
             FighterID id = Marshal.PtrToStructure<FighterID>(inf + 0x8);
 
-            if (id.Handle == BrawlerBattleManager.PlayerCharacter.UID)
+            if (id.Handle == Mod.MainPlayerCharacter.UID)
             {
                 if (!IniSettings.ShowPlayerDamage || !BrawlerPlayer.AllowDamage(new BattleDamageInfo()))
                     return;

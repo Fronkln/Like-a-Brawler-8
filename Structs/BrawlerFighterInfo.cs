@@ -15,10 +15,10 @@ namespace LikeABrawler2
         public static BrawlerFighterInfo Player { 
             get 
             {
-                if (!Infos.ContainsKey(BrawlerBattleManager.PlayerCharacter.UID))
+                if (!Infos.ContainsKey(Mod.MainPlayerCharacter.UID))
                     return new BrawlerFighterInfo();
 
-                return Infos[BrawlerBattleManager.PlayerCharacter.UID];
+                return Infos[Mod.MainPlayerCharacter.UID];
             } 
         }
         public static Dictionary<uint, BrawlerFighterInfo> Infos = new Dictionary<uint, BrawlerFighterInfo>();

@@ -103,7 +103,7 @@ namespace LikeABrawler2
         {
             /*
             if (m_gaugeRoot.Handle != 0)
-                if (!BrawlerBattleManager.PlayerFighter.IsValid() || BrawlerBattleManager.PlayerFighter.IsDead())
+                if (!Mod.MainPlayerFighter.IsValid() || Mod.MainPlayerFighter.IsDead())
                 {
                     m_uiRoot.Release();
                     m_uiRoot.Handle = 0;
