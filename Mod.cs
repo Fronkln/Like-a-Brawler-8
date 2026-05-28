@@ -167,8 +167,6 @@ namespace LikeABrawler2
             {
                 if (!IsGameFocused)
                     continue;
-
-                BrawlerBattleManager.InputUpdate();
 #if DEBUG
                 Debug.InputUpdate();
 #endif
@@ -208,13 +206,13 @@ namespace LikeABrawler2
             Debug.GameUpdate();
 #endif
             DETaskManager.Update();
+            BrawlerBattleManager.Update();
+
 
             Players = Players.Where(x => x.CharacterHandle.IsValid()).ToList();
 
             foreach (var brawlerPlayer in Players)
                 brawlerPlayer.Update();
-
-            BrawlerBattleManager.Update();
         }
 
         public static YFC ReadYFC(string name)

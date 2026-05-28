@@ -38,6 +38,8 @@ namespace LikeABrawler2
 
             HeatActionManager.OnHActStartEvent += OnHActStart;
             HeatActionManager.OnHActEndEvent += OnHActEnd;
+
+            BrawlerBattleManager.OnPlayerSpawnEvent += OnPlayerSpawn;
         }
 
         private static void OnBattleStart()

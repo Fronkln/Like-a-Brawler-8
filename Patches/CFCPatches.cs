@@ -80,10 +80,16 @@ namespace LikeABrawler2
                 case 17:
                     return true;
                 case 18: //ShouldEnterJobCommandset
+                    if (player == null)
+                        return false;
+
                     if (player.IsOtherPlayer())
                         return true;
                     else return BrawlerPlayer.IsExtremeHeat;
                 case 19: //ShouldExitJobCommandset
+                    if (player == null)
+                        return false;
+
                     if (player.IsOtherPlayer())
                         return false;
                     else return !BrawlerPlayer.IsExtremeHeat;

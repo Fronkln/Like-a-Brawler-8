@@ -76,15 +76,6 @@ namespace LikeABrawler2
             m_forceDeliveryAddr = DragonEngineLibrary.Unsafe.CPP.PatternSearch("41 8B 86 D0 0C 00 00");
         }
 
-        public static void InputUpdate()
-        {
-            if (Mod.IsTurnBased())
-                return;
-
-            if (Mod.MainPlayerFighter.IsValid())
-                BrawlerPlayer.InputUpdate();
-        }
-
         public static void PreUpdate()
         {
             HeatActionManager.PreUpdate();
@@ -183,6 +174,8 @@ namespace LikeABrawler2
 
             if (Battling)
             {
+                RPGCamera.Sleep();
+
                 RealtimeUpdate();
 
                 if (CurrentPhase == BattleTurnManager.TurnPhase.Action)
@@ -377,6 +370,9 @@ namespace LikeABrawler2
                     new DETask(delegate { return !IsHActOrWaiting && ActionBattleTime > 3.5f && AllEnemies.Length <= 3; },
                         delegate
                         {
+                            if (AllEnemies.Length <= 0)
+                                return;
+
                             HActRequestOptions opts = new HActRequestOptions();
                             opts.id = DBManager.GetTalkParam("eb1560_boss_yam_pc");
                             opts.is_force_play = true;
@@ -622,8 +618,6 @@ namespace LikeABrawler2
             BrawlerPlayer.Update_STATIC_TEMP();
             WeaponManager.RealtimeCombatUpdate();
 
-            RPGCamera.Sleep();
-
             Dictionary<uint, BrawlerFighterInfo> brawlerInfos = new Dictionary<uint, BrawlerFighterInfo>(BrawlerFighterInfo.Infos);
 
             foreach (var kv in brawlerInfos)
@@ -784,7 +778,7 @@ namespace LikeABrawler2
 
             OnBattleStartEvent?.Invoke();
 
-            DragonEngine.Log("Realtime battle event complete.");
+            DragonEngine.Log("Realtime battle start event complete.");
         }
 
         private static void LoadBattleResources()
@@ -805,6 +799,8 @@ namespace LikeABrawler2
             EffectEventManager.LoadScreen(28); //Judge_fatalblow
             EffectEventManager.LoadScreen(68); //Brawler_finishblow
             EffectEventManager.LoadScreen(69); //PhysicalWarning_Brawler
+
+            DragonEngine.Log("Battle resources loaded...");
         }
 
         //BattleTurnManager start
@@ -874,8 +870,6 @@ namespace LikeABrawler2
                 {
                     if (!EffectEventManager.IsPlayingScreen(68))
                         PlayFinishingBlowEffect();
-
-                    DragonEngine.Log("Killed by finishing blow");
                 }
             }
 
@@ -1085,12 +1079,12 @@ namespace LikeABrawler2
         public static IntPtr DecideTurnAttacker(IntPtr turnMan, bool b1, bool b2)
         {
             if (IsBriefTurnBased())
-                return PlayerFighter._ptr;
+                return Mod.MainPlayerFighter._ptr;
 
             if (m_givePlayerTurnOnce)
             {
                 m_givePlayerTurnOnce = false;
-                return PlayerFighter._ptr;
+                return Mod.MainPlayerFighter._ptr;
             }
 
             if (BrawlerBattleManager.NearestEnemyBehindPlayer.IsValid())

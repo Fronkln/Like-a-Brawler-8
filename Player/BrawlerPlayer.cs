@@ -290,17 +290,11 @@ namespace LikeABrawler2
 
         public bool IsKiryu()
         {
-            if (!BrawlerBattleManager.Battling)
-                return Mod.MainPlayerCharacter.Attributes.player_id == Player.ID.kiryu;
-
             return PlayerID == Player.ID.kiryu;
         }
 
         public bool IsKasuga()
         {
-            if (!BrawlerBattleManager.Battling)
-                return Mod.MainPlayerCharacter.Attributes.player_id == Player.ID.kasuga;
-
             return PlayerID == Player.ID.kasuga;
         }
 
@@ -613,7 +607,7 @@ namespace LikeABrawler2
             BattleCommandSetID moveset = GetNormalMovesetForPlayer(PlayerID);
 
             //else they will be stuck on their job motinoset for some reason
-            if (IsOtherPlayer() && !Mod.MainPlayerFighter.IsValid())
+            if (IsOtherPlayer() && !Fighter.IsValid())
             {
                 moveset = (BattleCommandSetID)DBManager.GetCommandSet("p_kiryu_legend");
             }
@@ -655,6 +649,13 @@ namespace LikeABrawler2
 
         private void GameInputUpdate()
         {
+            if (!BrawlerBattleManager.Battling || BrawlerBattleManager.CurrentPhase != BattleTurnManager.TurnPhase.Action)
+                return;
+
+            if (BattleManager.PadInfo.IsJustPush(BattleButtonID.heavy))
+                if (HeatActionManager.CanHAct())
+                    HeatActionManager.ExecHeatAction(HeatActionManager.PerformableHact);
+
             if (BattleManager.PadInfo.IsJustPush(BattleButtonID.run))
             {
                 if (CanExtremeHeat())
@@ -709,16 +710,7 @@ namespace LikeABrawler2
             return true;
         }
 
-        public static void InputUpdate()
-        {
-            if (!BrawlerBattleManager.Battling || BrawlerBattleManager.CurrentPhase != BattleTurnManager.TurnPhase.Action)
-                return;
-
-            if (BattleManager.PadInfo.IsJustPush(BattleButtonID.heavy))
-                if (HeatActionManager.CanHAct())
-                    HeatActionManager.ExecHeatAction(HeatActionManager.PerformableHact);
-        }
-        
+       
         private void SetupJobWeapons()
         {
             switch (Player.GetCurrentJob(PlayerID))
